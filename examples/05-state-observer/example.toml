@@ -1,0 +1,9 @@
+schema_version = 1
+slug = "state-observer"
+title = "Observe controller state"
+description = "Observe snapshots and events for fifteen seconds without changing outputs."
+entrypoint = "main.py"
+
+[modes.run]
+args = []
+requires = ["daemon", "telemetry"]

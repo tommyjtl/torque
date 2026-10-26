@@ -1,0 +1,44 @@
+{
+  "default_model": "MiniMaxAI/MiniMax-M3.1-Flash",
+  "provider": {
+    "protocol": "openai-chat-completions",
+    "base_url": "https://api.modular.com/v1",
+    "auth": {
+      "type": "bearer",
+      "env": "MODULAR_API_KEY"
+    },
+    "tool_choice_mode": "send",
+    "model_metadata": {
+      "MiniMaxAI/MiniMax-M3.1-Flash": {
+        "context_window": 1048576,
+        "supports_tool_use": true,
+        "supports_vision": true
+      },
+      "deepseek/deepseek-v4.1-flash": {
+        "context_window": 1048576,
+        "supports_tool_use": true,
+        "supports_vision": true
+      },
+      "google/gemma-4-31b-it": {
+        "context_window": 262144,
+        "supports_tool_use": true,
+        "supports_vision": true
+      },
+      "minimax/minimax-m3": {
+        "context_window": 1048576,
+        "supports_tool_use": true,
+        "supports_vision": true
+      },
+      "qwen/qwen3.8-27b": {
+        "context_window": 262144,
+        "supports_tool_use": true,
+        "supports_vision": true
+      }
+    }
+  },
+  "preferred_models": [
+    "MiniMaxAI/MiniMax-M3.1-Flash",
+    "deepseek/deepseek-v4.1-flash",
+    "google/gemma-4-31b-it"
+  ]
+}

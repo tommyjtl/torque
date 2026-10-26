@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "torque-uno-q"
+version = "0.2.0"
+description = "Resident agent and device coordinator for Arduino UNO Q"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.11"
+dependencies = ["unoq-control==0.4.0"]
+
+[project.scripts]
+torque = "torque.cli:main"
+torqued = "torque.daemon:main"
+
+[tool.setuptools.packages.find]
+where = ["packages/session/src"]

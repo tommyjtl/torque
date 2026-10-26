@@ -1,0 +1,13 @@
+schema_version = 1
+slug = "dot-matrix-animations"
+title = "Dot Matrix Animations"
+description = "Nine keypad presets plus Heart Pulse by name, with offline previews."
+entrypoint = "main.py"
+
+[modes.run]
+args = ["--play", "--output-dir", "{output_dir}"]
+requires = ["daemon", "matrix-grayscale", "matrix-presets"]
+
+[modes.preview]
+args = ["--output-dir", "{output_dir}"]
+requires = []

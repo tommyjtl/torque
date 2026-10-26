@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unoq-control"
+version = "0.4.0"
+description = "Native Linux client for the UNO Q base controller"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.10"
+dependencies = ["arduino-router-bridge==0.5.1", "msgpack==1.2.3"]
+
+[project.scripts]
+unoq-control = "unoq_control.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

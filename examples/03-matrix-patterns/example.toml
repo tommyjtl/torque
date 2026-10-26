@@ -1,0 +1,9 @@
+schema_version = 1
+slug = "matrix-patterns"
+title = "Matrix patterns"
+description = "Show a heart and orientation border, then clear the matrix."
+entrypoint = "main.py"
+
+[modes.run]
+args = []
+requires = ["daemon", "matrix"]

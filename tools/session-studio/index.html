@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ef">
+  <meta name="description" content="A local workspace for designing spatial agent-session feedback on the UNO Q matrix.">
+  <title>Session Studio · UNO Q</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23141c26'/%3E%3Cg fill='%236baeff'%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Ccircle cx='22' cy='10' r='2'/%3E%3Ccircle cx='10' cy='22' r='2'/%3E%3Ccircle cx='22' cy='22' r='2'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="stylesheet" href="studio.css">
+  <script defer src="core.js"></script>
+  <script defer src="studio.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="identity"><span class="brand-mark" aria-hidden="true">⠿</span><div><h1>Session Studio<span class="version"> / 01</span></h1><p>A little space for every signal.</p></div></div>
+    <div class="header-actions"><span class="local-tag"><span></span> LOCAL SANDBOX</span><button id="import-button">Import</button><button id="export-button" class="primary">Export layout <span aria-hidden="true">↗</span></button><input id="import-file" type="file" accept=".json,application/json" hidden></div>
+  </header>
+  <main>
+    <div class="workspace-top"><div><span class="eyebrow">DISPLAY WORKSPACE</span><h2>One session. Many signals.</h2></div><div class="target"><span class="target-dot"></span><div><strong>UNO Q · LED matrix</strong><span>13 columns × 8 rows · monochrome</span></div></div></div>
+    <div class="workspace">
+      <aside class="regions-panel panel" aria-label="Display regions">
+        <div class="panel-title"><h3>Regions</h3><span id="region-count" class="counter">5</span></div>
+        <p class="panel-hint">Give each kind of activity a home.</p>
+        <div id="region-list" class="region-list"></div>
+        <button id="add-region" class="add-button">＋ Add a region</button>
+        <div class="allocation"><span class="eyebrow">PIXEL ALLOCATION</span><div class="allocation-track" id="allocation-track"></div><p id="allocation-label"></p><p id="overlap-label" class="muted"></p></div>
+        <div class="sidebar-foot"><span class="eyebrow">THE IDEA</span><p>Events describe the session.<br>Regions decide where it lives.</p><span class="tiny">Matrix now. Other displays later.</span></div>
+      </aside>
+      <section class="canvas-panel panel" aria-label="Matrix preview">
+        <div class="canvas-toolbar"><div class="segmented" aria-label="Preview mode"><button id="live-mode" class="active" aria-pressed="true">Live session</button><button id="clip-mode" aria-pressed="false">Edit clip</button></div><label class="check-label"><input id="guides" type="checkbox" checked> Region guides</label></div>
+        <div class="display-stage">
+          <div class="stage-heading"><span id="preview-label">SIMULATED SESSION</span><button id="motion-button" aria-pressed="true">Ⅱ Pause motion</button></div>
+          <div class="matrix-wrap"><div class="column-ruler" id="column-ruler" aria-hidden="true"></div><div class="matrix-board"><div id="matrix" class="matrix" role="group" aria-label="13 by 8 LED matrix"></div><div id="region-guides" class="region-guides" aria-hidden="true"></div><div id="draw-guide" class="draw-guide" hidden></div></div><div class="axis-corner">0,0</div></div>
+          <div class="stage-foot"><span id="selected-caption"></span><span class="blue-key"><i></i> Blue on / off pixels</span></div>
+        </div>
+        <div class="under-stage"><button id="draw-region" aria-pressed="false">⌗ Draw region bounds</button><span id="canvas-help">Select a region to edit its space and animation.</span></div>
+        <div class="session-readout"><div class="readout-title"><span class="eyebrow">SESSION SIGNALS</span><span id="session-health" class="health-label">● Source connected</span></div><div id="signal-list" class="signal-list"></div></div>
+        <div class="glance-row"><div><span class="eyebrow">AT A GLANCE</span><p>No guides. Just the output.</p></div><div id="mini-matrix" class="mini-matrix" role="img" aria-label="Small matrix output preview"></div><button id="frame-export" class="text-button">Save current frame ↗</button></div>
+      </section>
+      <aside class="inspector panel" aria-label="Region and animation editor">
+        <div class="panel-title"><h3>Region inspector</h3><div class="history"><button id="undo" aria-label="Undo design change" title="Undo">↶</button><button id="redo" aria-label="Redo design change" title="Redo">↷</button></div></div>
+        <label class="field">Region name<input id="region-name" maxlength="64"></label>
+        <label class="field">Session channel<select id="region-channel"></select></label>
+        <div class="geometry"><label>X<input id="region-x" type="number" min="0" max="12"></label><label>Y<input id="region-y" type="number" min="0" max="7"></label><label>Width<input id="region-width" type="number" min="1" max="13"></label><label>Height<input id="region-height" type="number" min="1" max="8"></label></div>
+        <div class="layer-row"><label class="check-label"><input id="region-enabled" type="checkbox"> Enabled</label><label>Layer <input id="region-layer" type="number" min="0" max="99"></label><input id="region-color" type="color" aria-label="Region guide color"></div>
+        <div class="inspector-divider"></div>
+        <div class="panel-title"><h3>State & animation</h3><span id="clip-count" class="tiny"></span></div>
+        <label class="field">When this channel is<select id="clip-state"></select></label>
+        <div class="paint-heading"><span id="paint-caption" class="tiny"></span><button id="clear-frame" class="text-button">Clear frame</button></div>
+        <div class="paint-pad"><div id="paint-grid" class="paint-grid" role="group" aria-label="Paint the selected animation frame"></div></div>
+        <p class="paint-help">Click or drag to paint. Changes preview in Edit clip.</p>
+        <div id="frames" class="frames" aria-label="Animation frames"></div>
+        <div class="frame-actions"><button id="add-frame">＋ Frame</button><button id="duplicate-frame">Duplicate</button><button id="delete-frame" aria-label="Delete selected frame">−</button></div>
+        <div class="timing-row"><label class="field">Frame duration <span class="input-unit"><input id="frame-duration" type="number" min="20" max="60000" step="10"><span>ms</span></span></label><label class="field">Playback<select id="clip-playback"><option value="loop">Loop</option><option value="once">Hold last</option></select></label></div>
+        <div class="region-footer"><button id="reset-clip" class="text-button">Restore starter clip</button><button id="delete-region" class="text-button danger">Remove region</button></div>
+      </aside>
+    </div>
+    <section class="simulation panel" aria-label="Event simulation">
+      <div class="simulation-top"><div><span class="eyebrow">EVENT REHEARSAL</span><h3>See the regions work together.</h3></div><div class="scenario-controls"><select id="scenario" aria-label="Event scenario"></select><button id="play-scenario" class="primary">▶ Play scenario</button><button id="reset-session">Reset session</button></div></div>
+      <div class="timeline-row"><span id="time-current">0.0s</span><input id="timeline" type="range" min="0" max="12000" step="50" value="0" aria-label="Scenario timeline"><span id="time-total">12.0s</span></div>
+      <div class="simulation-bottom"><div class="event-injector"><label class="eyebrow" for="manual-event">TRY AN EVENT</label><div class="inject-controls"><select id="manual-event" aria-label="Event to inject"></select><button id="fire-event">Fire event ↗</button></div><p>Start two tools. Finish one. The other stays active.</p></div><div class="event-log" id="event-log" role="log" aria-label="Simulated event log"></div></div>
+    </section>
+    <footer class="app-footer"><span id="save-status" role="status" aria-live="polite">Saved in this browser</span><span>Design preview · simulated events · hardware timing needs validation</span><button id="reset-layout" class="text-button">Reset layout</button></footer>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

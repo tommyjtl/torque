@@ -1,0 +1,24 @@
+[Unit]
+Description=Torque resident agent and UNO Q coordinator
+After=network.target arduino-app-cli.service
+
+[Service]
+Type=simple
+User=@USER@
+Environment=HOME=@HOME@
+Environment=USER=@USER@
+WorkingDirectory=@HOME@/torque
+ExecStart=/opt/torque/current/runtime/python/bin/python -m torque.daemon
+RuntimeDirectory=torque
+RuntimeDirectoryMode=0700
+StateDirectory=torque
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=25
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target

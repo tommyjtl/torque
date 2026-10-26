@@ -1,0 +1,13 @@
+schema_version = 1
+slug = "linux-rgb-led"
+title = "Linux user RGB LED"
+description = "Cycle the Linux user LED and restore its previous brightness and triggers."
+entrypoint = "main.py"
+
+[modes.run]
+args = []
+requires = []
+
+[modes.status]
+args = ["--status"]
+requires = []

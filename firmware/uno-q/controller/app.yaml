@@ -1,0 +1,3 @@
+name: UNO Q Base Controller
+icon: 🔧
+description: Resident RGB LED and matrix RPC firmware, controlled by native Linux Python clients.
