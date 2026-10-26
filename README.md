@@ -35,9 +35,6 @@ board available for local programs and I/O. See the
 - **A visible, interactive session:** start with LED matrix feedback, then add
   a TFT and physical controls using the same session model.
 
-Read the [project vision and architecture](docs/design-spec/2026-10-24-torque-vision.md)
-for the responsibilities, event/control boundaries, and open decisions.
-
 ## Current status
 
 | Component | State |
@@ -71,9 +68,7 @@ This is an implementation sequence, with no committed release dates.
 
 The initial integrated milestone has passed real model/tool turns, permission
 checks, MCU readback and restart adoption. Richer regional display composition
-and physical session controls remain the next integration work. See the
-[vision](docs/design-spec/2026-10-24-torque-vision.md#existing-foundation-and-next-milestone)
-and [animation reference review](docs/design-spec/2026-10-24-animation-reference-review.md).
+and physical session controls remain the next integration work.
 
 ## Hardware
 
@@ -243,94 +238,6 @@ delegation permits only the fixed Torque restart command; firmware remains a
 separate workflow. See [CLI usage](docs/cli.md#unattended-linux-runtime-updates).
 
 See the [source structure in ARCHITECTURE.md](ARCHITECTURE.md#source-structure).
-Implementation evidence lives under `docs/`; future proposals live under
-`docs/design-spec/` and are distinct from shipped behavior.
-
-## Design specs
-
-- [Model selection and device reset](docs/design-spec/2026-10-25-model-selection-and-device-reset.md)
-  defines model discovery/picking, conservative profiles for new models,
-  compatibility checks and a hardware reset to standby or blank. Implemented in
-  source and installed; subsequent Linux changes use the coordinated updater.
-
-- [Torque installation and runtime refactor](docs/design-spec/2026-10-24-torque-runtime-and-onboarding.md)
-  defines the daemon, managed runtime and user workspace, boot readiness,
-  coordinated firmware updates, and targeted cutover. Implementation status
-  is tracked in the runtime notes.
-
-- [Torque vision and architecture](docs/design-spec/2026-10-24-torque-vision.md)
-  records the broader agent/controller scope, ownership of the harness, CLI
-  integrations, physical feedback and control, and open implementation decisions.
-
-- [Animation reference review](docs/design-spec/2026-10-24-animation-reference-review.md)
-  assesses all 90 Dot Matrix gallery entries, with primary 5×5 and compact 3×3
-  references for eight-level adaptations now used by the example and status cues.
-
-- [Matrix pixel art, fonts, and animations](docs/design-spec/2026-10-24-matrix-graphics-and-fonts.md)
-  proposes description-driven pixel assets, direct grid editing, local bitmap
-  fonts, and Python-streamed marquees without image-processing dependencies.
-
-- [Session display studio](docs/design-spec/2026-10-24-session-display-studio.md)
-  explores separate display regions for session, model, tools, attention, and
-  connection signals. Open the [local HTML designer](tools/session-studio/index.html)
-  to edit layouts, paint animations, and rehearse simulated events.
-
-- [Controller telemetry](docs/design-spec/2026-10-24-controller-telemetry.md)
-  defines read-only snapshots, GPIO readback, asynchronous state events, and a
-  live observer, implemented and tested end to end in version 0.2.0.
-
-- [UNO Q base controller](docs/design-spec/2026-10-24-base-controller.md) records
-  shared MCU firmware and a Python client for LEDs, matrix images, and buffered
-  animations. Version 0.2.0 has passed deployment and LED/matrix checks on the
-  validation board.
-
-- [Grayscale deployment and Half Helix playback](docs/journal/2026-10-24-grayscale-half-helix.md)
-  records the 0.3.0 rollout, readiness-helper recovery, and exact live framebuffer
-  verification. The saved updater now owns readiness polling and detects completed updates.
-
-- [Unattended runtime updates](docs/design-spec/2026-10-25-unattended-runtime-updates.md)
-  implements user-owned application releases and an exact service-restart grant
-  for Codex over SSH, with admission fencing, release checks and recovery.
-  Bootstrap and a real password-free activation passed on 2026-10-26; see the
-  [rollout record](docs/journal/2026-10-25-unattended-runtime-updates.md).
-
-- [Managed storage and retention](docs/design-spec/2026-10-26-managed-storage-retention.md)
-  drafts automatic cleanup, protected rollback/leases, root/home budgets and
-  peak-space admission. The manual cleanup is complete; this policy is not enabled yet.
-
-- [Configurable fx hardware feedback](docs/design-spec/2026-10-24-fx-hardware-feedback.md)
-  proposes showing harness activity on the matrix, with user-selected states and
-  themes, a small fx integration, and future RGB or TFT outputs.
-
-## Project journal
-
-- [2026-10-26: Storage cleanup and retention proposal](docs/journal/2026-10-26-storage-cleanup-and-retention.md)
-  distinguishes root/home storage, records reclaimed obsolete releases and
-  staging payloads, and proposes bounded automatic retention.
-
-- [2026-10-26: Unattended Linux updates verified](docs/journal/2026-10-25-unattended-runtime-updates.md)
-  records bootstrap, the vendor-policy correction, a real password-free SSH
-  activation, unchanged firmware/defaults, and no-op/repeat behavior.
-
-- [2026-10-24: Compact DSI display investigation](docs/journal/2026-10-24-compact-dsi-display.md)
-  records the experimental Waveshare 2.8-inch DSI candidate, compatibility gaps,
-  current board kernel, alternatives and next checks.
-
-- [2026-10-24: Plain-language control and approvals](docs/journal/2026-10-24-natural-language-control-and-approvals.md)
-  records the original eight-approval matrix session, four product priorities,
-  and the uncoached acceptance gate and implementation progress.
-
-
-- [2026-10-24: Keychron K0 Max Bluetooth setup](docs/journal/2026-10-24-keychron-k0-max-bluetooth.md)
-  records pairing, Linux input surveys and wake-assisted reconnection checks.
-
-- [2026-10-23: Python control of the matrix through Bridge](docs/journal/2026-10-23-bridge-matrix.md)
-  records the deferred design for uploading matrix firmware once and changing
-  patterns from Python, including runtime questions and the validation plan.
-
-- [2026-10-23: Empty fx shell arguments during the LED demo](docs/journal/2026-10-23-fx-empty-shell-arguments.md)
-  records the rejected calls, required argument shape, suggested recovery, and
-  unresolved model/provider/client boundary.
 
 ## Development checks
 
