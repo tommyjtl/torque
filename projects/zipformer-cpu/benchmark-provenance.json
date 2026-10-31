@@ -1,0 +1,15 @@
+{
+  "executable_sha256": "28342f94bd8563f577d31995190504fcd1370721dfbcf36cee0d9d9f34666cc4",
+  "benchmark_run": "20261030T080913-cpu",
+  "execution_device": "cpu",
+  "model": "marcoyang/sherpa-ncnn-streaming-zipformer-20M-2023-02-17",
+  "model_revision": "20af696d92a32438db47fb7d4bd961b36fb07021",
+  "latency_metric": "file-end to last natural segment final",
+  "median_seconds": 0.38722794299999963,
+  "under_one_second": 18,
+  "trials": 18,
+  "word_errors": 4,
+  "reference_words": 136,
+  "live_microphone_validated": false,
+  "whole_turn_detection_validated": false
+}

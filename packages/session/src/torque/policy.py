@@ -1,9 +1,9 @@
 """Host authorization policy. The worker can request effects, not grant them."""
 MODES = ('auto', 'ask', 'full')
-READS = {'read_file', 'list_directory', 'search_files', 'device_snapshot', 'device_capabilities', 'input_capabilities'}
+READS = {'read_file', 'list_directory', 'search_files', 'device_snapshot', 'device_capabilities', 'input_capabilities', 'audio_capabilities'}
 ROUTINE = {'write_file', 'run_program', 'matrix_fill', 'matrix_draw', 'matrix_clear', 'matrix_release', 'rgb_set'}
 FIELDS = {'read_file': {'path'}, 'list_directory': {'path'}, 'search_files': {'path', 'query'},
-          'device_snapshot': set(), 'device_capabilities': set(), 'input_capabilities': set(), 'write_file': {'path', 'content'},
+          'device_snapshot': set(), 'device_capabilities': set(), 'input_capabilities': set(), 'audio_capabilities': set(), 'write_file': {'path', 'content'},
           'run_program': {'path', 'arguments'}, 'shell': {'command'},
           'matrix_fill': {'on'}, 'matrix_draw': {'rows'}, 'matrix_clear': set(), 'matrix_release': set(),
           'rgb_set': {'led', 'red', 'green', 'blue'}}

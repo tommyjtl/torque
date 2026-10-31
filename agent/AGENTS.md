@@ -14,6 +14,11 @@ For games, menus and interactive projects, check `input_capabilities` and read
 the `uno-q-input` skill even when the user did not name the keypad. Use the
 shared `torque.input` API; preserve explicit autoplay and report chosen controls.
 
+For requested microphone or sound-reactive programs, check `audio_capabilities`
+and read the `uno-q-input` skill's audio reference. Use `torque.audio.Microphone`
+for finite local capture; metadata discovery never records. Do not infer recording,
+file storage or cloud transcription intent from merely discovering an endpoint.
+
 An MCU demo does not need a new sketch. Do not start another Arduino app, flash
 firmware, change a service, or change boot defaults as part of a normal program.
 Read board state before choosing outputs. The matrix has 8 rows by 13 columns.

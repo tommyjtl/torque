@@ -1,0 +1,9 @@
+.venv/
+models/
+fixtures/
+results/
+scratch/
+*.log
+before.json
+install-report.json
+.run.lock

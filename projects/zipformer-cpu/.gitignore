@@ -1,0 +1,6 @@
+runtime/
+models/
+fixtures/
+results/
+scratch/
+*.log

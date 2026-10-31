@@ -1,0 +1,13 @@
+schema_version = 1
+slug = "microphone-level-meter"
+title = "Microphone Level Meter"
+description = "Finite local Media Carrier microphone level history on the matrix; no audio files or uploads."
+entrypoint = "main.py"
+
+[modes.run]
+args = ["--live", "--output-dir", "{output_dir}"]
+requires = ["daemon", "matrix-grayscale"]
+
+[modes.preview]
+args = ["--output-dir", "{output_dir}"]
+requires = []

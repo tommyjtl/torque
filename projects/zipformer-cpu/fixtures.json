@@ -1,0 +1,82 @@
+{
+  "source_url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+  "corpus": "LibriSpeech test-clean",
+  "license": "CC BY 4.0",
+  "attribution": "Vassil Panayotov, Daniel Povey, Guoguo Chen and Sanjeev Khudanpur; OpenSLR SLR12 / LibriVox",
+  "conversion": "ffmpeg -ar 16000 -ac 1 -c:a pcm_s16le; complete utterances",
+  "selection": "First eligible per-speaker/duration buckets in archive order, before recognition",
+  "clips": [
+    {
+      "id": "6930-75918-0000",
+      "speaker": "6930",
+      "bucket": 0,
+      "path": "fixtures/6930-75918-0000.wav",
+      "samples": 56080,
+      "seconds": 3.505,
+      "sha256": "3c584434bd52d553890b93119482093a7534391a09414eb3389bcd23d0a77e04",
+      "source_sha256": "9ce35224156f071ab58eb7feb8a5ceae600f6f9f353da2a6cbf797b6b1ac8a23",
+      "source_member": "LibriSpeech/test-clean/6930/75918/6930-75918-0000.flac",
+      "reference": "CONCORD RETURNED TO ITS PLACE AMIDST THE TENTS"
+    },
+    {
+      "id": "6930-75918-0006",
+      "speaker": "6930",
+      "bucket": 1,
+      "path": "fixtures/6930-75918-0006.wav",
+      "samples": 93600,
+      "seconds": 5.85,
+      "sha256": "ca703f0ebf98a9c7ba72d050471c84fd046c18a24e2dca0edc8e1ac5f9cc3451",
+      "source_sha256": "4bed112ebfdba58ec061abd3fe013f89946863e9c51e8a83b50a5eb7afb9ce65",
+      "source_member": "LibriSpeech/test-clean/6930/75918/6930-75918-0006.flac",
+      "reference": "THIS HAS INDEED BEEN A HARASSING DAY CONTINUED THE YOUNG MAN HIS EYES FIXED UPON HIS FRIEND"
+    },
+    {
+      "id": "6930-75918-0005",
+      "speaker": "6930",
+      "bucket": 2,
+      "path": "fixtures/6930-75918-0005.wav",
+      "samples": 210560,
+      "seconds": 13.16,
+      "sha256": "979c993893d8305c190ebb85c6ea30a448a69813a9887e8dde233d10d7ed3720",
+      "source_sha256": "ccc0da025ef4f4596a4e70fbde291527d140364166d19d9bb516a48407b3491e",
+      "source_member": "LibriSpeech/test-clean/6930/75918/6930-75918-0005.flac",
+      "reference": "THE COUNT HAD THROWN HIMSELF BACK ON HIS SEAT LEANING HIS SHOULDERS AGAINST THE PARTITION OF THE TENT AND REMAINED THUS HIS FACE BURIED IN HIS HANDS WITH HEAVING CHEST AND RESTLESS LIMBS"
+    },
+    {
+      "id": "1320-122617-0003",
+      "speaker": "1320",
+      "bucket": 1,
+      "path": "fixtures/1320-122617-0003.wav",
+      "samples": 100560,
+      "seconds": 6.285,
+      "sha256": "ddd7fe0dddf81bd45c25faf4f963d53a30a0e64fd262baaf5e21455f7d9e2405",
+      "source_sha256": "bbe9ef85bbe228c73a414f064c9bd992c94135d73f9900b33104ad93c07d0594",
+      "source_member": "LibriSpeech/test-clean/1320/122617/1320-122617-0003.flac",
+      "reference": "THERE WAS SOMETHING IN HIS AIR AND MANNER THAT BETRAYED TO THE SCOUT THE UTTER CONFUSION OF THE STATE OF HIS MIND"
+    },
+    {
+      "id": "1320-122617-0022",
+      "speaker": "1320",
+      "bucket": 0,
+      "path": "fixtures/1320-122617-0022.wav",
+      "samples": 61680,
+      "seconds": 3.855,
+      "sha256": "2968a019d4d4bcd8eb365145a4451e15f731ab627d60321849b6322ff86d6fcd",
+      "source_sha256": "9c4d285c536c8562a3b9add558d159b84c5b3d8c27922669906ae8da831fc25c",
+      "source_member": "LibriSpeech/test-clean/1320/122617/1320-122617-0022.flac",
+      "reference": "THE DELAWARES ARE CHILDREN OF THE TORTOISE AND THEY OUTSTRIP THE DEER"
+    },
+    {
+      "id": "1320-122617-0002",
+      "speaker": "1320",
+      "bucket": 2,
+      "path": "fixtures/1320-122617-0002.wav",
+      "samples": 217360,
+      "seconds": 13.585,
+      "sha256": "d6dc5fd25a002f1b65d34fe0a8c08c6cc7bfd168ad41fde978c87149ce439033",
+      "source_sha256": "c567f708d614c54f20e4727cdcb3cf81aaf434277bb180e878edc2118f5e4abc",
+      "source_member": "LibriSpeech/test-clean/1320/122617/1320-122617-0002.flac",
+      "reference": "IN OTHER WORDS WHILE HE HAD IMPLICIT FAITH IN THE ABILITY OF BALAAM'S ASS TO SPEAK HE WAS SOMEWHAT SKEPTICAL ON THE SUBJECT OF A BEAR'S SINGING AND YET HE HAD BEEN ASSURED OF THE LATTER ON THE TESTIMONY OF HIS OWN EXQUISITE ORGANS"
+    }
+  ]
+}

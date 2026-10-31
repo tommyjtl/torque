@@ -8,6 +8,11 @@ __pycache__/
 !.env.example
 projects/*
 !projects/.gitkeep
+!projects/whisper-tiny-benchmark/
+!projects/moonshine-tiny-benchmark/
+!projects/whisper-gpu-benchmark/
+!projects/ncnn-speech-benchmark/
+!projects/zipformer-cpu/
 *.bin
 *.elf
 *.hex

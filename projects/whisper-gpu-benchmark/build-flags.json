@@ -1,0 +1,27 @@
+{
+  "configure": [
+    "/home/arduino/torque/projects/whisper-gpu-benchmark/tools/usr/bin/cmake",
+    "-S",
+    "/home/arduino/torque/projects/whisper-gpu-benchmark",
+    "-B",
+    "/home/arduino/torque/projects/whisper-gpu-benchmark/build",
+    "-G",
+    "Ninja",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_C_COMPILER=/home/arduino/torque/projects/whisper-gpu-benchmark/tools/bin/gcc",
+    "-DCMAKE_CXX_COMPILER=/home/arduino/torque/projects/whisper-gpu-benchmark/tools/bin/g++",
+    "-DCMAKE_SYSROOT=/home/arduino/torque/projects/whisper-gpu-benchmark/tools",
+    "-DCMAKE_PREFIX_PATH=/home/arduino/torque/projects/whisper-gpu-benchmark/tools/usr",
+    "-DCMAKE_MAKE_PROGRAM=/home/arduino/torque/projects/whisper-gpu-benchmark/tools/usr/bin/ninja",
+    "-DVulkan_INCLUDE_DIR=/home/arduino/torque/projects/whisper-gpu-benchmark/tools/usr/include",
+    "-DVulkan_LIBRARY=/usr/lib/aarch64-linux-gnu/libvulkan.so.1",
+    "-DVulkan_GLSLC_EXECUTABLE=/home/arduino/torque/projects/whisper-gpu-benchmark/tools/usr/bin/glslc",
+    "-DCMAKE_C_FLAGS_RELEASE=-O3 -DNDEBUG -mcpu=cortex-a53",
+    "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG -mcpu=cortex-a53",
+    "-DCMAKE_SKIP_RPATH=ON"
+  ],
+  "parallel_jobs": 1,
+  "target": "native Linux ARM64 / Cortex-A53",
+  "private_sysroot": "/home/arduino/torque/projects/whisper-gpu-benchmark/tools",
+  "runtime_vulkan": "/usr/lib/aarch64-linux-gnu/libvulkan.so.1"
+}

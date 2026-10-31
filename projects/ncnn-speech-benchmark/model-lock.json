@@ -1,0 +1,44 @@
+{
+  "model": "marcoyang/sherpa-ncnn-streaming-zipformer-20M-2023-02-17",
+  "revision": "20af696d92a32438db47fb7d4bd961b36fb07021",
+  "license": "Apache-2.0",
+  "gate": "20261030T073746-probe",
+  "files": {
+    "decoder_jit_trace-pnnx.ncnn.bin": {
+      "sha256": "523470d248bfd980a686a782ffe02fbfb0bd8b461793cf947dbb6d4b56df5959",
+      "bytes": 520200,
+      "url": "https://huggingface.co/marcoyang/sherpa-ncnn-streaming-zipformer-20M-2023-02-17/resolve/20af696d92a32438db47fb7d4bd961b36fb07021/decoder_jit_trace-pnnx.ncnn.bin"
+    },
+    "decoder_jit_trace-pnnx.ncnn.param": {
+      "sha256": "500ba1924361f2b88006c08dbe6bbd295057742e637efb4cbeb965a414a835eb",
+      "bytes": 437,
+      "url": "https://huggingface.co/marcoyang/sherpa-ncnn-streaming-zipformer-20M-2023-02-17/resolve/20af696d92a32438db47fb7d4bd961b36fb07021/decoder_jit_trace-pnnx.ncnn.param"
+    },
+    "encoder_jit_trace-pnnx.ncnn.bin": {
+      "sha256": "49d0e4fede5cadaaeb2fe82d9d014a3a8ec57797220a1151df2dd4a6c5e098fd",
+      "bytes": 39387228,
+      "url": "https://huggingface.co/marcoyang/sherpa-ncnn-streaming-zipformer-20M-2023-02-17/resolve/20af696d92a32438db47fb7d4bd961b36fb07021/encoder_jit_trace-pnnx.ncnn.bin"
+    },
+    "encoder_jit_trace-pnnx.ncnn.param": {
+      "sha256": "4594a232d34b6ce1f9db92e3d28668c3da7c8be047917797feac4951146326bc",
+      "bytes": 111810,
+      "url": "https://huggingface.co/marcoyang/sherpa-ncnn-streaming-zipformer-20M-2023-02-17/resolve/20af696d92a32438db47fb7d4bd961b36fb07021/encoder_jit_trace-pnnx.ncnn.param"
+    },
+    "joiner_jit_trace-pnnx.ncnn.bin": {
+      "sha256": "58b71925959ca576ce844485493b7153083be8ecda05cc8d7a5b2a2151162476",
+      "bytes": 1304540,
+      "url": "https://huggingface.co/marcoyang/sherpa-ncnn-streaming-zipformer-20M-2023-02-17/resolve/20af696d92a32438db47fb7d4bd961b36fb07021/joiner_jit_trace-pnnx.ncnn.bin"
+    },
+    "joiner_jit_trace-pnnx.ncnn.param": {
+      "sha256": "757a34101fe803ba348853692829f06fbfa2e7260889d6a4dbfcef25e9d3f7ed",
+      "bytes": 488,
+      "url": "https://huggingface.co/marcoyang/sherpa-ncnn-streaming-zipformer-20M-2023-02-17/resolve/20af696d92a32438db47fb7d4bd961b36fb07021/joiner_jit_trace-pnnx.ncnn.param"
+    },
+    "tokens.txt": {
+      "sha256": "49e3c2646595fd907228b3c6787069658f67b17377c60aeb8619c4551b2316fb",
+      "bytes": 5048,
+      "url": "https://huggingface.co/marcoyang/sherpa-ncnn-streaming-zipformer-20M-2023-02-17/resolve/20af696d92a32438db47fb7d4bd961b36fb07021/tokens.txt"
+    }
+  },
+  "bytes": 41329751
+}

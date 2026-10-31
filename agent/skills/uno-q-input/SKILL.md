@@ -1,9 +1,15 @@
 ---
 name: uno-q-input
-description: Add physical keypad controls to UNO Q games, menus and interactive projects using Torque's Python input API; discover the Keychron even when a project request does not name it.
+description: Use Keychron controls or explicitly requested microphone input in UNO Q projects through Torque's shared Python input and audio APIs.
 ---
 
 # Project input on UNO Q
+
+For microphone/sound-reactive requests, check the read-only `audio_capabilities`
+tool and read [audio-api.md](references/audio-api.md). Capture runs on Linux;
+MCU output still uses the public Board API. Endpoint discovery is not a signal
+test or permission to begin recording. Preserve requested durations and storage
+intent; use finite local capture without files or uploads when only levels are needed.
 
 Consider input when building games, selectable animations or menus. Use the
 read-only `input_capabilities` tool to check current availability; past pairing

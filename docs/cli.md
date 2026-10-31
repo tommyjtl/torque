@@ -180,6 +180,23 @@ From the Mac, allocate a terminal for terminal-input mode:
 ssh -t arduino@tommy-uno-q.local 'torque example dot-matrix-animations --input terminal'
 ```
 
+The Media Carrier microphone example captures local audio levels for 30 seconds
+and displays their recent history on the matrix:
+
+```bash
+torque example microphone-level-meter
+torque example microphone-level-meter --seconds 15 --console-only
+torque example microphone-level-meter --list
+torque example --mode preview microphone-level-meter
+```
+
+Live mode requires the carrier MIC-IN route and existing `arecord`/`amixer`
+access. It saves no audio files and makes no uploads. `--list` reports endpoint
+metadata; preview uses labelled synthetic levels. Neither records. Ctrl-C stops
+capture and requests routing/matrix cleanup; the helper also detects parent
+exit. See the [example guide](../examples/07-microphone-level-meter/README.md)
+for the supported source, duration limits and cleanup limitations.
+
 ### Add an example to the catalog
 
 Add `examples/<folder>/main.py` and an `example.toml` alongside it:

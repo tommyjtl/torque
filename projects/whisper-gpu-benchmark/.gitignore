@@ -1,0 +1,9 @@
+vendor/
+tools/
+downloads/
+build/
+results/
+scratch/
+fixtures/
+*.log
+before.json

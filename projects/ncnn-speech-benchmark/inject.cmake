@@ -1,0 +1,10 @@
+# Add our executables to the pinned upstream build without altering its math.
+add_executable(torque-ncnn-probe "${CMAKE_CURRENT_LIST_DIR}/probe.cpp")
+target_link_libraries(torque-ncnn-probe PRIVATE ncnn)
+set_target_properties(torque-ncnn-probe PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/speech.cpp")
+  add_executable(torque-ncnn-speech "${CMAKE_CURRENT_LIST_DIR}/speech.cpp")
+  target_include_directories(torque-ncnn-speech PRIVATE "${CMAKE_SOURCE_DIR}")
+  target_link_libraries(torque-ncnn-speech PRIVATE sherpa-ncnn-core)
+  set_target_properties(torque-ncnn-speech PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+endif()

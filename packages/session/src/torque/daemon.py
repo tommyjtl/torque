@@ -374,6 +374,9 @@ class Daemon:
         if name == 'input_capabilities':
             from .input import input_capabilities
             return await asyncio.to_thread(input_capabilities)
+        if name == 'audio_capabilities':
+            from .audio import audio_capabilities
+            return await asyncio.to_thread(audio_capabilities)
         if name in ('device_capabilities', 'matrix_fill', 'matrix_draw', 'matrix_clear', 'matrix_release', 'rgb_set'):
             return await asyncio.to_thread(self.device.action, name, args)
         if name == 'device_snapshot':

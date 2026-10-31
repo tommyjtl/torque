@@ -1,0 +1,10 @@
+{
+  "model": "tiny.en",
+  "format": "original ggml / mixed F16-F32",
+  "revision": "5359861c739e955e79d9a303bcbc70fb988958b1",
+  "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-tiny.en.bin",
+  "sha256": "921e4cf8686fdd993dcd081a5da5b6c365bfde1162e72b08d75ac75289920b1f",
+  "bytes": 77704715,
+  "license": "MIT",
+  "license_source": "https://github.com/openai/whisper/blob/main/LICENSE"
+}

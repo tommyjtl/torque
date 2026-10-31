@@ -1,0 +1,122 @@
+--- a/src/net.cpp
++++ b/src/net.cpp
+@@ -2,6 +2,7 @@
+ // SPDX-License-Identifier: BSD-3-Clause
+ 
+ #include "net.h"
++#include <cstdlib>
+ 
+ #include "cpu.h"
+ #include "datareader.h"
+@@ -23,6 +24,12 @@
+ #endif // NCNN_VULKAN
+ 
+ namespace ncnn {
++// Private benchmark control: no model/operator math is changed.
++static bool torque_profile_enabled() {
++    static const bool enabled = [] { const char* p = std::getenv("TORQUE_NCNN_PROFILE"); return p && p[0] == '1'; }();
++    return enabled;
++}
++
+ 
+ class NetPrivate
+ {
+@@ -177,7 +184,7 @@
+     }
+ 
+ #if NCNN_BENCHMARK
+-    double start = get_current_time();
++    double start = torque_profile_enabled() ? get_current_time() : 0;
+     Mat bottom_blob;
+     if (layer->one_blob_only)
+     {
+@@ -201,15 +208,15 @@
+         ret = do_forward_layer(layer, blob_mats, opt);
+     }
+ #if NCNN_BENCHMARK
+-    double end = get_current_time();
++    double end = torque_profile_enabled() ? get_current_time() : 0;
+     if (layer->one_blob_only)
+     {
+         int top_blob_index = layer->tops[0];
+-        benchmark(layer, bottom_blob, blob_mats[top_blob_index], start, end);
++        if (torque_profile_enabled()) benchmark(layer, bottom_blob, blob_mats[top_blob_index], start, end);
+     }
+     else
+     {
+-        benchmark(layer, start, end);
++        if (torque_profile_enabled()) benchmark(layer, start, end);
+     }
+ #endif
+     if (ret != 0)
+@@ -285,7 +292,7 @@
+ 
+ #if NCNN_BENCHMARK
+         std::vector<uint64_t> results(layer_index * 2);
+-        cmd.get_query_pool_results(0, layer_index * 2, results);
++        if (torque_profile_enabled()) cmd.get_query_pool_results(0, layer_index * 2, results);
+         for (int i = 0; i < layer_index; i++)
+         {
+             uint64_t start = results[i * 2];
+@@ -306,7 +313,7 @@
+     if (layer->support_vulkan)
+     {
+ #if NCNN_BENCHMARK
+-        cmd.record_write_timestamp(layer_index * 2);
++        if (torque_profile_enabled()) cmd.record_write_timestamp(layer_index * 2);
+ #endif
+         if (layer->featmask)
+         {
+@@ -317,13 +324,13 @@
+             ret = do_forward_layer(layer, blob_mats_gpu, cmd, opt);
+         }
+ #if NCNN_BENCHMARK
+-        cmd.record_write_timestamp(layer_index * 2 + 1);
++        if (torque_profile_enabled()) cmd.record_write_timestamp(layer_index * 2 + 1);
+ #endif
+     }
+     else
+     {
+ #if NCNN_BENCHMARK
+-        double start = get_current_time();
++        double start = torque_profile_enabled() ? get_current_time() : 0;
+         Mat bottom_blob;
+         if (layer->one_blob_only)
+         {
+@@ -340,15 +347,15 @@
+             ret = do_forward_layer(layer, blob_mats, opt);
+         }
+ #if NCNN_BENCHMARK
+-        double end = get_current_time();
++        double end = torque_profile_enabled() ? get_current_time() : 0;
+         if (layer->one_blob_only)
+         {
+             int top_blob_index = layer->tops[0];
+-            benchmark(layer, bottom_blob, blob_mats[top_blob_index], start, end);
++            if (torque_profile_enabled()) benchmark(layer, bottom_blob, blob_mats[top_blob_index], start, end);
+         }
+         else
+         {
+-            benchmark(layer, start, end);
++            if (torque_profile_enabled()) benchmark(layer, start, end);
+         }
+ #endif
+     }
+@@ -2262,7 +2269,7 @@
+ 
+             ncnn::VkCompute cmd(d->net->vulkan_device());
+ #if NCNN_BENCHMARK
+-            cmd.create_query_pool(d->net->layers().size() * 2);
++            if (torque_profile_enabled()) cmd.create_query_pool(d->net->layers().size() * 2);
+ #endif // NCNN_BENCHMARK
+ 
+             VkMat feat_gpu;
+@@ -2276,7 +2283,7 @@
+ 
+ #if NCNN_BENCHMARK
+                 std::vector<uint64_t> results(d->net->layers().size() * 2);
+-                cmd.get_query_pool_results(0, d->net->layers().size() * 2, results);
++                if (torque_profile_enabled()) cmd.get_query_pool_results(0, d->net->layers().size() * 2, results);
+                 for (size_t i = 0; i < d->net->layers().size(); i++)
+                 {
+                     uint64_t start = results[i * 2];

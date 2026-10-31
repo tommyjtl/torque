@@ -1,0 +1,22 @@
+{
+  "sherpa-ncnn": {
+    "repository": "https://github.com/k2-fsa/sherpa-ncnn",
+    "revision": "c61e50d61e9fbed5972afa4d95bc560e168affe2",
+    "url": "https://codeload.github.com/k2-fsa/sherpa-ncnn/tar.gz/c61e50d61e9fbed5972afa4d95bc560e168affe2",
+    "sha256": "d33c4d534dd8e90fc1e05a3c88ddd49ad3af817216792c98b97d5bcbc526718d",
+    "archive_bytes": 2800573
+  },
+  "ncnn": {
+    "repository": "https://github.com/Tencent/ncnn",
+    "revision": "c4193aadbbb56582aa87b1850dd3d98fb8fd936d",
+    "url": "https://codeload.github.com/Tencent/ncnn/tar.gz/c4193aadbbb56582aa87b1850dd3d98fb8fd936d",
+    "sha256": "6005bbdefb83ad6da63b2fa200d04c59882d09c9c62e977aa6325a0a6a4822ab",
+    "archive_bytes": 13166525
+  },
+  "runtime_profile_control": {
+    "before_sha256": "045e5f218dd230f93bea1ee3f424717039149f1ce7789e12e21881f130a0fd96",
+    "after_sha256": "1f23d8f904fb1a173d5ad3334dca9a1943ef2a0f5a343e331f78b07b2af96965",
+    "patch_sha256": "37fdb8524725bffa34221877c764a315144f09a8f07b876df00a56415dfed4ac",
+    "description": "Only diagnostic timestamp/query/log statements are conditional; no tensor operations changed"
+  }
+}

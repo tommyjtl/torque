@@ -1,0 +1,17 @@
+{
+  "execution_device": "cpu",
+  "executable_sha256": "28342f94bd8563f577d31995190504fcd1370721dfbcf36cee0d9d9f34666cc4",
+  "source_bundle_sha256": "7490e376dcc4c795ab0addae3799085357c04ac375cae3665fe67a82210f2548",
+  "benchmark_run": "20261030T080913-cpu",
+  "build": "Matched benchmark executable retained without rebuild; optional GPU code is unused",
+  "dynamic_dependencies": [
+    "\tlinux-vdso.so.1 (0x0000ffff9efd8000)",
+    "\tlibgomp.so.1 => /lib/aarch64-linux-gnu/libgomp.so.1 (0x0000ffff9e400000)",
+    "\tlibstdc++.so.6 => /lib/aarch64-linux-gnu/libstdc++.so.6 (0x0000ffff9e190000)",
+    "\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff9e0e0000)",
+    "\tlibmvec.so.1 => /lib/aarch64-linux-gnu/libmvec.so.1 (0x0000ffff9e090000)",
+    "\tlibgcc_s.so.1 => /lib/aarch64-linux-gnu/libgcc_s.so.1 (0x0000ffff9e050000)",
+    "\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff9de90000)",
+    "\t/lib/ld-linux-aarch64.so.1 (0x0000ffff9ef90000)"
+  ]
+}

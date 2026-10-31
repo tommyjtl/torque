@@ -1,0 +1,13 @@
+{
+  "revision": "f24588a272ae8e23280d9c220536437164e6ed28",
+  "archive_sha256": "c3488eba0c6666a8b256f53267c129aa46292b35b0cb7391e4b5623cf9e23c8d",
+  "source": "https://github.com/ggml-org/whisper.cpp",
+  "private_build": true,
+  "private_compatibility_patch": {
+    "file": "vulkan-low-memory.patch",
+    "sha256": "98bb5f5819f5e95fac033087e47c562c9a13e491d58d5a0df914808a07612260",
+    "before_cpp_sha256": "18300bc570c4004b272ec05027b76860d7f5af634f9490b94c13ae4a9b0428ea",
+    "after_cpp_sha256": "892d10e2d1a13e94366fe2214007f5ea1f48401e7d747896b6c9e9f3f68831e0",
+    "purpose": "Disable dtypes whose smallest tile exceeds real shared memory; retain all resource checks and CPU fallback"
+  }
+}

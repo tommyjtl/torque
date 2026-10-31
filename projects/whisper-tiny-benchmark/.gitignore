@@ -1,0 +1,11 @@
+.venv/
+models/
+fixtures/
+results/
+scratch/
+*.log
+before.json
+install-report.json
+model.json
+.run.lock
+cleanup-acceptance.json

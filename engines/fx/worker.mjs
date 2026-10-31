@@ -29,13 +29,14 @@ const definitions = [
   ['device_snapshot', 'Read the MCU framebuffer/GPIO and display ownership. The working circle is session feedback; standby is one pixel. Readback is not optical observation.', schema({})],
   ['device_capabilities', 'Read connected firmware capabilities and display ownership. Board is UNO Q: binary 8x13 matrix and MCU RGB LEDs 3/4.', schema({})],
   ['input_capabilities', 'Discover currently readable Keychron keypad input for games, menus and interactive projects. Metadata only; no keystrokes consumed or recorded. Read the uno-q-input skill for the shared Python API.', schema({})],
+  ['audio_capabilities', 'Inspect the local UNO Q Media Carrier audio capture endpoint and access. Metadata only: does not record, change routing, or prove a microphone signal. For requested audio programs read the uno-q-input audio reference.', schema({})],
   ['matrix_fill', 'Set every one of the 104 matrix pixels on (on=true) or off (on=false). Retains the requested state after this tool/turn, until changed or explicitly released. Use directly for light up all LEDs; no Python file or invented duration.', schema({on:bool})],
   ['matrix_draw', 'Draw 8 rows of exactly 13 binary pixels using . and #, retaining the frame after this turn. Use for a direct static pattern.', schema({rows:{type:'array',items:text}})],
   ['matrix_clear', 'Turn every matrix pixel off and retain the blank display. Session feedback will not repaint over this explicit off state.', schema({})],
   ['matrix_release', 'Explicitly return the matrix to Torque session-status feedback. This differs from turning the matrix off.', schema({})],
   ['rgb_set', 'Set MCU RGB LED 3 or 4 to the given boolean color channels. No PWM, firmware upload or Python file is needed.', schema({led:{type:'integer',enum:[3,4]},red:bool,green:bool,blue:bool})],
 ];
-const readTools=new Set(['read_file','list_directory','search_files','device_snapshot','device_capabilities','input_capabilities']);
+const readTools=new Set(['read_file','list_directory','search_files','device_snapshot','device_capabilities','input_capabilities','audio_capabilities']);
 const tools = definitions.map(([name, description, inputSchema]) => ({
   name, description, inputSchema, idempotent:readTools.has(name),
   async execute(input, ctx) {

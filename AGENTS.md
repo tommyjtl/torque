@@ -69,5 +69,20 @@ See [CLI usage](docs/cli.md#unattended-linux-runtime-updates),
 [design](docs/design-spec/2026-10-25-unattended-runtime-updates.md), and the
 [verified rollout](docs/journal/2026-10-25-unattended-runtime-updates.md).
 
+## Local speech direction
+
+CPU streaming Zipformer is the selected baseline for the next local English
+speech prototype. In the six-clip experiment it finalized the last segment a
+median 0.387 s after file end (18/18 below one second), versus 6.457 s for the
+working GPU hybrid path (0/18). The GPU experiment is closed for its latency
+result; do not restage GPU speech work unless requested. Keep its archived
+evidence and the CPU model/runtime. Live microphone buffering and whole-turn
+detection are not validated; the fast endpoint splits some longer utterances.
+Use push-to-talk or explicit turn handling for the first live prototype. See
+the [benchmark and decision](docs/journal/2026-10-30-ncnn-streaming-speech-benchmark.md).
+Initial live trials with greedy and four-path beam search were responsive but
+had connected-speech errors. Live recognition quality is not accepted; do not
+present the recorded-clip result as production voice accuracy.
+
 Run `python3 -m unittest discover -s tests -v` after changing Python or setup code.
 Run `bash -n setup.sh scripts/doctor.sh` after changing shell scripts.
