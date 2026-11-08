@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Little Windows
+Comment=Launch Windows 95
+Exec=/bin/bash /home/arduino/torque/projects/little-windows/latest/launch.sh
+Icon=/home/arduino/torque/projects/little-windows/windows.svg
+Terminal=false
+Categories=System;Emulator;
+StartupNotify=false

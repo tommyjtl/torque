@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Little Macintosh
+Comment=Launch the classic Macintosh experiment
+Exec=/bin/bash /home/arduino/torque/projects/retro-mac-uno/latest/launch.sh
+Icon=/home/arduino/torque/projects/retro-mac-uno/macintosh.svg
+Terminal=false
+Categories=Game;Emulator;
+StartupNotify=false

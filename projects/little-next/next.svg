@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+ <path d="M64 5 113 30 113 86 64 119 15 86 15 30z" fill="#26262b" stroke="#111" stroke-width="4"/>
+ <path d="M15 30 64 56 113 30M64 56v63" fill="none" stroke="#73737c" stroke-width="3"/>
+ <g transform="translate(25 43) skewY(25)" font-family="sans-serif" font-size="18" font-weight="bold">
+  <text x="0" y="0" fill="#fff">Ne</text><text x="0" y="20" fill="#8dccdf">XT</text>
+ </g>
+ <path d="M75 69l25-13v23L75 93z" fill="#88849f"/>
+</svg>

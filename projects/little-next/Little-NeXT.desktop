@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Little NeXT
+Comment=Launch NeXTSTEP 3.3
+Exec=/bin/bash /home/arduino/torque/projects/little-next/latest/launch.sh
+Icon=/home/arduino/torque/projects/little-next/next.svg
+Terminal=false
+Categories=System;Emulator;
+StartupNotify=false
