@@ -1,6 +1,62 @@
 # DOOM Hangar on the UNO Q
 
-A standalone Mojo exploration prototype for **E1M1: Hangar** from id Software’s DOOM shareware 1.9. The same executable draws the level with a Mojo software renderer or an OpenGL renderer. The game process uses native SDL2 for keyboard, mouse, display and audio. It runs without a Python interpreter.
+DOOM Hangar is a Mojo implementation of **E1M1: Hangar** exploration gameplay using id Software’s original DOOM shareware 1.9 assets. The Mojo main loop advances the simulation at 35 ticks per second. Both renderers draw from the same game state and share the same saves.
+
+## Architecture
+
+In CPU mode, Mojo draws the pixels. In GPU mode, Mojo prepares the scene and OpenGL shaders written in GLSL draw it on the Adreno. A C layer starts the program and connects Mojo to SDL2, graphics, audio and file I/O. Python prepares the asset index and runs verification tools. The installed game runs without Python.
+
+```mermaid
+flowchart LR
+  subgraph MEDIA["Game data and offline preparation"]
+    WAD["Original DOOM1.WAD"]
+    IMPORT["Python importer"]
+    INDEX["doom1.syi geometry and asset index"]
+    WAD --> IMPORT --> INDEX
+  end
+
+  subgraph INPUT["Player input"]
+    KEYS["K0 Max, keyboard or mouse"]
+    SDLIN["SDL2 events via C"]
+    KEYS --> SDLIN
+  end
+
+  subgraph CORE["Game engine and state"]
+    ASSETS["Verified E1M1 map, artwork and effects"]
+    GAME["Mojo simulation · 35 ticks/s"]
+    SAVE["Versioned save file"]
+    ASSETS --> GAME
+    GAME <-->|save and restore via C| SAVE
+  end
+
+  subgraph GRAPHICS["Rendering"]
+    SCENE["Mojo scene assembly"]
+    CPU["Mojo CPU rasterizer"]
+    GPU["OpenGL and GLSL on Adreno"]
+    SCENE --> CPU
+    SCENE --> GPU
+  end
+
+  subgraph SOUND["Audio"]
+    MIX["Mojo mixer · up to four WAD effects"]
+    QUEUE["SDL2 audio queue"]
+    MIX -->|mono PCM| QUEUE
+  end
+
+  subgraph OUTPUT["Linux desktop output"]
+    DISPLAY["4:3 display"]
+    SINK["Selected audio output"]
+  end
+
+  WAD --> ASSETS
+  INDEX --> ASSETS
+  SDLIN -->|player commands| GAME
+  GAME -->|player pose and sector heights| SCENE
+  GAME -->|pistol, door or switch event| MIX
+  CPU -->|320 × 200 frame with HUD| DISPLAY
+  GPU -->|native viewport with Mojo HUD| DISPLAY
+  QUEUE --> SINK
+```
 
 ## Play
 
@@ -23,7 +79,7 @@ The initial camera is at the map’s actual player start. Firing animates the pi
 
 The original mode reads Hangar’s map records, BSP, palette, light tables, wall patches, floor/ceiling flats, single-view sprite artwork, pistol frames, status bar and digits from the verified IWAD. The game decodes the original DMX pistol, door-opening and switch sound effects and mixes up to four voices in Mojo. A small preparation tool derives convex floor triangles and texture placement metadata ahead of launch. The generated index references the original artwork by byte offset.
 
-Mojo runs a fixed 35 Hz simulation with walking, collision, step height, opening manual doors, use/fire commands, a level-exit flag and versioned saves. The CPU backend projects, clips and depth-tests textured triangles for Hangar. The GPU backend submits the same world geometry and dynamic heights to the OpenGL driver. GLSL handles projection and texture sampling. C owns the SDL/OpenGL ABI boundary, file I/O, allocation and window/audio lifetime. The offline importer and verification tools use Python.
+The simulation handles walking, collision, step height, manual doors, use/fire commands, level exit and versioned saves. For example, firing consumes a round, starts the pistol flash and triggers the original sound effect in the same tick. The CPU renderer projects, clips and depth-tests textured triangles. The GPU renderer submits the same geometry and sector heights to OpenGL for projection and texture sampling.
 
 **Scope:** E1M1 is an exploration milestone. Actors are stationary sprites; enemy AI, enemy damage, pickups, animated world textures, all linedef specials, original music playback and the rest of the campaign are future work. The sky and texture pegging are approximate. Only the verified 1.9 shareware IWAD and its matching index are supported. The CPU implementation for this map uses textured triangles, an implementation difference from the column/span renderer in the [design](../../docs/design-spec/2026-11-18-mojo-doom-dual-renderers.md).
 
