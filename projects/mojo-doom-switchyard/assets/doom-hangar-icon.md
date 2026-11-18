@@ -1,0 +1,3 @@
+The built-in imagegen tool generated [the launcher icon](doom-hangar.png) with this prompt.
+
+> Paint a square desktop game icon of a tiny retro sci-fi hangar entrance above a vivid cobalt-blue reflecting pool. Center a broad, dark doorway under a chunky olive-steel lintel with two glowing amber stripes and a ribbed silver jamb on each side. Give the pool a stepped front edge and a bright electric-blue reflection. A compact low-angle architectural vignette in crisp 1990s pixel art, with a strong silhouette readable at 48 pixels. Use the transparent canvas as negative space around the outer silhouette. No typography.
