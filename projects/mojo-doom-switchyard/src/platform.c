@@ -20,45 +20,49 @@
 #endif
 
 enum { W = 320, H = 200, MAT = 6, LEVELS = 8 };
-extern int switchyard_run(uint8_t *, int32_t, uint32_t *, float *, int32_t *, int32_t *,
-                          int32_t, int32_t, int32_t);
+extern int switchyard_run(uint8_t *, int32_t, uint32_t *, float *, int32_t *, int32_t *, int32_t,
+                          int32_t, int32_t);
 static uint32_t pixels[W * H], wad_hash;
 static float depth[W * H], audio_pcm[4096];
-static int32_t state[128], scratch[128];
-static const char *save_path = ".switchyard.sav", *capture_path;
+static int32_t *state, *scratch;
+static int campaign_map, skill = 3;
+int cl_skill(void) { return skill; }
+int cl_map(void) { return campaign_map; }
+static const char *save_path = ".switchyard.sav", *capture_path, *legacy_path = ".hangar.sav";
 static int fullscreen, hidden, no_audio, mouse_dx, mode_gpu, failed, check_memory;
-static uint32_t memory_save[100];
+static uint32_t *memory_save, *save_buffer;
 static int payload_words = 9;
 static int saved;
 static unsigned frame_count, key_presses, key_releases, motion_events, clicks, tones;
 static unsigned histogram[501]; /* 1 ms buckets after the first second; 500+ ms last. */
 static double opened, last_flip;
+static unsigned empty_audio_queue_events;
 static SDL_Window *window;
 static SDL_Renderer *renderer;
 static SDL_Texture *screen_texture;
 static SDL_GLContext context;
 static SDL_AudioDeviceID speaker;
 static void *sdl;
-#define SDL_API(F)                                                                             \
-    F(Init)                                                                                    \
-    F(Quit)                                                                                    \
-    F(GetVersion)                                                                              \
-    F(GetError)                                                                                \
-    F(CreateWindow)                                                                            \
-    F(DestroyWindow) F(GetWindowSize) F(PollEvent) F(SetRelativeMouseMode) F(CreateRenderer)   \
-        F(DestroyRenderer) F(CreateTexture) F(DestroyTexture) F(UpdateTexture) F(RenderClear)  \
-            F(RenderCopy) F(RenderPresent) F(GL_SetAttribute) F(GL_CreateContext)              \
-                F(GL_DeleteContext) F(GL_GetProcAddress) F(GL_SetSwapInterval)                 \
-                    F(GL_SwapWindow) F(GL_GetDrawableSize) F(GetCurrentAudioDriver)            \
-                        F(GetAudioDeviceName) F(GetNumAudioDevices) F(OpenAudioDevice)         \
-                            F(CloseAudioDevice) F(PauseAudioDevice) F(ClearQueuedAudio)        \
-                                F(QueueAudio) F(GetQueuedAudioSize) F(Delay)
+#define SDL_API(F)                                                                                 \
+    F(Init)                                                                                        \
+    F(Quit)                                                                                        \
+    F(GetVersion)                                                                                  \
+    F(GetError)                                                                                    \
+    F(CreateWindow)                                                                                \
+    F(DestroyWindow)                                                                               \
+    F(GetWindowSize)                                                                               \
+    F(PollEvent) F(SetRelativeMouseMode) F(CreateRenderer) F(DestroyRenderer) F(CreateTexture)     \
+        F(DestroyTexture) F(UpdateTexture) F(RenderClear) F(RenderCopy) F(RenderPresent)           \
+            F(GL_SetAttribute) F(GL_CreateContext) F(GL_DeleteContext) F(GL_GetProcAddress)        \
+                F(GL_SetSwapInterval) F(GL_SwapWindow) F(GL_GetDrawableSize)                       \
+                    F(GetCurrentAudioDriver) F(GetAudioDeviceName) F(GetNumAudioDevices)           \
+                        F(OpenAudioDevice) F(CloseAudioDevice) F(PauseAudioDevice)                 \
+                            F(ClearQueuedAudio) F(QueueAudio) F(GetQueuedAudioSize) F(Delay)
 #define FUNC_DECL(n) static __typeof__(SDL_##n) *api_##n;
 SDL_API(FUNC_DECL)
 static int load_sdl(void) {
 #ifdef __APPLE__
-    const char *names[] = {"libSDL2-2.0.0.dylib", "/opt/homebrew/opt/sdl2/lib/libSDL2.dylib",
-                           NULL};
+    const char *names[] = {"libSDL2-2.0.0.dylib", "/opt/homebrew/opt/sdl2/lib/libSDL2.dylib", NULL};
 #else
     const char *names[] = {"libSDL2-2.0.so.0", NULL};
 #endif
@@ -68,10 +72,10 @@ static int load_sdl(void) {
         fprintf(stderr, "SDL2 runtime unavailable: %s\n", dlerror());
         return 0;
     }
-#define LOAD_SDL(n)                                                                            \
-    if (!(api_##n = dlsym(sdl, "SDL_" #n))) {                                                  \
-        fprintf(stderr, "SDL2 missing %s\n", #n);                                              \
-        return 0;                                                                              \
+#define LOAD_SDL(n)                                                                                \
+    if (!(api_##n = dlsym(sdl, "SDL_" #n))) {                                                      \
+        fprintf(stderr, "SDL2 missing %s\n", #n);                                                  \
+        return 0;                                                                                  \
     }
     SDL_API(LOAD_SDL)
     SDL_version v;
@@ -94,7 +98,10 @@ static uint32_t hash(const void *data, size_t size) {
     return h;
 }
 int sw_save(int32_t *payload) {
-    uint32_t buf[100] = {0x31595753, 1, wad_hash};
+    uint32_t *buf = save_buffer;
+    buf[0] = 0x31595753;
+    buf[1] = campaign_map ? (uint32_t)(4 + 256 * campaign_map) : 1;
+    buf[2] = wad_hash;
     size_t bytes = 4 * (payload_words + 4);
     memcpy(buf + 3, payload, payload_words * 4);
     buf[payload_words + 3] = hash(buf, bytes - 4);
@@ -118,7 +125,7 @@ int sw_save(int32_t *payload) {
     return 0;
 }
 int sw_load(int32_t *payload) {
-    uint32_t buf[100];
+    uint32_t *buf = save_buffer;
     size_t bytes = 4 * (payload_words + 4);
     if (check_memory) {
         if (!saved)
@@ -133,12 +140,63 @@ int sw_load(int32_t *payload) {
         if (!ok)
             return 0;
     }
-    if (buf[0] != 0x31595753 || buf[1] != 1 || buf[2] != wad_hash ||
-        buf[payload_words + 3] != hash(buf, bytes - 4))
+    if (buf[0] != 0x31595753 || buf[1] != (campaign_map ? (uint32_t)(4 + 256 * campaign_map) : 1) ||
+        buf[2] != wad_hash || buf[payload_words + 3] != hash(buf, bytes - 4))
         return 0;
     memcpy(payload, buf + 3, payload_words * 4);
     return 1;
 }
+/* Tick commands use the same movement and action units as desktop input. */
+static FILE *replay;
+static int32_t command[4];
+static int ticks_remaining;
+void *sw_replay_buffer(void) { return command; }
+static void report_replay_boundary(void);
+int sw_next_command(void) {
+    report_replay_boundary();
+    while (ticks_remaining == 0) {
+        char line[128], trailing;
+        if (!fgets(line, sizeof line, replay))
+            return ferror(replay) ? -1 : 0;
+        if (line[0] == '#' || line[0] == '\n')
+            continue;
+        if (!strncmp(line, "expect ", 7)) {
+            int map, exit_code;
+            if (sscanf(line, "expect E1M%d %d %c", &map, &exit_code, &trailing) != 2 ||
+                map != campaign_map || state[6] != exit_code) {
+                fprintf(stderr, "Replay boundary: expected %sactual E1M%d exit=%d\n", line + 7,
+                        campaign_map, state[6]);
+                return -1;
+            }
+            printf("verified E1M%d exit=%d state=%08x\n", map, exit_code,
+                   hash(state, payload_words * 4));
+            continue;
+        }
+        if (!strcmp(line, "restorepoint\n"))
+            return 2;
+        if (!strcmp(line, "checkpoint\n")) {
+            if (!sw_save(state))
+                return -1;
+            printf("checkpoint map=%d tic=%d\n", campaign_map, state[7]);
+            fflush(stdout);
+            continue;
+        }
+        int n = sscanf(line, "%d %d %d %d %d %c", &ticks_remaining, &command[0], &command[1],
+                       &command[2], &command[3], &trailing);
+        if (n != 5 || ticks_remaining < 1 || ticks_remaining > 100000 || command[0] < -1 ||
+            command[0] > 1 || command[1] < -1 || command[1] > 1 || command[2] < -4096 ||
+            command[2] > 4096 || command[3] < 0 || command[3] > 63)
+            return -1;
+    }
+    --ticks_remaining;
+    return 1;
+}
+int cl_combat_report(int kills, int living, int awake, int health, int missiles) {
+    printf("kills=%d living=%d awake=%d health=%d missiles=%d map=E%dM%d\n", kills, living, awake,
+           health, missiles, (campaign_map - 1) / 9 + 1, (campaign_map - 1) % 9 + 1);
+    return 0;
+}
+
 static void ppm(const uint32_t *p) {
     if (!capture_path)
         return;
@@ -164,14 +222,16 @@ int sw_report(int32_t *s, uint32_t *p, int frames, int ticks) {
     printf("backend=%s frames=%d ticks=%d wall=%.3f loop_hz=%.2f state=%08x "
            "position=(%.1f,%.1f) door=%d %s=%d exit=%d\n",
            frames ? (mode_gpu ? "gpu" : "cpu") : "headless", frames, ticks, elapsed,
-           elapsed > 0 ? frames / elapsed : 0, hash(s, payload_words * 4), s[0] / 256.,
-           s[1] / 256., s[3], payload_words == 96 ? "ammo" : "signal", s[5], s[6]);
+           elapsed > 0 ? frames / elapsed : 0, hash(s, payload_words * 4), s[0] / 256., s[1] / 256.,
+           s[3], campaign_map ? "ammo" : "signal", s[5], s[6]);
     if (frames) {
-        unsigned total = 0, sum = 0, p95 = 0;
+        unsigned total = 0, sum = 0, p95 = 0, median = 0;
         for (int i = 0; i <= 500; i++)
             total += histogram[i];
         for (int i = 0; i <= 500; i++) {
             sum += histogram[i];
+            if (!median && sum * 2 >= total)
+                median = i;
             if (sum * 100 >= total * 95) {
                 p95 = i;
                 break;
@@ -179,6 +239,12 @@ int sw_report(int32_t *s, uint32_t *p, int frames, int ticks) {
         }
         struct rusage usage;
         getrusage(RUSAGE_SELF, &usage);
+        long rss_kib = usage.ru_maxrss;
+#ifdef __APPLE__
+        rss_kib /= 1024;
+#endif
+        printf("median_ms_bucket=%u rss_kib=%ld empty_audio_queue_events=%u ", median, rss_kib,
+               empty_audio_queue_events);
         printf("interval_samples=%u p95_ms_bucket=%u cpu_seconds=%.3f key_down=%u key_up=%u "
                "motion_events=%u left_click=%u audio_blocks=%u\n",
                total, p95,
@@ -209,6 +275,10 @@ int sw_event(void) {
                 return 3;
             }
             break;
+        case SDL_MOUSEBUTTONUP:
+            if (e.button.button == SDL_BUTTON_LEFT)
+                return 5;
+            break;
         case SDL_MOUSEMOTION:
             motion_events++;
             mouse_dx = e.motion.xrel;
@@ -229,32 +299,35 @@ int sw_capture(int enable) {
 }
 float *sw_audio_buffer(void) { return audio_pcm; }
 int sw_audio(int samples) {
-    if (!speaker || samples < 1 || samples > 4096 || api_GetQueuedAudioSize(speaker) > 32768)
+    if (!speaker || samples < 1 || samples > (campaign_map ? 2048 : 4096) ||
+        api_GetQueuedAudioSize(speaker) > 32768)
         return 0;
-    if (api_QueueAudio(speaker, audio_pcm, samples * sizeof(float)) != 0)
+    if (api_QueueAudio(speaker, audio_pcm, samples * (campaign_map ? 2 : 1) * sizeof(float)) != 0)
         return 0;
     tones++;
     return 1;
 }
 
 /* GL 2.1 entry points resolved against the context created by SDL. */
-#define GL_API(F)                                                                              \
-    F(GetString)                                                                               \
-    F(CreateShader)                                                                            \
-    F(ShaderSource)                                                                            \
-    F(CompileShader)                                                                           \
-    F(GetShaderiv)                                                                             \
-    F(GetShaderInfoLog) F(CreateProgram) F(AttachShader) F(BindAttribLocation) F(LinkProgram)  \
-        F(GetProgramiv) F(GetProgramInfoLog) F(UseProgram) F(GetUniformLocation) F(Uniform4f)  \
-            F(Uniform1i) F(GenTextures) F(BindTexture) F(TexImage2D) F(TexSubImage2D)          \
-                F(TexParameteri) F(GenBuffers) F(BindBuffer) F(BufferData)                     \
-                    F(EnableVertexAttribArray) F(VertexAttribPointer) F(DrawArrays) F(Enable)  \
-                        F(Disable) F(ClearColor) F(Clear) F(Viewport) F(ReadPixels)            \
-                            F(GetError) F(DeleteShader)
+#define GL_API(F)                                                                                  \
+    F(GetString)                                                                                   \
+    F(CreateShader)                                                                                \
+    F(ShaderSource)                                                                                \
+    F(CompileShader)                                                                               \
+    F(GetShaderiv)                                                                                 \
+    F(GetShaderInfoLog)                                                                            \
+    F(CreateProgram)                                                                               \
+    F(AttachShader) F(BindAttribLocation) F(LinkProgram) F(GetProgramiv) F(GetProgramInfoLog)      \
+        F(UseProgram) F(GetUniformLocation) F(Uniform4f) F(Uniform1i) F(BlendFunc)                 \
+            F(DeleteTextures) F(GenTextures) F(BindTexture) F(TexImage2D) F(TexSubImage2D)         \
+                F(TexParameteri) F(GenBuffers) F(BindBuffer) F(BufferData)                         \
+                    F(EnableVertexAttribArray) F(VertexAttribPointer) F(DrawArrays) F(Enable)      \
+                        F(Disable) F(ClearColor) F(Clear) F(Viewport) F(ReadPixels) F(GetError)    \
+                            F(DeleteShader)
 #define GL_DECL(n) static __typeof__(gl##n) *g##n;
 GL_API(GL_DECL)
 static GLuint program, buffer, textures[MAT * LEVELS], overlay;
-static GLint pose_loc, overlay_loc;
+static GLint pose_loc, overlay_loc, style_loc, sky_loc, rect_loc;
 static int vx, vy, vw, vh;
 static const char *vs =
     "#version 120\nattribute vec3 point; attribute vec2 uv; varying vec2 tc; uniform vec4 "
@@ -263,8 +336,13 @@ static const char *vs =
     "vec2 v=point.xy-pose.xy;float d=dot(v,pose.zw);float side=dot(v,vec2(pose.w,-pose.z));"
     "gl_Position=vec4(side,(point.z-40.)*1.3333333+.15*d,1.0005*d-1.00025,d);}";
 static const char *fs =
-    "#version 120\nuniform sampler2D atlas;varying vec2 tc;"
-    "void main(){vec4 c=texture2D(atlas,tc).bgra;if(c.a<0.5)discard;gl_FragColor=c;}";
+    "#version 120\nuniform sampler2D atlas; varying vec2 tc; uniform int style; "
+    "uniform vec4 sky; uniform vec4 rect;"
+    "void main(){vec2 st=tc;vec2 xy=(gl_FragCoord.xy-rect.xy)/max(rect.zw,vec2(1));"
+    "if(style==1)st=vec2((atan(xy.x*2.-1.)-sky.x)*.63661977,(100.+(1.-xy.y)*200.-85.)/128.);"
+    "vec4 c=texture2D(atlas,st).bgra;if(c.a<.5)discard;"
+    "if(style>1){if(mod(floor(xy.x*320.)+floor(xy.y*200.)+float(style),3.)<1.)discard;"
+    "c=vec4(.015,.015,.018,.55);}gl_FragColor=c;}";
 static GLuint shader(GLenum kind, const char *src) {
     GLuint id = gCreateShader(kind);
     gShaderSource(id, 1, &src, NULL);
@@ -291,10 +369,10 @@ static GLuint texture(int w, int h, const uint32_t *data, int repeat) {
     return tex;
 }
 static int gl_init(void) {
-#define LOAD_GL(n)                                                                             \
-    if (!(g##n = api_GL_GetProcAddress("gl" #n))) {                                            \
-        fprintf(stderr, "Missing GL function gl%s\n", #n);                                     \
-        return 0;                                                                              \
+#define LOAD_GL(n)                                                                                 \
+    if (!(g##n = api_GL_GetProcAddress("gl" #n))) {                                                \
+        fprintf(stderr, "Missing GL function gl%s\n", #n);                                         \
+        return 0;                                                                                  \
     }
     GL_API(LOAD_GL)
     const char *name = (const char *)gGetString(GL_RENDERER);
@@ -326,6 +404,9 @@ static int gl_init(void) {
     gUseProgram(program);
     pose_loc = gGetUniformLocation(program, "pose");
     overlay_loc = gGetUniformLocation(program, "overlayMode");
+    style_loc = gGetUniformLocation(program, "style");
+    rect_loc = gGetUniformLocation(program, "rect");
+    sky_loc = gGetUniformLocation(program, "sky");
     gGenBuffers(1, &buffer);
     gBindBuffer(GL_ARRAY_BUFFER, buffer);
     gEnableVertexAttribArray(0);
@@ -350,9 +431,8 @@ int sw_open(int gpu) {
     }
     unsigned flags = (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0) |
                      (hidden ? SDL_WINDOW_HIDDEN : 0) | (gpu ? SDL_WINDOW_OPENGL : 0);
-    window =
-        api_CreateWindow(payload_words == 96 ? "DOOM Hangar | 0 exits" : "Switchyard | 0 exits",
-                         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, flags);
+    window = api_CreateWindow(campaign_map ? "DOOM Hangar | 0 exits" : "Switchyard | 0 exits",
+                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, flags);
     if (!window)
         goto error;
     if (gpu) {
@@ -372,12 +452,12 @@ int sw_open(int gpu) {
         SDL_AudioSpec want = {0};
         want.freq = 22050;
         want.format = AUDIO_F32SYS;
-        want.channels = 1;
+        want.channels = campaign_map ? 2 : 1;
         want.samples = 512;
         if (api_Init(SDL_INIT_AUDIO) == 0)
             speaker = api_OpenAudioDevice(NULL, 0, &want, NULL, 0);
         if (speaker) {
-            fprintf(stderr, "SDL output open: %s, mono float32 / 22050 Hz\n",
+            fprintf(stderr, "SDL output open: %s, float32 / 22050 Hz\n",
                     api_GetCurrentAudioDriver());
             if (api_GetNumAudioDevices(0) == 1 &&
                 !strcmp(api_GetAudioDeviceName(0, 0), "Dummy Output"))
@@ -414,6 +494,9 @@ int sw_camera(float x, float y, float angle) {
     gClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     gEnable(GL_DEPTH_TEST);
     gUniform1i(overlay_loc, 0);
+    gUniform1i(style_loc, 0);
+    gUniform4f(rect_loc, (float)vx, (float)vy, (float)vw, (float)vh);
+    gUniform4f(sky_loc, angle, 0, 0, 0);
     gUniform4f(pose_loc, x, y, cosf(angle), sinf(angle));
     return 0;
 }
@@ -471,6 +554,7 @@ int sw_present(const uint32_t *p, int gpu) {
     if (gpu) {
         gDisable(GL_DEPTH_TEST);
         gUniform1i(overlay_loc, 1);
+        gUniform1i(style_loc, 0);
         gBindTexture(GL_TEXTURE_2D, overlay);
         gTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, W, H, GL_RGBA, GL_UNSIGNED_BYTE, p);
         Vertex v[] = {{-1, 1, 0, 0, 0}, {-1, -1, 0, 0, 1}, {1, -1, 0, 1, 1}, {1, 1, 0, 1, 0}};
@@ -518,11 +602,31 @@ static void cleanup(void) {
 }
 #include "classic_platform.inc"
 
+static void report_replay_boundary(void) {
+    static int last_map, reported_exit, reported_death;
+    int hp = state[11 + campaign_catalog[campaign_map - 1].sectors];
+    if (last_map != campaign_map) {
+        last_map = campaign_map;
+        reported_exit = reported_death = 0;
+    }
+    if (state[6] && !reported_exit) {
+        printf("completed E1M%d exit=%d state=%08x\n", campaign_map, state[6],
+               hash(state, 4 * payload_words));
+        reported_exit = 1;
+    } else if (!state[6])
+        reported_exit = 0;
+    if (!hp && !state[6] && !reported_death) {
+        printf("player died in E1M%d at tick %d\n", campaign_map, state[7]);
+        reported_death = 1;
+    } else if (hp > 0)
+        reported_death = 0;
+}
+
 int main(int argc, char **argv) {
     const char *iwad = NULL, *index = NULL;
     int fixture = 0;
     char data_wad[4096], data_index[4096];
-    int gpu = 0, flags = 0, seconds = 0, explicit_save = 0;
+    int gpu = 0, flags = 0, seconds = 0, explicit_save = 0, map_number = 1;
     const char *wad = NULL;
 #ifdef __linux__
     fullscreen = 1;
@@ -533,12 +637,36 @@ int main(int argc, char **argv) {
             gpu = 0;
         else if (!strcmp(a, "--renderer=gpu"))
             gpu = 1;
-        else if (!strcmp(a, "--fixture"))
+        else if (!strcmp(a, "--map") && i + 1 < argc) {
+            const char *name = argv[++i];
+            if (strlen(name) != 4 || name[0] != 'E' || name[1] != '1' || name[2] != 'M' ||
+                name[3] < '1' || name[3] > '9')
+                return 64;
+            map_number = (name[1] - '1') * 9 + name[3] - '0';
+        } else if (!strcmp(a, "--skill") && i + 1 < argc) {
+            const char *number = argv[++i];
+            if (strlen(number) != 1 || *number < '1' || *number > '5')
+                return 64;
+            skill = *number - '0';
+        } else if (!strcmp(a, "--fixture"))
             fixture = 1;
-        else if (!strcmp(a, "--tour"))
+        else if (!strcmp(a, "--replay") && i + 1 < argc) {
+            const char *path = argv[++i];
+            replay = !strcmp(path, "-") ? stdin : fopen(path, "r");
+            if (!replay) {
+                perror("replay");
+                return 2;
+            }
+            flags |= 32;
+        } else if (!strcmp(a, "--tour"))
             flags |= 1;
         else if (!strcmp(a, "--resume"))
             flags |= 2;
+        else if (!strcmp(a, "--sample-render")) {
+            flags |= 260;
+            no_audio = 1;
+        } else if (!strcmp(a, "--check-music"))
+            flags |= 68;
         else if (!strcmp(a, "--check"))
             flags |= 4;
         else if (!strcmp(a, "--mute"))
@@ -549,7 +677,10 @@ int main(int argc, char **argv) {
             fullscreen = 1;
         else if (!strcmp(a, "--hidden"))
             hidden = 1;
-        else if (!strcmp(a, "--iwad") && i + 1 < argc)
+        else if (!strcmp(a, "--import-hangar") && i + 1 < argc) {
+            legacy_path = argv[++i];
+            flags |= 128;
+        } else if (!strcmp(a, "--iwad") && i + 1 < argc)
             iwad = argv[++i];
         else if (!strcmp(a, "--index") && i + 1 < argc)
             index = argv[++i];
@@ -569,9 +700,10 @@ int main(int argc, char **argv) {
         } else {
             puts("Switchyard [--renderer=cpu|gpu] [--fixture] [--wad FILE] [--iwad doom1.wad "
                  "--index "
-                 "doom1.syi] [--save FILE] [--resume] "
+                 "doom1.syi] [--map E1M1..E1M9] [--skill 1..5] [--save FILE] [--resume] "
                  "[--fullscreen|--windowed] [--mute] [--tour] [--seconds 1..3600] [--hidden] "
-                 "[--capture FILE.ppm] [--check]");
+                 "[--capture FILE.ppm] [--import-hangar FILE] [--replay FILE|-] "
+                 "[--check|--check-music|--sample-render]");
             return strcmp(a, "--help") ? 64 : 0;
         }
     }
@@ -594,13 +726,19 @@ int main(int argc, char **argv) {
         iwad = data_wad;
         index = data_index;
     }
+    if ((flags & 128) && (!iwad || (flags & 2)))
+        return 64;
+    if ((flags & 256) && !replay)
+        return 64;
+    if (replay && (!iwad || fixture || (flags & 1)))
+        return 64;
     if (iwad || index) {
-        if (!iwad || !index || !prepare_classic(iwad, index))
+        if (!iwad || !index || !prepare_classic(iwad, index, map_number))
             return 2;
         flags |= 16;
-        payload_words = 96;
+
         if (!explicit_save)
-            save_path = ".hangar.sav";
+            save_path = ".campaign.sav";
     }
     char path[4096] = {0};
     if (!wad) {
@@ -645,6 +783,14 @@ int main(int argc, char **argv) {
     }
     fclose(f);
     wad_hash = iwad ? hash(classic_wad, 4196020) : hash(data, n);
+    if (!campaign_map)
+        state_capacity = payload_words + 2; /* The fixture also has two transient HUD words. */
+    state = calloc(state_capacity, sizeof *state);
+    scratch = calloc(state_capacity, sizeof *scratch);
+    save_buffer = calloc(state_capacity + 4, sizeof *save_buffer);
+    memory_save = calloc(state_capacity + 4, sizeof *memory_save);
+    if (!state || !scratch || !save_buffer || !memory_save)
+        return 2;
     check_memory = (flags & 4) && !explicit_save;
     if ((flags & 1) && !seconds)
         seconds = 7;
@@ -658,13 +804,21 @@ int main(int argc, char **argv) {
                 : code == 4 ? "platform initialization failed"
                             : "simulation acceptance failed");
     if (iwad)
-        fprintf(stderr,
-                "Original DMX effects: DSPISTOL=%u DSDOROPN=%u DSSWTCHN=%u DSITEMUP=%u\n",
+        fprintf(stderr, "Original DMX effects: DSPISTOL=%u DSDOROPN=%u DSSWTCHN=%u DSITEMUP=%u\n",
                 counts[0], counts[1], counts[2], counts[3]);
+    if (replay)
+        fclose(replay);
     cleanup();
     free(data);
     free(classic_wad);
     free(classic_index);
     free(classic_texels);
+    free(sound_sectors);
+    free(classic_bases);
+    free(classic_textures);
+    free(state);
+    free(scratch);
+    free(save_buffer);
+    free(memory_save);
     return code ? code : failed;
 }

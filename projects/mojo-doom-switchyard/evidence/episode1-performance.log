@@ -1,0 +1,20 @@
+Performance Military Base firefight cpu kills=49 living=23 awake=15 health=42 missiles=0 map=E1M9
+backend=cpu frames=432 ticks=245 wall=7.055 loop_hz=61.23 state=70a47455 position=(278.4,969.4) door=0 ammo=0 exit=0
+median_ms_bucket=17 rss_kib=108308 empty_audio_queue_events=0 interval_samples=372 p95_ms_bucket=17 cpu_seconds=6.295 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=305
+Performance Military Base firefight gpu kills=49 living=23 awake=15 health=42 missiles=0 map=E1M9
+backend=gpu frames=430 ticks=245 wall=7.274 loop_hz=59.12 state=70a47455 position=(278.4,969.4) door=0 ammo=0 exit=0
+median_ms_bucket=17 rss_kib=109216 empty_audio_queue_events=0 interval_samples=382 p95_ms_bucket=18 cpu_seconds=3.367 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=307
+Performance Phobos Lab platforms cpu kills=28 living=63 awake=9 health=100 missiles=0 map=E1M5
+backend=cpu frames=433 ticks=245 wall=7.057 loop_hz=61.36 state=87fa14d2 position=(-1505.0,466.9) door=0 ammo=5 exit=0
+median_ms_bucket=17 rss_kib=113356 empty_audio_queue_events=0 interval_samples=372 p95_ms_bucket=17 cpu_seconds=5.601 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=305
+Performance Phobos Lab platforms gpu kills=28 living=63 awake=9 health=100 missiles=0 map=E1M5
+backend=gpu frames=430 ticks=245 wall=7.317 loop_hz=58.76 state=87fa14d2 position=(-1505.0,466.9) door=0 ammo=5 exit=0
+median_ms_bucket=17 rss_kib=114212 empty_audio_queue_events=0 interval_samples=385 p95_ms_bucket=18 cpu_seconds=3.039 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=307
+Performance Central Processing exit into Computer Station cpu completed E1M6 exit=1 state=233414d0
+kills=0 living=84 awake=18 health=59 missiles=0 map=E1M7
+backend=cpu frames=427 ticks=245 wall=7.060 loop_hz=60.48 state=2df426ce position=(239.0,332.3) door=0 ammo=20 exit=0
+median_ms_bucket=17 rss_kib=114220 empty_audio_queue_events=0 interval_samples=367 p95_ms_bucket=18 cpu_seconds=5.319 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=305
+Performance Central Processing exit into Computer Station gpu completed E1M6 exit=1 state=233414d0
+kills=0 living=84 awake=18 health=59 missiles=0 map=E1M7
+backend=gpu frames=419 ticks=245 wall=7.301 loop_hz=57.39 state=2df426ce position=(239.0,332.3) door=0 ammo=20 exit=0
+median_ms_bucket=17 rss_kib=115480 empty_audio_queue_events=0 interval_samples=373 p95_ms_bucket=17 cpu_seconds=3.637 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=306

@@ -95,8 +95,7 @@ struct Map(Copyable, Movable):
             var dx = Float32(s16(self.data, p + 4))
             var dy = Float32(s16(self.data, p + 6))
             var side = Int(
-                dx * (y - Float32(s16(self.data, p + 2)))
-                > dy * (x - Float32(s16(self.data, p)))
+                dx * (y - Float32(s16(self.data, p + 2))) > dy * (x - Float32(s16(self.data, p)))
             )
             node = u16(self.data, p + 24 + 2 * side)
             if node >= 32768:
@@ -265,9 +264,7 @@ def usable(m: Map, s: Words) -> Int:
     var heading = radians(s)
     for i in range(14):
         var ax, ay, bx, by = endpoints(m, i)
-        var t, _u = intersect(
-            xval(s, X), xval(s, Y), cos(heading), sin(heading), ax, ay, bx, by
-        )
+        var t, _u = intersect(xval(s, X), xval(s, Y), cos(heading), sin(heading), ax, ay, bx, by)
         if t < closest:
             closest = t
             action = u16(m.data, m.lines + 14 * i + 6)
@@ -353,14 +350,14 @@ def key_hint(p: Pixels, caption: StaticString, x: Int, y: Int):
                     p[unsafe_offset=(y + row) * W + x + 4 * i + col] = 0xFFFFE6B0
 
 
-def keypad_legend(p: Pixels, expanded: Bool):
+def keypad_legend(p: Pixels, expanded: Bool, campaign: Bool = False):
     # Keep the exit key legible after startup help closes, in either renderer.
     for y in range(4, 15):
         for x in range(W - 36, W - 4):
             p[unsafe_offset=y * W + x] = 0xFF172423
     key_hint(p, "0 EXIT", W - 32, 7)
     if expanded:
-        for y in range(4, 49):
+        for y in range(4, 65 if campaign else 49):
             for x in range(4, 120):
                 p[unsafe_offset=y * W + x] = 0xFF172423
         key_hint(p, "8/2 MOVE   4/6 TURN", 8, 8)
@@ -368,6 +365,9 @@ def keypad_legend(p: Pixels, expanded: Bool):
         key_hint(p, "ENTER USE   / HELP", 8, 24)
         key_hint(p, "+ SAVE   - LOAD", 8, 32)
         key_hint(p, "0 OR BACKSPACE EXIT", 8, 40)
+        if campaign:
+            key_hint(p, "3 WEAPON   . MAP", 8, 48)
+            key_hint(p, "* PAUSE OR RESUME", 8, 56)
 
 
 def hud(m: Map, s: Words, p: Pixels, captured: Bool):
@@ -512,9 +512,7 @@ def quad(
     high: Float32,
     ustep: Float32,
 ):
-    _ = external_call["sw_wall", Int32](
-        Int32(mat), Int32(light), ax, ay, bx, by, low, high, ustep
-    )
+    _ = external_call["sw_wall", Int32](Int32(mat), Int32(light), ax, ay, bx, by, low, high, ustep)
 
 
 def hardware(m: Map, s: Words):
@@ -571,13 +569,7 @@ def load_state(m: Map, s: Words, tmp: Words) -> Bool:
         return False
     var x = xval(tmp, X)
     var y = xval(tmp, Y)
-    if (
-        x < 10
-        or x > 534
-        or y < 10
-        or y > 182
-        or (x >= 256 and x <= 288 and (y < 70 or y > 122))
-    ):
+    if x < 10 or x > 534 or y < 10 or y > 182 or (x >= 256 and x <= 288 and (y < 70 or y > 122)):
         return False
     if blocked(m, tmp, x, y):
         return False
@@ -625,29 +617,90 @@ def switchyard_run(
         return 2
     var flags = Int(config)
     var original = (flags & 16) != 0
-    var hangar = classic.Hangar(
-        external_call["cl_wad", Bytes](),
-        external_call["cl_ix", Words](),
-        external_call["cl_ix", Floats](),
-        external_call["cl_texels", Pixels](),
-        external_call["cl_bases", Words](),
-    )
+    var hangar = classic.current_map()
     var voices = external_call["cl_voices", Words]()
     if original:
         hangar.decode()
         hangar.spawn(state)
     else:
         spawn(m, state)
+    if original and flags & 128 and not classic.import_hangar(hangar, state, tmp):
+        return 3
     if flags & 2 and not (
         classic.restore(hangar, state, tmp) if original else load_state(m, state, tmp)
     ):
         return 3
     # Offline deterministic acceptance: first try walking through the closed door,
     # then use it, wait for clearance, cross, use the exit, restore the closed save.
+    var commands = external_call["sw_replay_buffer", Words]()
     if original and flags & 4:
+        var sample_frames = (flags & 256) != 0
+        var use_gpu = sample_frames and mode == 1
+        var replay_ticks = 0
+        var sampled = 0
+        if sample_frames:
+            if not external_call["sw_open", Int32](mode):
+                return 4
+            if use_gpu:
+                hangar.upload()
+        if flags & 64 and not classic.check_tracks(hangar):
+            return 15
+        if flags & 32:
+            while True:
+                var result = external_call["sw_next_command", Int32]()
+                if result == 2:
+                    if not classic.restore(hangar, state, tmp, use_gpu):
+                        return 3
+                    continue
+                if result < 0:
+                    return 14
+                if result == 0:
+                    break
+                var buttons = val(commands, 3)
+                if buttons & 16:
+                    hangar.choose_weapon(state, -1)
+                if buttons & 4 and external_call["sw_save", Int32](state) == 0:
+                    return 11
+                if buttons & 8 and not classic.restore(hangar, state, tmp, use_gpu):
+                    return 3
+                var prior_map = external_call["cl_map", Int32]()
+                var prior_exit = val(state, WON)
+                var effect = classic.campaign_step(
+                    hangar,
+                    state,
+                    voices,
+                    val(commands, 0) * (3 if buttons & 32 else 1),
+                    val(commands, 1) * (3 if buttons & 32 else 1),
+                    val(commands, 2),
+                    (buttons & 2) != 0,
+                    (buttons & 1) != 0,
+                    use_gpu,
+                )
+                if effect == -2:
+                    return 2
+                if effect >= 0:
+                    classic.start_sound(hangar, voices, effect)
+                replay_ticks += 1
+                if sample_frames and (
+                    replay_ticks % 140 == 1
+                    or prior_map != external_call["cl_map", Int32]()
+                    or prior_exit != val(state, WON)
+                ):
+                    if val(state, WON):
+                        if use_gpu:
+                            _ = external_call["sw_camera", Int32](
+                                Float32(0), Float32(0), Float32(0)
+                            )
+                        classic.intermission(hangar, pixels, state, 0)
+                    else:
+                        classic.compose(hangar, state, pixels, depth, use_gpu)
+                        classic.overlay(hangar, pixels, state)
+                    _ = external_call["sw_present", Int32](pixels, mode)
+                    sampled += 1
+        classic.report(hangar, state)
         classic.compose(hangar, state, pixels, depth, False)
         classic.overlay(hangar, pixels, state)
-        _ = external_call["sw_report", Int32](state, pixels, Int32(0), Int32(0))
+        _ = external_call["sw_report", Int32](state, pixels, Int32(sampled), Int32(replay_ticks))
         return 0
     if flags & 4:
         for _ in range(80):
@@ -676,17 +729,27 @@ def switchyard_run(
                 for i in range(4096):
                     pixels[unsafe_offset=i] = m.pixel(mat, i & 63, i >> 6, light)
                 _ = external_call["sw_texture", Int32](Int32(mat), Int32(light), pixels)
+    var menu = 1 if original and not (flags & (1 | 2 | 4 | 32 | 128)) else 0
+    var menu_parent = menu
+    var selection = 0
+    var legend_frames = 0
+    var automap = False
+    var run_lock = False
+    var shift_down = False
     var held = SIMD[DType.uint64, 2](0)
     var turn = 0
     var help_open = False
     var use = False
     var fire = False
-    var captured = external_call["sw_capture", Int32](Int32(1)) != 0
+    var mouse_fire = False
+    var keypad_fire = False
+    var captured = menu == 0 and external_call["sw_capture", Int32](Int32(1)) != 0
     var last = external_call["sw_clock", Float64]()
     var started = last
     var accumulator = Float64(0)
     var frames = 0
     var ticks = 0
+    var completion_time = Float64(-1)
     while True:
         var event = external_call["sw_event", Int32]()
         var quit = False
@@ -699,13 +762,21 @@ def switchyard_run(
                 turn = 0
                 use = False
                 fire = False
+                mouse_fire = False
+                keypad_fire = False
+                shift_down = False
                 _ = external_call["sw_capture", Int32](Int32(0))
                 captured = False
             elif e == 3:
-                if captured:
+                if menu != 0:
+                    pass
+                elif captured:
                     fire = True
+                    mouse_fire = True
                 else:
                     captured = external_call["sw_capture", Int32](Int32(1)) != 0
+            elif e == 5:
+                mouse_fire = False
             elif e == 4:
                 if captured:
                     turn -= Int(external_call["sw_mouse_dx", Int32]()) * 3
@@ -716,14 +787,113 @@ def switchyard_run(
                 # Zero can arrive as keypad 0, number-row 0, or Insert.
                 if down and key in (98, 39, 73, 42, 187, 41):
                     quit = True
+                if key in (225, 229):
+                    shift_down = down
+                if original and down and key == 57:
+                    run_lock = not run_lock
+                if original and down and key in (19, 85) and not (flags & 33):
+                    menu = 0 if menu == 4 else 4
+                    menu_parent = 4
+                    selection = 0
+                    held = 0
+                    mouse_fire = False
+                    keypad_fire = False
+                    fire = False
+                    use = False
+                    turn = 0
+                    captured = (
+                        external_call["sw_capture", Int32](Int32(menu == 0)) != 0 and menu == 0
+                    )
+                    last = external_call["sw_clock", Float64]()
+                    accumulator = 0
+                    event = external_call["sw_event", Int32]()
+                    continue
+                if menu != 0:
+                    var options = (
+                        5 if menu
+                        == 3 else 1 if menu
+                        == 2 else 5 if menu
+                        == 4 else 2 if menu
+                        == 5 else 3
+                    )
+                    if down and key in (96, 82, 37):
+                        selection = (selection + options - 1) % options
+                    if down and key in (90, 81, 31):
+                        selection = (selection + 1) % options
+                    if down and key in (92, 80):
+                        if menu == 3:
+                            menu = 2
+                        elif menu in (2, 5):
+                            menu = menu_parent
+                        selection = 0
+                    if down and key in (40, 88, 44):
+                        if menu == 5:
+                            if selection == 0:
+                                if classic.import_hangar(hangar, state, tmp, mode == 1):
+                                    menu = 0
+                                else:
+                                    legend_frames = 90
+                            else:
+                                menu = menu_parent
+                        elif menu == 2:
+                            menu = 3
+                            selection = 2
+                        elif menu == 3:
+                            if not external_call["cl_change_map", Int32](Int32(1)):
+                                return 2
+                            hangar = classic.current_map()
+                            hangar.decode(True)
+                            if mode == 1:
+                                hangar.upload(True)
+                            hangar.spawn(state, selection + 1)
+                            menu = 0
+                        elif selection == 0:
+                            menu_parent = menu
+                            menu = 2
+                            selection = 0
+                        elif selection == 1:
+                            if classic.restore(hangar, state, tmp, mode == 1):
+                                menu = 0
+                            elif external_call["cl_legacy_available", Int32]():
+                                menu_parent = menu
+                                menu = 5
+                                selection = 0
+                            else:
+                                legend_frames = 90
+                        elif selection == 3 and menu == 4:
+                            run_lock = not run_lock
+                        elif selection == 2 and menu == 4:
+                            if external_call["sw_save", Int32](state):
+                                menu = 0
+                            else:
+                                legend_frames = 90
+                        else:
+                            quit = True
+                        if menu == 0:
+                            captured = external_call["sw_capture", Int32](Int32(1)) != 0
+                            accumulator = 0
+                            last = external_call["sw_clock", Float64]()
+                    event = external_call["sw_event", Int32]()
+                    continue
+                if original and down and key in (99, 76):
+                    automap = not automap
                 if down and key in (43, 84):
                     help_open = not help_open
                 if down and (key == 44 or key == 40 or key == 88):
-                    if val(state, WON) and not (flags & 1):
-                        if original:
-                            hangar.spawn(state)
-                        else:
-                            spawn(m, state)
+                    if (
+                        original
+                        and val(state, WON)
+                        and (external_call["cl_map", Int32]() - 1) % 9 == 7
+                    ):
+                        menu = 1
+                        selection = 0
+                        held = 0
+                        mouse_fire = False
+                        keypad_fire = False
+                        captured = False
+                        _ = external_call["sw_capture", Int32](Int32(0))
+                    elif not original and val(state, WON) and not (flags & 1):
+                        spawn(m, state)
                     else:
                         use = True
                 if down and key in (62, 87):
@@ -731,13 +901,17 @@ def switchyard_run(
                     put(state, MSGTIME, 45)
                 if down and key in (66, 86):
                     var restored = classic.restore(
-                        hangar, state, tmp
+                        hangar, state, tmp, mode == 1
                     ) if original else load_state(m, state, tmp)
                     put(state, MSG, 11 if restored else 12)
                     put(state, MSGTIME, 45)
                 # Center key fires; retain keypad 1 as a second fire button.
-                if down and key in (93, 34, 156, 89, 30, 77):
-                    fire = True
+                if key in (93, 34, 156, 89, 30, 77):
+                    keypad_fire = down
+                    if down:
+                        fire = True
+                if original and down and key in (91, 78):
+                    hangar.choose_weapon(state, -1)
                 if key in (
                     26,
                     82,
@@ -773,7 +947,8 @@ def switchyard_run(
         var now = external_call["sw_clock", Float64]()
         if limit > 0 and now - started >= Float64(limit):
             break
-        accumulator += min(Float64(0.25), now - last)
+        if menu == 0:
+            accumulator += min(Float64(0.25), now - last)
         last = now
         while accumulator >= 1.0 / 35.0:
             if (flags & 1) and val(state, TIC) >= 211:
@@ -793,6 +968,8 @@ def switchyard_run(
                 Int(pressed(80) or pressed(92) or pressed(33))
                 - Int(pressed(79) or pressed(94) or pressed(35))
             )
+            if original and (mouse_fire or keypad_fire):
+                fire = True
             if flags & 1:
                 f = 1
                 strafe = 0
@@ -800,12 +977,49 @@ def switchyard_run(
                 var trace_tick = val(state, TIC)
                 use = trace_tick == 70 or trace_tick == 210
                 fire = trace_tick == 120
+            var running = run_lock or shift_down
+            if flags & 32:
+                var result = external_call["sw_next_command", Int32]()
+                if result == 2:
+                    if not classic.restore(hangar, state, tmp, mode == 1):
+                        return 3
+                    continue
+                if result < 0:
+                    return 14
+                if result == 0:
+                    quit = True
+                    break
+                f = val(commands, 0)
+                strafe = val(commands, 1)
+                rotation = val(commands, 2)
+                var buttons = val(commands, 3)
+                if buttons & 16:
+                    hangar.choose_weapon(state, -1)
+                running = (buttons & 32) != 0
+                fire = (buttons & 1) != 0
+                use = (buttons & 2) != 0
+                if buttons & 4 and external_call["sw_save", Int32](state) == 0:
+                    return 11
+                if buttons & 8 and not classic.restore(hangar, state, tmp):
+                    return 3
             if flags & 8 and val(state, TIC) == 110:
                 if external_call["sw_save", Int32](state) == 0:
                     return 11
             var prior = val(state, OPEN) + val(state, WON)
             if original:
-                var effect = hangar.tick(state, f, strafe, rotation, use, fire)
+                var effect = classic.campaign_step(
+                    hangar,
+                    state,
+                    voices,
+                    f * (3 if running else 1),
+                    strafe * (3 if running else 1),
+                    rotation,
+                    use,
+                    fire,
+                    mode == 1,
+                )
+                if effect == -2:
+                    return 2
                 if effect >= 0:
                     classic.start_sound(hangar, voices, effect)
             else:
@@ -828,13 +1042,52 @@ def switchyard_run(
             ticks += 1
             accumulator -= 1.0 / 35.0
         if original:
-            classic.pump_audio(hangar, voices)
-            classic.compose(hangar, state, pixels, depth, mode == 1)
-            classic.overlay(hangar, pixels, state)
-            if val(state, WON):
-                label(m, pixels, 7, 135, 86, 0xFFFFD49A)
-            if val(state, MSGTIME):
-                label(m, pixels, val(state, MSG), 8, 48, 0xFFFFD49A)
+            var track = (
+                3 if menu in (1, 2, 3) else 4 if val(state, WON)
+                and (external_call["cl_map", Int32]() - 1) % 9 == 7 else 2 if val(state, WON) else 1
+            )
+            classic.pump_audio(hangar, voices, track)
+            if mode == 1 and (menu or val(state, WON)):
+                _ = external_call["sw_camera", Int32](Float32(0), Float32(0), Float32(0))
+            if menu:
+                classic.draw_menu(hangar, pixels, menu, selection, frames)
+                if menu == 5:
+                    key_hint(pixels, "IMPORT HANGAR CHECKPOINT?", 108, 78)
+                    key_hint(pixels, "RESTORE POSITION AND AMMO", 94, 105)
+                    key_hint(pixels, "BACK", 94, 126)
+                if menu == 4:
+                    if run_lock:
+                        key_hint(pixels, "AUTO RUN ON", 102, 145)
+                    else:
+                        key_hint(pixels, "AUTO RUN OFF", 102, 145)
+                key_hint(pixels, "8/2 SELECT   ENTER CONFIRM   0 QUIT", 87, 177)
+                if legend_frames > 0:
+                    key_hint(pixels, "SAVE SLOT UNAVAILABLE", 107, 168)
+                legend_frames = max(0, legend_frames - 1)
+            elif val(state, WON):
+                if completion_time < 0:
+                    completion_time = now
+                var elapsed = now - completion_time
+                var map = Int(external_call["cl_map", Int32]())
+                classic.intermission(hangar, pixels, state, elapsed)
+                if map == 8:
+                    for y in range(164, 190):
+                        for x in range(74, 246):
+                            pixels[unsafe_offset=y * 320 + x] = 0xFF191515
+                    key_hint(pixels, "KNEE-DEEP IN THE DEAD COMPLETE", 100, 170)
+                    key_hint(pixels, "ENTER RETURN TO TITLE", 118, 181)
+                else:
+                    key_hint(pixels, "ENTER CONTINUE", 132, 188)
+            else:
+                completion_time = -1
+                classic.compose(hangar, state, pixels, depth, mode == 1)
+                if automap:
+                    classic.draw_automap(hangar, pixels, state)
+                classic.overlay(hangar, pixels, state, automap)
+                if classic.word(state, hangar.player() + classic.HEALTH) == 0:
+                    key_hint(pixels, "YOU DIED   ENTER RESTART", 111, 88)
+                if val(state, MSGTIME):
+                    label(m, pixels, val(state, MSG), 8, 48, 0xFFFFD49A)
         elif mode == 0:
             software(m, state, pixels, depth)
         else:
@@ -843,8 +1096,13 @@ def switchyard_run(
                 pixels[unsafe_offset=i] = 0
         if not original:
             hud(m, state, pixels, captured or (flags & 1) != 0)
-        keypad_legend(pixels, help_open or val(state, TIC) < 110)
+        if not menu and not val(state, WON):
+            keypad_legend(pixels, help_open or val(state, TIC) < 110, original)
         _ = external_call["sw_present", Int32](pixels, mode)
         frames += 1
+        if quit:
+            break
+    if original:
+        classic.report(hangar, state)
     _ = external_call["sw_report", Int32](state, pixels, Int32(frames), Int32(ticks))
     return 0

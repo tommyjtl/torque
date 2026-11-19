@@ -2,8 +2,8 @@
 Version=1.0
 Type=Application
 Name=DOOM Hangar
-Comment=Explore the original shareware E1M1 in the Mojo prototype
-Exec=/home/arduino/torque/projects/mojo-doom-switchyard/build/switchyard-unoq --renderer=cpu --iwad /home/arduino/.local/share/switchyard/doom1.wad --index /home/arduino/.local/share/switchyard/doom1.syi
+Comment=Play the Mojo DOOM campaign development build
+Exec=/home/arduino/.local/share/switchyard/campaign-current/build/switchyard-unoq --renderer=cpu --iwad /home/arduino/.local/share/switchyard/doom1.wad --index /home/arduino/.local/share/switchyard/campaign-current/data/doom1.syi --save /home/arduino/.local/share/switchyard/campaign.sav
 Path=/home/arduino/torque/projects/mojo-doom-switchyard
 Icon=/home/arduino/torque/projects/mojo-doom-switchyard/assets/doom-hangar.png
 Terminal=false
@@ -13,4 +13,4 @@ Actions=GPU;
 
 [Desktop Action GPU]
 Name=Play with Adreno OpenGL
-Exec=/home/arduino/torque/projects/mojo-doom-switchyard/build/switchyard-unoq --renderer=gpu --iwad /home/arduino/.local/share/switchyard/doom1.wad --index /home/arduino/.local/share/switchyard/doom1.syi --save /home/arduino/torque/projects/mojo-doom-switchyard/.hangar.sav
+Exec=/home/arduino/.local/share/switchyard/campaign-current/build/switchyard-unoq --renderer=gpu --iwad /home/arduino/.local/share/switchyard/doom1.wad --index /home/arduino/.local/share/switchyard/campaign-current/data/doom1.syi --save /home/arduino/.local/share/switchyard/campaign.sav

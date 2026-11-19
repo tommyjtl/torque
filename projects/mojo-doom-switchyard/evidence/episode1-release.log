@@ -1,0 +1,140 @@
+Verified original easy, medium and hard spawns across all nine maps.
+Verified every single-player thing's type, coordinates, facing and flags against the IWAD.
+Walked from the real player start, opened the door and won the first firefight.
+Imported a Hangar checkpoint into a separate slot and rejected a corrupt campaign save.
+Hangar linedef 406 blocks a pistol shot. The same target takes damage in the open.
+Clip pickup grants 10 bullets on medium and 20 on ITYTD and Nightmare.
+An eligible fallen imp respawns on Nightmare and stays down on medium.
+Nuclear Plant’s red door refuses use until the original red key is collected.
+Both Central Processing blur spheres grant partial invisibility; the timer and collected pickups survive save/load.
+cpu kills=1 living=5 awake=1 health=31 missiles=0 map=E1M1
+backend=cpu frames=319 ticks=180 wall=5.194 loop_hz=61.42 state=edbb94d2 position=(2256.0,-2432.0) door=0 ammo=46 exit=0
+median_ms_bucket=17 rss_kib=107680 empty_audio_queue_events=0 interval_samples=258 p95_ms_bucket=17 cpu_seconds=4.579 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=0
+Combat save restored from cpu to gpu.
+gpu kills=1 living=5 awake=1 health=31 missiles=0 map=E1M1
+backend=gpu frames=318 ticks=180 wall=5.351 loop_hz=59.43 state=edbb94d2 position=(2256.0,-2432.0) door=0 ammo=46 exit=0
+median_ms_bucket=17 rss_kib=108160 empty_audio_queue_events=0 interval_samples=266 p95_ms_bucket=17 cpu_seconds=2.578 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=0
+Combat save restored from gpu to cpu.
+Hangar encounter: alerted, injured, killed, collected clip and reproduced from a mid-fight save.
+Verified level handoff, secret detour, inventory carry and cross-map restore.
+Phobos Anomaly arena stays closed after one Baron and opens after the second.
+normal headless verified E1M1 exit=0 state=03acea47
+completed E1M1 exit=1 state=ebff8812
+verified E1M2 exit=0 state=f5f44d98
+completed E1M2 exit=1 state=b35a7973
+verified E1M3 exit=0 state=080929cc
+completed E1M3 exit=1 state=46f33a5c
+verified E1M4 exit=0 state=a99d7d11
+completed E1M4 exit=1 state=1d66f126
+verified E1M5 exit=0 state=d63f606d
+completed E1M5 exit=1 state=743e4435
+verified E1M6 exit=0 state=d2facfbf
+completed E1M6 exit=1 state=d8c1e7c5
+verified E1M7 exit=0 state=2ad7079c
+completed E1M7 exit=1 state=4150fc02
+verified E1M8 exit=0 state=2937366e
+completed E1M8 exit=1 state=6457c2a7
+kills=4 living=23 awake=23 health=1 missiles=0 map=E1M8
+backend=headless frames=0 ticks=80431 wall=0.000 loop_hz=0.00 state=6457c2a7 position=(644.0,6464.0) door=0 ammo=100 exit=1
+normal cpu verified E1M1 exit=0 state=03acea47
+completed E1M1 exit=1 state=ebff8812
+verified E1M2 exit=0 state=f5f44d98
+completed E1M2 exit=1 state=b35a7973
+verified E1M3 exit=0 state=080929cc
+completed E1M3 exit=1 state=46f33a5c
+verified E1M4 exit=0 state=a99d7d11
+completed E1M4 exit=1 state=1d66f126
+verified E1M5 exit=0 state=d63f606d
+completed E1M5 exit=1 state=743e4435
+verified E1M6 exit=0 state=d2facfbf
+completed E1M6 exit=1 state=d8c1e7c5
+verified E1M7 exit=0 state=2ad7079c
+completed E1M7 exit=1 state=4150fc02
+verified E1M8 exit=0 state=2937366e
+completed E1M8 exit=1 state=6457c2a7
+kills=4 living=23 awake=23 health=1 missiles=0 map=E1M8
+backend=cpu frames=590 ticks=80431 wall=21.951 loop_hz=26.88 state=6457c2a7 position=(644.0,6464.0) door=0 ammo=100 exit=1
+median_ms_bucket=35 rss_kib=132532 empty_audio_queue_events=0 interval_samples=550 p95_ms_bucket=69 cpu_seconds=21.572 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=0
+normal gpu verified E1M1 exit=0 state=03acea47
+completed E1M1 exit=1 state=ebff8812
+verified E1M2 exit=0 state=f5f44d98
+completed E1M2 exit=1 state=b35a7973
+verified E1M3 exit=0 state=080929cc
+completed E1M3 exit=1 state=46f33a5c
+verified E1M4 exit=0 state=a99d7d11
+completed E1M4 exit=1 state=1d66f126
+verified E1M5 exit=0 state=d63f606d
+completed E1M5 exit=1 state=743e4435
+verified E1M6 exit=0 state=d2facfbf
+completed E1M6 exit=1 state=d8c1e7c5
+verified E1M7 exit=0 state=2ad7079c
+completed E1M7 exit=1 state=4150fc02
+verified E1M8 exit=0 state=2937366e
+completed E1M8 exit=1 state=6457c2a7
+kills=4 living=23 awake=23 health=1 missiles=0 map=E1M8
+backend=gpu frames=590 ticks=80431 wall=19.243 loop_hz=30.66 state=6457c2a7 position=(644.0,6464.0) door=0 ammo=100 exit=1
+median_ms_bucket=28 rss_kib=133848 empty_audio_queue_events=0 interval_samples=555 p95_ms_bucket=61 cpu_seconds=18.812 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=0
+secret headless verified E1M1 exit=0 state=03acea47
+completed E1M1 exit=1 state=ebff8812
+verified E1M2 exit=0 state=f5f44d98
+completed E1M2 exit=1 state=b35a7973
+verified E1M3 exit=0 state=080929cc
+completed E1M3 exit=2 state=ca86e8d9
+verified E1M9 exit=0 state=ed3102d7
+completed E1M9 exit=1 state=2f075d82
+verified E1M4 exit=0 state=324ee4d0
+completed E1M4 exit=1 state=21476057
+verified E1M5 exit=0 state=796ef176
+completed E1M5 exit=1 state=1ccb98a4
+verified E1M6 exit=0 state=88a548c3
+completed E1M6 exit=1 state=233414d0
+verified E1M7 exit=0 state=467a6955
+completed E1M7 exit=1 state=2c701066
+verified E1M8 exit=0 state=9ccaa78e
+completed E1M8 exit=1 state=3f9bc465
+kills=12 living=15 awake=15 health=6 missiles=0 map=E1M8
+backend=headless frames=0 ticks=114692 wall=0.000 loop_hz=0.00 state=3f9bc465 position=(644.0,6464.0) door=0 ammo=50 exit=1
+secret cpu verified E1M1 exit=0 state=03acea47
+completed E1M1 exit=1 state=ebff8812
+verified E1M2 exit=0 state=f5f44d98
+completed E1M2 exit=1 state=b35a7973
+verified E1M3 exit=0 state=080929cc
+completed E1M3 exit=2 state=ca86e8d9
+verified E1M9 exit=0 state=ed3102d7
+completed E1M9 exit=1 state=2f075d82
+verified E1M4 exit=0 state=324ee4d0
+completed E1M4 exit=1 state=21476057
+verified E1M5 exit=0 state=796ef176
+completed E1M5 exit=1 state=1ccb98a4
+verified E1M6 exit=0 state=88a548c3
+completed E1M6 exit=1 state=233414d0
+verified E1M7 exit=0 state=467a6955
+completed E1M7 exit=1 state=2c701066
+verified E1M8 exit=0 state=9ccaa78e
+completed E1M8 exit=1 state=3f9bc465
+kills=12 living=15 awake=15 health=6 missiles=0 map=E1M8
+backend=cpu frames=837 ticks=114692 wall=28.976 loop_hz=28.89 state=3f9bc465 position=(644.0,6464.0) door=0 ammo=50 exit=1
+median_ms_bucket=34 rss_kib=151272 empty_audio_queue_events=0 interval_samples=795 p95_ms_bucket=56 cpu_seconds=28.848 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=0
+secret gpu verified E1M1 exit=0 state=03acea47
+completed E1M1 exit=1 state=ebff8812
+verified E1M2 exit=0 state=f5f44d98
+completed E1M2 exit=1 state=b35a7973
+verified E1M3 exit=0 state=080929cc
+completed E1M3 exit=2 state=ca86e8d9
+verified E1M9 exit=0 state=ed3102d7
+completed E1M9 exit=1 state=2f075d82
+verified E1M4 exit=0 state=324ee4d0
+completed E1M4 exit=1 state=21476057
+verified E1M5 exit=0 state=796ef176
+completed E1M5 exit=1 state=1ccb98a4
+verified E1M6 exit=0 state=88a548c3
+completed E1M6 exit=1 state=233414d0
+verified E1M7 exit=0 state=467a6955
+completed E1M7 exit=1 state=2c701066
+verified E1M8 exit=0 state=9ccaa78e
+completed E1M8 exit=1 state=3f9bc465
+kills=12 living=15 awake=15 health=6 missiles=0 map=E1M8
+backend=gpu frames=837 ticks=114692 wall=24.814 loop_hz=33.73 state=3f9bc465 position=(644.0,6464.0) door=0 ammo=50 exit=1
+median_ms_bucket=27 rss_kib=150228 empty_audio_queue_events=0 interval_samples=800 p95_ms_bucket=50 cpu_seconds=24.797 key_down=0 key_up=0 motion_events=0 left_click=0 audio_blocks=0
+Num Lock modifier 0x00 selected skill 2, moved, turned, fired, saved and quit.
+Num Lock modifier 0x10 selected skill 4, moved, turned, fired, saved and quit.
