@@ -67,6 +67,40 @@ Use `--controller layered --planner-model minimax --movement-lessons active` for
 
 ### Play the visible UNO Q from the Mac
 
+#### How the board, Mac, and models connect
+
+```mermaid
+flowchart LR
+    subgraph Board["Arduino UNO Q · Linux"]
+        Q["Native Mojo Quake<br/>DSI display · 72 simulation ticks/s"]
+        S["Python board bridge"]
+        Q -->|Rendered frames and ticks| S
+        S -->|Timed game inputs| Q
+    end
+    subgraph Mac["Mac"]
+        C["Python observatory backend<br/>Decodes frames, reads the HUD, validates inputs"]
+        R["Prepared E1M1 route<br/>and run memory"]
+        W["Browser preview<br/>127.0.0.1:8792"]
+        C -->|Camera views and movement outcomes| R
+        R -->|Route hints and blocked directions| C
+        C <-->|HTTP · preview and controls| W
+    end
+    subgraph Cloud["Modular Cloud"]
+        G["Gemma 4 31B<br/>Vision and next input"]
+        P["MiniMax M3.1 Flash<br/>Background planner"]
+    end
+    S -->|SSH · frames and input receipts| C
+    C -->|Same SSH session · timed inputs and controls| S
+    C -->|Live image, allowed inputs, recent context| G
+    G -->|Structured decision| C
+    C -->|Selected live and route reference images| P
+    P -->|Objective and suggested input| C
+```
+
+The board owns the simulation clock. The Mac starts the bridge over one SSH session and uses that session in both directions. **Play** keeps the game running while the models respond. When a validated input arrives, the bridge checks its age against the source tick before applying it.
+
+Gemma selects the next move from the current camera frame and the inputs the Mac allows for that frame. MiniMax reviews selected frames on a separate worker. The Mac can include its latest objective in a later Gemma request. The Mac also maintains the prepared route match and records which directions failed during this run.
+
 From this project directory, build the host engine for the route reference and the ARM64 engine for the board. The Mac needs its private Quake media at `~/Library/Application Support/Mojo Quake/media`. The board needs its installed Quake media, an active Linux desktop on `:0`, and SSH access as the desktop user. Launch from the Mac with its existing `MODULAR_API_KEY` or use `--key-file` with a private env file.
 
 ```sh
