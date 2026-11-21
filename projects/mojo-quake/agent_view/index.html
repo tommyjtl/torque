@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#131618" />
+    <title>Quake · Agent Observatory</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script defer src="/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="header-in">
+        <div class="brand">
+          <b>Quake</b><span class="slash">/</span><span>Agent Observatory</span>
+        </div>
+        <a id="board-live-link" href="http://127.0.0.1:8792/" hidden>UNO Q live</a>
+        <span class="connection"
+          ><i id="connection-light"></i
+          ><span id="connection">Connecting</span></span
+        >
+      </div>
+    </header>
+    <main>
+      <section class="heading">
+        <div>
+          <p class="mapid">EPISODE 1 <span> / </span> E1M1</p>
+          <h1>The Slipgate Complex</h1>
+        </div>
+        <div class="controls">
+          <button class="primary" id="play" disabled>Play</button
+          ><button id="step" disabled>Single step</button
+          ><button id="finish" disabled>Finish &amp; save</button
+          ><button id="reset">Restart</button>
+        </div>
+      </section>
+      <p class="objective"><strong>Goal</strong> <span id="goal"></span></p>
+      <div class="setup">
+        <label for="scenario">Start position</label
+        ><select id="scenario">
+          <option value="entrance">Level entrance</option>
+          <option value="encounter">First encounter</option></select
+        ><span id="handoff"></span><span id="save-status"></span>
+        <span id="jev-mode" hidden>Player · TypeSafe Jev</span>
+        <span id="laya-mode" hidden>Player · Laya on Mac</span>
+        <label id="gemma-input-control" hidden>Gemma input
+          <select id="gemma-input">
+            <option value="gemma-text">Text only</option>
+            <option value="gemma-screenshots">On-demand screenshots</option>
+          </select>
+        </label>
+        <label id="mode-control" hidden>Player
+          <select id="player-mode"><option value="cloud-player">Cloud player</option><option value="local-planner">Local player + planner</option></select>
+        </label>
+      </div>
+      <p id="error" role="alert" hidden></p>
+      <section id="route-guide" class="strategy" aria-labelledby="guide-title" hidden>
+        <div class="strategy-head"><h2 id="guide-title">Prepared route</h2><span id="guide-match"></span></div>
+        <div class="guide-layout">
+          <img id="guide-photo" alt="Landmark from the verified E1M1 recording" />
+          <div><strong id="guide-landmark"></strong><p id="guide-instruction"></p><span id="guide-move"></span></div>
+        </div>
+        <details><summary>Route and optional jump</summary>
+          <ol id="guide-stages"></ol>
+          <p>The recorded route rides the lift down. The nearby tutorial shelf can also be reached with a running jump.</p>
+          <div class="guide-jump">
+            <figure><div class="guide-lip"><img id="guide-takeoff" alt="First-person view from the demonstrated takeoff position"><i aria-hidden="true"></i></div><figcaption>Takeoff · aim at the marked top lip</figcaption></figure>
+            <figure><img id="guide-landing" alt="View after landing on the upper shelf"><figcaption>Landing · upper shelf</figcaption></figure>
+          </div>
+        </details>
+      </section>
+      <section class="strategy" id="strategy" aria-labelledby="strategy-title">
+        <div class="strategy-head">
+          <div class="strategy-identity"><span class="strategy-glyph" aria-hidden="true">◇</span>
+            <div><h2 id="strategy-title">Background planner</h2><span id="plan-provider">Strategy</span></div>
+          </div>
+          <span id="plan-state">Waiting</span>
+        </div>
+        <p id="plan-headline">Waiting for the run.</p>
+        <div id="plan-details" hidden>
+          <div class="plan-layout">
+            <dl class="plan-facts">
+              <div><dt>Observation</dt><dd id="plan-evidence">—</dd></div>
+              <div><dt>Character</dt><dd id="plan-character">—</dd></div>
+              <div><dt>Success condition</dt><dd id="plan-success">—</dd></div>
+              <div><dt>Suggested input</dt><dd id="plan-recommendation">—</dd></div>
+              <div><dt>Player response</dt><dd id="plan-receipt">—</dd></div>
+            </dl>
+            <figure class="plan-frame"><a id="plan-frame-link" target="_blank" rel="noopener" aria-label="Open the planner’s source frame">
+              <img id="plan-frame-image" alt="Game camera when this plan was requested" /><span id="plan-marker" hidden aria-hidden="true"></span>
+              </a><figcaption id="plan-frame-caption"></figcaption></figure>
+          </div>
+          <div class="plan-footer"><span id="plan-timing"></span>
+            <label>Plan history <select id="plan-list" aria-label="Inspect a planner update"></select></label>
+          </div>
+        </div>
+      </section>
+      <section id="preview-panel" class="strategy" aria-labelledby="preview-title" hidden>
+        <div class="strategy-head"><h2 id="preview-title">Moves tried from this save</h2><span id="preview-status"></span></div>
+        <p id="preview-choice"></p>
+        <details id="preview-details"><summary>Compare predicted views</summary>
+          <figure><img id="preview-sheet" alt="Predicted game views for the three highest-ranked moves" /><figcaption id="preview-source"></figcaption></figure>
+          <p id="preview-guidance"></p><a id="preview-panorama" target="_blank" rel="noopener">Inspect planner panorama</a>
+          <ol id="preview-options"></ol>
+        </details>
+      </section>
+      <div class="workspace">
+        <section class="monitor">
+          <div class="panel-heading">
+            <h2 id="frame-title">Game view</h2>
+            <label class="check"
+              ><input type="checkbox" id="marks" checked /> Vision
+              markers</label
+            >
+          </div>
+          <div class="screen">
+            <img id="view" alt="Quake game framebuffer" />
+            <div class="markers" id="markers"></div>
+            <span id="empty">Waiting for game frame</span>
+          </div>
+          <div class="monitor-foot">
+            <span
+              ><i class="frame-led"></i><b id="frame-mode">Live frame</b></span
+            ><span id="tick">TICK —</span>
+          </div>
+          <section id="jev-inspector" aria-labelledby="jev-title" hidden>
+            <div class="panel-heading"><h2 id="jev-title">Jev’s view</h2><span id="jev-step"></span></div>
+            <div class="jev-comparison">
+              <a id="jev-frame-link" target="_blank" rel="noopener" aria-label="Open the exact frame sent to Jev" hidden>
+                <img id="jev-frame" alt="Exact game image sent to Jev" /><span id="jev-box" hidden></span>
+              </a>
+              <div><p id="jev-what">Press Single step to see a decision.</p><dl id="jev-facts" hidden>
+                <div><dt>Proposed</dt><dd id="jev-choice"></dd></div>
+                <div><dt>Game input</dt><dd id="jev-applied"></dd></div>
+                <div><dt>Opponent</dt><dd id="jev-target"></dd></div>
+                <div><dt>Response</dt><dd id="jev-ms"></dd></div>
+              </dl></div>
+            </div>
+          </section>
+        </section>
+        <aside class="readout">
+          <div class="panel-heading">
+            <h2>Agent activity</h2>
+            <span id="phase" role="status">Starting</span>
+          </div>
+          <section class="model">
+            <div class="role">
+              <span class="token vision-token">◉</span>
+              <div>
+                <h3>Vision</h3>
+                <span id="vision-provider">Modular Cloud</span>
+              </div>
+              <time id="vt">—</time>
+            </div>
+            <p id="game-message" hidden></p>
+            <p class="scene" id="scene">Waiting for an observation.</p>
+            <div id="gemma-check" hidden>
+              <p id="gemma-check-status"></p>
+              <button id="inspect-gemma-frame" type="button" hidden>Inspect game frame</button>
+            </div>
+            <div class="coords">
+              <div><i class="enemy"></i>Enemy <b id="enemy">—</b></div>
+              <div><i class="route"></i>Route <b id="route">—</b></div>
+              <div><i class="landing"></i>Landing <b id="landing">—</b></div>
+              <div>Clearance <b id="clearance">—</b></div>
+              <div>Blocker <b id="blocker">—</b></div>
+            </div>
+          </section>
+          <section class="model">
+            <div class="role">
+              <span class="token decision-token">⌘</span>
+              <div>
+                <h3>Decision</h3>
+                <span id="decision-provider">Modular Cloud · same call</span>
+              </div>
+              <time id="dt">—</time>
+            </div>
+            <strong class="action" id="action">Waiting</strong>
+            <p id="reason">Waiting for the next game input.</p>
+            <details id="actor-memory" hidden>
+              <summary>Experience sent to Laya</summary>
+              <ul id="actor-lessons"></ul>
+            </details>
+            <div class="input" id="input"></div>
+          </section>
+          <div class="stats">
+            <div><span>Health</span><b id="health">—</b></div>
+            <div><span>Kills</span><b id="kills">—</b></div>
+            <div><span>Game time</span><b id="sim">—</b></div>
+          </div>
+        </aside>
+      </div>
+      <section
+        id="exploration-map"
+        class="journal route-memory"
+        aria-labelledby="map-title"
+      >
+        <div class="journal-head">
+          <div>
+            <h2 id="map-title">Exploration map</h2>
+            <p>
+              Live estimate from visited views. Lines show travel between
+              places; spacing is approximate.
+            </p>
+          </div>
+          <span id="map-count"></span>
+        </div>
+        <div class="map-grid">
+          <svg
+            id="route-map"
+            role="img"
+            aria-label="Visited places, travel links and current facing direction"
+          ></svg>
+          <div class="map-notes">
+            <h3 id="map-place">At the entrance</h3>
+            <p id="map-outcome">Waiting for the first observation.</p>
+            <dl>
+              <dt>Failed here</dt>
+              <dd id="map-failed">None yet</dd>
+              <dt>Untried directions</dt>
+              <dd id="map-options">—</dd>
+            </dl>
+            <p id="map-hint"></p>
+          </div>
+        </div>
+      </section>
+      <section class="journal">
+        <div class="journal-head">
+          <div>
+            <h2>Decision history</h2>
+            <p>Inspect the frame, observation and input for any step.</p>
+          </div>
+          <button id="live" hidden>Return to live</button>
+        </div>
+        <div id="rows" aria-label="Recorded decisions">
+          <p class="placeholder">
+            Play or single-step to record the first decision.
+          </p>
+        </div>
+      </section>
+      <section
+        id="recordings"
+        class="journal recordings"
+        aria-labelledby="recordings-title"
+      >
+        <div class="journal-head">
+          <div>
+            <h2 id="recordings-title">Run recordings</h2>
+            <p id="capture-state"></p>
+            <p>
+              Replay the game with its vision observations, chosen inputs and
+              decision cues.
+            </p>
+          </div>
+          <a id="download-video" hidden download>Download MP4</a>
+        </div>
+        <div class="recording-body">
+          <label for="recording-list">Saved run</label>
+          <select id="recording-list" disabled></select>
+          <p id="recording-status" role="status">Looking for recordings…</p>
+          <video
+            id="recording-player"
+            controls
+            playsinline
+            preload="metadata"
+            hidden
+            aria-label="Recorded Quake run with agent decisions"
+          ></video>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

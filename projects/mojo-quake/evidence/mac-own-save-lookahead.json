@@ -1,0 +1,94 @@
+{
+  "map": "e1m1",
+  "start": "Level entrance, empty exploration memory",
+  "source": "Temporary native save from the active game. Each reload is confined to a second process. A future input is eligible only after comparing its predicted handoff image with the current game camera.",
+  "replay": {
+    "id": "session-65cl3zz0",
+    "scenario": "entrance",
+    "result": "Step limit reached",
+    "gpu": false,
+    "finished": "2026-11-20T05:13:35.709961+00:00",
+    "status": "Ready",
+    "steps": 12,
+    "duration": 15.61,
+    "saves": 1,
+    "reloads": 0,
+    "ranked_moves_applied": 10,
+    "first_source_tick": 28,
+    "first_applied_tick": 108,
+    "first_alternatives": 10
+  },
+  "first_live_trial": {
+    "session": "session-5ysrfsn8",
+    "through_step": 536,
+    "game_seconds": 646.0,
+    "completion": "0",
+    "applied_previews": 420
+  },
+  "floor_camera_trial": {
+    "session": "session-2ne7ub_k",
+    "through_step": 187,
+    "complete_inputs_with_usable_floor_matches": 112,
+    "median_absolute_error_units": 29.4,
+    "method": "Compared camera-estimated horizontal travel with native before/after positions only in post-run evaluation."
+  },
+  "visual_scoreboard_fixture": {
+    "source": "Existing native hub-to-E1M2 recording used exclusively for validating the visible scoreboard reader.",
+    "gameplay_frames": 682,
+    "false_positives": 0,
+    "intermission_frames": 19,
+    "missed": 0
+  },
+  "ui_check": {
+    "viewport_widths": [
+      390,
+      1280
+    ],
+    "verified": "Live choice, candidate list, three predicted pictures and absence of horizontal overflow."
+  },
+  "planner_replay": {
+    "source": "First 17 decisions of live entrance run session-u35632nj",
+    "steps": 17,
+    "game_seconds": 22.56,
+    "size": [
+      1056,
+      710
+    ],
+    "video_fps": 18,
+    "last_native_hash_verified": "28e429a2",
+    "matched_panorama_tile": "D",
+    "matched_landmark": "shoot_button",
+    "selected": "test control toward 286\u00b0",
+    "local_model_responses": 11,
+    "result": "Opening excerpt. No live level completion in the excerpt."
+  },
+  "vertical_input_check": {
+    "source": "session-kmz4l993",
+    "sampled_own_run_frames": 28,
+    "in_water_detected": 7,
+    "in_water_missed": 1,
+    "dry_detected_as_moving_vertically": 0,
+    "dry_without_response": 20,
+    "matched_branch_start": 2620,
+    "first_dry_tick": 3112,
+    "final_tick": 4094,
+    "returned_to_water_once": true,
+    "final_water_level": 0,
+    "method": "Compared camera images after up, down and ordinary idle inputs in a shadow game. Native water levels were used only to score the trial."
+  },
+  "render_cadence_regression": {
+    "source_run": "session-kmz4l993",
+    "source_tick": 14956,
+    "handoff_tick": 15036,
+    "native_hash_at_handoff": "c8b865cc",
+    "camera_difference_with_batched_render": 47.99,
+    "camera_difference_at_live_render_boundaries": 0,
+    "method": "Recreated the original live inputs, then compared the independently loaded preview image to the archived live camera at the same tick."
+  },
+  "clock_sample": {
+    "port": 8777,
+    "observed_ticks_per_second": 71.6,
+    "interval_seconds": 3,
+    "conditions": "One active lookahead game; completed comparison runs exporting in the background."
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "source_run": "session-5695iwyw",
+  "scenario": "E1M1 on Normal in real time, from the entrance",
+  "sample_through_decision": 149,
+  "applied_jumps": 17,
+  "jumps_under_four_horizontal_units": 16,
+  "baseline": [
+    {
+      "seq": 96,
+      "horizontal_units": 0.0,
+      "immediate_pixel_change_pct": 12.4
+    },
+    {
+      "seq": 97,
+      "horizontal_units": 0.0,
+      "immediate_pixel_change_pct": 13.0
+    },
+    {
+      "seq": 98,
+      "horizontal_units": 0.0,
+      "immediate_pixel_change_pct": 1.3
+    },
+    {
+      "seq": 99,
+      "horizontal_units": 0.0,
+      "immediate_pixel_change_pct": 12.2
+    },
+    {
+      "seq": 100,
+      "horizontal_units": 0.0,
+      "immediate_pixel_change_pct": 4.0
+    },
+    {
+      "seq": 101,
+      "horizontal_units": 0.0,
+      "immediate_pixel_change_pct": 1.3
+    }
+  ],
+  "comparison": {
+    "method": "Replayed the same ordinary inputs and rebuilt route memory through decision 97. Then used real Modular vision and local Gemma for decision 98. Engine position is used only to score the outcome.",
+    "start_hash": "17f53ea7",
+    "start_tick": 8498,
+    "end_tick": 8595,
+    "model_context": {
+      "place": "P18",
+      "landmark": "The player is facing a textured brown stone wall with a text overlay stating 'YOU CAN JUMP UP HERE...'.",
+      "previous_places": [
+        "P15: A dark industrial corridor with textured metal walls and a passage leading forward into a dimly lit area.",
+        "P16: The player is in a dark, stone corridor with a dark opening to the left and a passage leading forward to the right.",
+        "P17: A dark industrial corridor with a high metal wall on the right and a text prompt stating 'YOU CAN JUMP UP HERE...'"
+      ],
+      "escape_options": [
+        "back_up",
+        "strafe_left",
+        "strafe_right",
+        "turn_around"
+      ],
+      "came_from": "P17 (behind)",
+      "visits": 1,
+      "last_outcome": "Jump from P18 had no confirmed horizontal progress.",
+      "known_passages": [],
+      "unsuccessful": [
+        "ahead: jump x2"
+      ],
+      "untried": [
+        "left",
+        "right",
+        "behind",
+        "ahead-left"
+      ],
+      "blocked_inputs": [
+        "jump_forward"
+      ],
+      "recover": true,
+      "pitch": -20,
+      "hint": "Leave this spot. Back up or strafe toward an untried direction; use a known return path if cornered."
+    },
+    "action": "back_up",
+    "applied_ticks": 25,
+    "end_health": "100",
+    "horizontal_units": 82.25,
+    "end_hash": "997d396a"
+  }
+}

@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eu
+release=$(dirname "$(readlink -f "$0")")
+root=$(dirname "$(dirname "$release")")
+renderer=gpu
+case "${1:-}" in
+    --renderer=gpu|--renderer=cpu) renderer=${1#--renderer=}; shift ;;
+    --renderer=*) echo "Use --renderer=cpu or --renderer=gpu." >&2; exit 64 ;;
+esac
+if [ ! -r "$root/media/id1/pak0.pak" ]; then
+    echo "Missing Quake game data in $root/media/id1." >&2
+    exit 66
+fi
+export MOJO_QUAKE_PROFILE=${MOJO_QUAKE_PROFILE:-"$root/profile"}
+mkdir -p "$MOJO_QUAKE_PROFILE/id1"
+if [ "$#" -eq 0 ]; then
+    set -- -fullscreen +map start
+fi
+case "$renderer" in
+    gpu) engine=tyr-glquake ;;
+    cpu) engine=tyr-quake; set -- -mqcpu2x "$@" ;;
+esac
+exec "$release/$engine" -basedir "$root/media" -noudp -noconinput -width 640 -height 480 +mlook "$@"

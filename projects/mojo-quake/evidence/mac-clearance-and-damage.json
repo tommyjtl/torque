@@ -1,0 +1,1244 @@
+{
+  "source_run": "session-3sebkm5_",
+  "reported_decision": 45,
+  "reported_tick": 2786,
+  "corrected_observation": {
+    "frame": "slit",
+    "sha256": "7c60343aae21751adfc6a99723e3efd969ed75635be42f1d1c41ea0289e68e90",
+    "model": "gemma",
+    "gold_enemy_box": null,
+    "gold_clearance": [
+      "too_low",
+      "too_high"
+    ],
+    "request_ms": 678,
+    "vision": {
+      "scene": "The player is facing a dark, narrow horizontal opening beneath a textured wall panel.",
+      "clearance": "too_low",
+      "enemy": null,
+      "route": null,
+      "landing": null
+    },
+    "proposal": [
+      "turn_around",
+      "clearance"
+    ],
+    "action": "turn_around",
+    "source": "model",
+    "enemy_correct": true,
+    "clearance_correct": true
+  },
+  "replay_method": "Matched HP read visually from the 320x240 opaque status bar against native evaluator on the same original input trace for both CPU and OpenGL. 1007 living samples each matched; the scoreboard at death was unreadable. Models receive pixels and visible HUD feedback.",
+  "hud_cpu_median_ms": 0.366,
+  "hud_gpu_median_ms": 1.313,
+  "first_hit": {
+    "controller": "single-call",
+    "inference_ms": null,
+    "seq": 2,
+    "timing": "real-time",
+    "observed_tick": 3140,
+    "observed_stats": {
+      "map": "e1m1",
+      "hp": "92",
+      "kills": "0/23",
+      "intermission": "0",
+      "pos": "402.958679,624.005493,24.031250",
+      "hash": "393a008d"
+    },
+    "vision": null,
+    "vision_tick": null,
+    "action": "evade_and_scan",
+    "applied_tick": 3140,
+    "decision_tick": 3140,
+    "reason": "Visible health dropped from 100 to 92.",
+    "vision_ms": null,
+    "decision_ms": null,
+    "note": "",
+    "input_source": "HUD reflex",
+    "damage": {
+      "from_hp": 100,
+      "to_hp": 92,
+      "detected_tick": 3140,
+      "action": "evade_and_scan"
+    },
+    "jump_press_tick": 3149,
+    "jump_release_tick": 3153,
+    "scan_tick": 3169,
+    "end_tick": 3176,
+    "ticks": 36,
+    "view_change_pct": 6.8,
+    "evaluator": {
+      "map": "e1m1",
+      "hp": "92",
+      "kills": "0/23",
+      "intermission": "0",
+      "pos": "349.709198,519.788879,66.376923",
+      "hash": "3efe2254"
+    }
+  },
+  "model_comparison_method": "Same 12 recorded game frames per model, alternating order. Five target rectangles and six clearance labels marked by inspection before submitting requests. Allow an enemy point inside the visible box. No marker is correct on seven negative frames. Unanswered items count as misses. This small set deliberately tests difficult views and is not representative of every level.",
+  "frame_results": [
+    {
+      "frame": "slit",
+      "sha256": "7c60343aae21751adfc6a99723e3efd969ed75635be42f1d1c41ea0289e68e90",
+      "model": "gemma",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "too_low",
+        "too_high"
+      ],
+      "request_ms": 678,
+      "vision": {
+        "scene": "The player is facing a dark, narrow horizontal opening beneath a textured wall panel.",
+        "clearance": "too_low",
+        "enemy": null,
+        "route": null,
+        "landing": null
+      },
+      "proposal": [
+        "turn_around",
+        "clearance"
+      ],
+      "action": "turn_around",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": true
+    },
+    {
+      "frame": "slit",
+      "sha256": "7c60343aae21751adfc6a99723e3efd969ed75635be42f1d1c41ea0289e68e90",
+      "model": "minimax",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "too_low",
+        "too_high"
+      ],
+      "request_ms": 3338,
+      "vision": {
+        "scene": "A dim corridor shows a red EXIT sign high on the upper-right wall above a broad black shadowed passage, with a low railing and stone floor in the foreground.",
+        "clearance": "unclear",
+        "enemy": null,
+        "route": [
+          80,
+          22
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "slit",
+      "sha256": "7c60343aae21751adfc6a99723e3efd969ed75635be42f1d1c41ea0289e68e90",
+      "model": "qwen",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "too_low",
+        "too_high"
+      ],
+      "request_ms": 671,
+      "vision": {
+        "scene": "A dark, open passage leads forward beneath a stone wall with a visible ledge on the right.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          50,
+          60
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "cover",
+      "sha256": "08cd8f43a4d460e27f16d45528c67d0f4204c6dc600bc9d88791f9a6efeae53d",
+      "model": "minimax",
+      "gold_enemy_box": [
+        127,
+        106,
+        166,
+        161
+      ],
+      "gold_clearance": null,
+      "request_ms": 8157,
+      "vision": {
+        "scene": "A dim stone hall with a large central pillar, a green-lit floor area and wall panel to the left, and a dark corridor continuing past the pillar on the right where a small red sign/light is visible.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          66,
+          47
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": false,
+      "clearance_correct": null
+    },
+    {
+      "frame": "cover",
+      "sha256": "08cd8f43a4d460e27f16d45528c67d0f4204c6dc600bc9d88791f9a6efeae53d",
+      "model": "qwen",
+      "gold_enemy_box": [
+        127,
+        106,
+        166,
+        161
+      ],
+      "gold_clearance": null,
+      "request_ms": 669,
+      "vision": {
+        "scene": "A 'SEQUENCE COMPLETED!' message is displayed in the center of a dark, stone-walled corridor with a visible opening ahead.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          50,
+          55
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": false,
+      "clearance_correct": null
+    },
+    {
+      "frame": "cover",
+      "sha256": "08cd8f43a4d460e27f16d45528c67d0f4204c6dc600bc9d88791f9a6efeae53d",
+      "model": "gemma",
+      "gold_enemy_box": [
+        127,
+        106,
+        166,
+        161
+      ],
+      "gold_clearance": null,
+      "request_ms": 802,
+      "vision": {
+        "scene": "A dark industrial corridor with a brown floor and metallic walls, featuring a 'SEQUENCE COMPLETED!' message on screen and a figure ahead.",
+        "clearance": "walkable",
+        "enemy": [
+          46,
+          51
+        ],
+        "route": [
+          65,
+          50
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "aim_fire",
+        "opponent"
+      ],
+      "action": "aim_fire",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "dark",
+      "sha256": "6ad5f3885d38b332c0c79cfe714accc6c83c827622bf631019006344cf46d4ca",
+      "model": "qwen",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "unclear"
+      ],
+      "request_ms": 486,
+      "vision": {
+        "scene": "A dark corridor with a large black void ahead and a tutorial message indicating a jumpable ledge.",
+        "clearance": "jump_up",
+        "enemy": null,
+        "route": [
+          50,
+          50
+        ],
+        "landing": [
+          50,
+          50
+        ]
+      },
+      "proposal": [
+        "jump_forward",
+        "landing"
+      ],
+      "action": "jump_forward",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "dark",
+      "sha256": "6ad5f3885d38b332c0c79cfe714accc6c83c827622bf631019006344cf46d4ca",
+      "model": "gemma",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "unclear"
+      ],
+      "request_ms": 483,
+      "vision": {
+        "scene": "A dark corridor with a prompt stating 'YOU CAN JUMP UP HERE...' above a low ledge.",
+        "clearance": "jump_up",
+        "enemy": null,
+        "route": [
+          50,
+          60
+        ],
+        "landing": [
+          50,
+          55
+        ]
+      },
+      "proposal": [
+        "jump_forward",
+        "landing"
+      ],
+      "action": "jump_forward",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "dark",
+      "sha256": "6ad5f3885d38b332c0c79cfe714accc6c83c827622bf631019006344cf46d4ca",
+      "model": "minimax",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "unclear"
+      ],
+      "request_ms": 7645,
+      "vision": {
+        "scene": "A dark passage opening ahead is framed by a wall on the left and a brick wall/floor on the right, with the on-screen message \"YOU CAN JUMP UP HERE...\" and a small red \"88\" marker; no enemies are visible.",
+        "clearance": "jump_up",
+        "enemy": null,
+        "route": [
+          55,
+          45
+        ],
+        "landing": [
+          55,
+          54
+        ]
+      },
+      "proposal": [
+        "jump_forward",
+        "landing"
+      ],
+      "action": "jump_forward",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "far",
+      "sha256": "283f16af8b5c386ae8e371871f53d42d4999468eda6ddcde3d1192e26e8b225a",
+      "model": "gemma",
+      "gold_enemy_box": [
+        148,
+        108,
+        172,
+        140
+      ],
+      "gold_clearance": null,
+      "request_ms": 772,
+      "vision": {
+        "scene": "A narrow corridor with a gap in the floor and a jump tutorial message on screen, with a single enemy visible across the gap.",
+        "clearance": "jump_across",
+        "enemy": [
+          49,
+          51
+        ],
+        "route": [
+          50,
+          55
+        ],
+        "landing": [
+          50,
+          58
+        ]
+      },
+      "proposal": [
+        "jump_forward",
+        "landing"
+      ],
+      "action": "jump_forward",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "far",
+      "sha256": "283f16af8b5c386ae8e371871f53d42d4999468eda6ddcde3d1192e26e8b225a",
+      "model": "minimax",
+      "gold_enemy_box": [
+        148,
+        108,
+        172,
+        140
+      ],
+      "gold_clearance": null,
+      "request_ms": 5592,
+      "vision": {
+        "scene": "A dim metal corridor has a small illuminated sign above the central passage, with a red enemy visible beyond a gap.",
+        "clearance": "jump_across",
+        "enemy": [
+          50,
+          50
+        ],
+        "route": [
+          50,
+          55
+        ],
+        "landing": [
+          50,
+          57
+        ]
+      },
+      "proposal": [
+        "aim_fire",
+        "opponent"
+      ],
+      "action": "aim_fire",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "far",
+      "sha256": "283f16af8b5c386ae8e371871f53d42d4999468eda6ddcde3d1192e26e8b225a",
+      "model": "qwen",
+      "gold_enemy_box": [
+        148,
+        108,
+        172,
+        140
+      ],
+      "gold_clearance": null,
+      "request_ms": 848,
+      "vision": {
+        "scene": "A narrow corridor with a jump tutorial message displayed on the wall ahead.",
+        "clearance": "walkable",
+        "enemy": [
+          50,
+          48
+        ],
+        "route": [
+          50,
+          50
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "aim_fire",
+        "opponent"
+      ],
+      "action": "aim_fire",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "flank2",
+      "sha256": "fc087c32c6620ac5ef402a93b8fb472e59409a707d4a802f39c69a742a037461",
+      "model": "minimax",
+      "gold_enemy_box": [
+        5,
+        121,
+        73,
+        194
+      ],
+      "gold_clearance": null,
+      "request_ms": 4504,
+      "vision": {
+        "scene": "A humanoid enemy stands in a dim passage on the left, while a red exit sign is mounted high on the large wall to the right.",
+        "clearance": "unclear",
+        "enemy": [
+          14,
+          60
+        ],
+        "route": [
+          27,
+          55
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "aim_fire",
+        "opponent"
+      ],
+      "action": "aim_fire",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "flank2",
+      "sha256": "fc087c32c6620ac5ef402a93b8fb472e59409a707d4a802f39c69a742a037461",
+      "model": "qwen",
+      "gold_enemy_box": [
+        5,
+        121,
+        73,
+        194
+      ],
+      "gold_clearance": null,
+      "request_ms": 436,
+      "vision": {
+        "scene": "A dark corridor with a large, angled wall on the right and a visible enemy on the left.",
+        "clearance": "walkable",
+        "enemy": [
+          15,
+          75
+        ],
+        "route": [
+          50,
+          50
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "aim_fire",
+        "opponent"
+      ],
+      "action": "aim_fire",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "flank2",
+      "sha256": "fc087c32c6620ac5ef402a93b8fb472e59409a707d4a802f39c69a742a037461",
+      "model": "gemma",
+      "gold_enemy_box": [
+        5,
+        121,
+        73,
+        194
+      ],
+      "gold_clearance": null,
+      "request_ms": 827,
+      "vision": {
+        "scene": "A stone corridor with a soldier standing in a doorway to the left.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": null,
+        "landing": null,
+        "unlocated": [
+          "enemy"
+        ]
+      },
+      "proposal": [
+        "aim_fire",
+        "opponent"
+      ],
+      "action": "back_up",
+      "source": "local recovery",
+      "enemy_correct": false,
+      "clearance_correct": null
+    },
+    {
+      "frame": "entry",
+      "sha256": "b803d54336f1db945535a593af6dc3f83d24012f56a036778530c8d1b7cb40d9",
+      "model": "qwen",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "walkable"
+      ],
+      "request_ms": 430,
+      "vision": {
+        "scene": "The player is in a dark, stone corridor with a large archway ahead leading to a lit area with two glowing pillars.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          50,
+          55
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": true
+    },
+    {
+      "frame": "entry",
+      "sha256": "b803d54336f1db945535a593af6dc3f83d24012f56a036778530c8d1b7cb40d9",
+      "model": "gemma",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "walkable"
+      ],
+      "request_ms": 447,
+      "vision": {
+        "scene": "A dark industrial corridor with a wide opening leading into a room with a central platform.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          50,
+          55
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": true
+    },
+    {
+      "frame": "entry",
+      "sha256": "b803d54336f1db945535a593af6dc3f83d24012f56a036778530c8d1b7cb40d9",
+      "model": "minimax",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "walkable"
+      ],
+      "request_ms": 2268,
+      "vision": {
+        "scene": "A dim stone corridor opens through a wide doorway into a lit passage ahead, with a small green exit sign mounted on the right wall.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          50,
+          48
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": true
+    },
+    {
+      "frame": "ledge",
+      "sha256": "a56c84d2cbbe66e69579b20fec41d75c8626e7d9fb6c2517669fa5a8411f0336",
+      "model": "gemma",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "jump_up"
+      ],
+      "request_ms": 388,
+      "vision": {
+        "scene": "A metallic corridor with a high ledge and a tutorial message reading 'YOU CAN JUMP UP HERE'.",
+        "clearance": "jump_up",
+        "enemy": null,
+        "route": [
+          50,
+          40
+        ],
+        "landing": [
+          50,
+          40
+        ]
+      },
+      "proposal": [
+        "jump_forward",
+        "landing"
+      ],
+      "action": "jump_forward",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": true
+    },
+    {
+      "frame": "ledge",
+      "sha256": "a56c84d2cbbe66e69579b20fec41d75c8626e7d9fb6c2517669fa5a8411f0336",
+      "model": "minimax",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "jump_up"
+      ],
+      "request_ms": 6453,
+      "vision": {
+        "scene": "A red EXIT sign hangs above a central doorway in a ribbed industrial wall, with dark flooring in front and no slipgate visible.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          50,
+          38
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "ledge",
+      "sha256": "a56c84d2cbbe66e69579b20fec41d75c8626e7d9fb6c2517669fa5a8411f0336",
+      "model": "qwen",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "jump_up"
+      ],
+      "request_ms": 656,
+      "vision": {
+        "scene": "The player faces a solid wall of server racks and panels with no visible doors or openings.",
+        "clearance": "too_high",
+        "enemy": null,
+        "route": null,
+        "landing": null
+      },
+      "proposal": [
+        "turn_around",
+        "untried"
+      ],
+      "action": "turn_around",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "water",
+      "sha256": "552ba67ede452edd326f02801f1d237838cd44d2d52488a67449ee773ba4de12",
+      "model": "minimax",
+      "gold_enemy_box": null,
+      "gold_clearance": null,
+      "request_ms": 20103,
+      "vision": {
+        "scene": "A dim orange-brown stone corridor is bounded by rough rock walls, with a dark vertical recess between the left wall and the large rock face ahead; no exit sign, slipgate, switch, or lift is clearly visible.",
+        "clearance": "unclear",
+        "enemy": null,
+        "route": null,
+        "landing": null
+      },
+      "proposal": [
+        "turn_left",
+        "explore"
+      ],
+      "action": "turn_left",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "water",
+      "sha256": "552ba67ede452edd326f02801f1d237838cd44d2d52488a67449ee773ba4de12",
+      "model": "qwen",
+      "gold_enemy_box": null,
+      "gold_clearance": null,
+      "request_ms": 714,
+      "vision": {
+        "scene": "The player is facing a solid, textured wall in a dimly lit corridor with no visible doors or openings.",
+        "clearance": "too_high",
+        "enemy": null,
+        "route": null,
+        "landing": null
+      },
+      "proposal": [
+        "turn_around",
+        "untried"
+      ],
+      "action": "turn_around",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "water",
+      "sha256": "552ba67ede452edd326f02801f1d237838cd44d2d52488a67449ee773ba4de12",
+      "model": "gemma",
+      "gold_enemy_box": null,
+      "gold_clearance": null,
+      "request_ms": 595,
+      "vision": {
+        "scene": "The player is in a brown, rocky corridor with textured walls and a flat floor.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          50,
+          50
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "machine",
+      "sha256": "b617a8b8419b0fdf968d9a5ad3660f52cf5a0c1e01e5687ee886525df766e05c",
+      "model": "qwen",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "jump_up"
+      ],
+      "request_ms": 448,
+      "vision": {
+        "scene": "The player is facing a large, solid wall structure with vertical columns and a central panel, with no visible doors or exits.",
+        "clearance": "too_high",
+        "enemy": null,
+        "route": null,
+        "landing": null
+      },
+      "proposal": [
+        "turn_around",
+        "untried"
+      ],
+      "action": "turn_around",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "machine",
+      "sha256": "b617a8b8419b0fdf968d9a5ad3660f52cf5a0c1e01e5687ee886525df766e05c",
+      "model": "gemma",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "jump_up"
+      ],
+      "request_ms": 530,
+      "vision": {
+        "scene": "A metallic corridor with yellow ceiling lights and a wall of industrial panels ahead.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          50,
+          50
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "machine",
+      "sha256": "b617a8b8419b0fdf968d9a5ad3660f52cf5a0c1e01e5687ee886525df766e05c",
+      "model": "minimax",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "jump_up"
+      ],
+      "request_ms": 3357,
+      "vision": {
+        "scene": "A metal corridor with a grated floor, barred side walls and yellow ceiling lights leads to a recessed central opening with a small red sign above it.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": [
+          50,
+          43
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "follow_route",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "flank",
+      "sha256": "7b4313e307bb339f01bc5d5c2011243806554f7145a6d158d382dfd550799815",
+      "model": "gemma",
+      "gold_enemy_box": [
+        3,
+        124,
+        70,
+        194
+      ],
+      "gold_clearance": null,
+      "request_ms": 445,
+      "vision": {
+        "scene": "A grunt enemy stands in a corridor with brown textured walls and a dark passage behind him.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": null,
+        "landing": null,
+        "unlocated": [
+          "enemy",
+          "route"
+        ]
+      },
+      "proposal": [
+        "aim_fire",
+        "opponent"
+      ],
+      "action": "back_up",
+      "source": "local recovery",
+      "enemy_correct": false,
+      "clearance_correct": null
+    },
+    {
+      "frame": "flank",
+      "sha256": "7b4313e307bb339f01bc5d5c2011243806554f7145a6d158d382dfd550799815",
+      "model": "minimax",
+      "gold_enemy_box": [
+        3,
+        124,
+        70,
+        194
+      ],
+      "gold_clearance": null,
+      "request_ms": 4359,
+      "vision": {
+        "scene": "A yellow exit sign glows at upper left above a dark passage, while a large riveted wall fills the right and no slipgate is clearly visible.",
+        "clearance": "unclear",
+        "enemy": [
+          10,
+          60
+        ],
+        "route": null,
+        "landing": null
+      },
+      "proposal": [
+        "aim_fire",
+        "opponent"
+      ],
+      "action": "aim_fire",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": null
+    },
+    {
+      "frame": "flank",
+      "sha256": "7b4313e307bb339f01bc5d5c2011243806554f7145a6d158d382dfd550799815",
+      "model": "qwen",
+      "gold_enemy_box": [
+        3,
+        124,
+        70,
+        194
+      ],
+      "gold_clearance": null,
+      "error": "JSONDecodeError",
+      "request_ms": 1153
+    },
+    {
+      "frame": "hurt",
+      "sha256": "3b61757419c60b8357f09c946e13b953b75adb7a68f9feed71e6a0405f4c0464",
+      "model": "minimax",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "too_low",
+        "too_high"
+      ],
+      "request_ms": 1692,
+      "vision": {
+        "scene": "The view is pressed close to a plain brown wall, with no visible exit sign, slipgate, switch, lift, doorway, or passage.",
+        "clearance": "unclear",
+        "enemy": null,
+        "route": null,
+        "landing": null
+      },
+      "proposal": [
+        "turn_around",
+        "explore"
+      ],
+      "action": "turn_around",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": false
+    },
+    {
+      "frame": "hurt",
+      "sha256": "3b61757419c60b8357f09c946e13b953b75adb7a68f9feed71e6a0405f4c0464",
+      "model": "qwen",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "too_low",
+        "too_high"
+      ],
+      "request_ms": 378,
+      "vision": {
+        "scene": "The view is blocked by a solid, textured wall with no visible openings or paths.",
+        "clearance": "too_high",
+        "enemy": null,
+        "route": null,
+        "landing": null
+      },
+      "proposal": [
+        "turn_around",
+        "untried"
+      ],
+      "action": "turn_around",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": true
+    },
+    {
+      "frame": "hurt",
+      "sha256": "3b61757419c60b8357f09c946e13b953b75adb7a68f9feed71e6a0405f4c0464",
+      "model": "gemma",
+      "gold_enemy_box": null,
+      "gold_clearance": [
+        "too_low",
+        "too_high"
+      ],
+      "request_ms": 665,
+      "vision": {
+        "scene": "The player is facing a textured brown wall with several circular protrusions.",
+        "clearance": "too_high",
+        "enemy": null,
+        "route": null,
+        "landing": null
+      },
+      "proposal": [
+        "turn_around",
+        "explore"
+      ],
+      "action": "turn_around",
+      "source": "model",
+      "enemy_correct": true,
+      "clearance_correct": true
+    },
+    {
+      "frame": "flank3",
+      "sha256": "ba403adf2198b49f986ee5477262ed105ecae96f3c9f2bedba3121c7571b265d",
+      "model": "qwen",
+      "gold_enemy_box": [
+        17,
+        154,
+        85,
+        194
+      ],
+      "gold_clearance": null,
+      "request_ms": 522,
+      "vision": {
+        "scene": "A dark, stone-walled corridor with a low, dark opening directly ahead and a large wall to the right.",
+        "clearance": "too_low",
+        "enemy": null,
+        "route": [
+          35,
+          75
+        ],
+        "landing": null
+      },
+      "proposal": [
+        "turn_right",
+        "untried"
+      ],
+      "action": "turn_right",
+      "source": "model",
+      "enemy_correct": false,
+      "clearance_correct": null
+    },
+    {
+      "frame": "flank3",
+      "sha256": "ba403adf2198b49f986ee5477262ed105ecae96f3c9f2bedba3121c7571b265d",
+      "model": "gemma",
+      "gold_enemy_box": [
+        17,
+        154,
+        85,
+        194
+      ],
+      "gold_clearance": null,
+      "request_ms": 524,
+      "vision": {
+        "scene": "A narrow industrial corridor with a dark opening to the left and a textured wall to the right.",
+        "clearance": "walkable",
+        "enemy": null,
+        "route": null,
+        "landing": null,
+        "unlocated": [
+          "enemy",
+          "route"
+        ]
+      },
+      "proposal": [
+        "aim_fire",
+        "opponent"
+      ],
+      "action": "back_up",
+      "source": "local recovery",
+      "enemy_correct": false,
+      "clearance_correct": null
+    },
+    {
+      "frame": "flank3",
+      "sha256": "ba403adf2198b49f986ee5477262ed105ecae96f3c9f2bedba3121c7571b265d",
+      "model": "minimax",
+      "gold_enemy_box": [
+        17,
+        154,
+        85,
+        194
+      ],
+      "gold_clearance": null,
+      "request_ms": 4763,
+      "vision": {
+        "scene": "A stone corridor shows a red EXIT sign high on the right wall, a small red wall switch, and a dark rectangular doorway opening on the left.",
+        "clearance": "unclear",
+        "enemy": null,
+        "route": null,
+        "landing": null,
+        "unlocated": [
+          "route"
+        ]
+      },
+      "proposal": [
+        "follow_route",
+        "passage"
+      ],
+      "action": "back_up",
+      "source": "local recovery",
+      "enemy_correct": false,
+      "clearance_correct": null
+    }
+  ],
+  "fresh_20s_no_prior_runs": [
+    {
+      "model": "MiniMaxAI/MiniMax-M3.1-Flash",
+      "ticks": 1444,
+      "duration_s": 20.1,
+      "stats": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "452.643158,406.815002,24.031250",
+        "hash": "69d7c33d"
+      },
+      "cycles": 7,
+      "applied": 5,
+      "recoveries": 0,
+      "expired": 1,
+      "timings": [
+        2785,
+        1996,
+        4551,
+        1494,
+        2273,
+        1946
+      ]
+    },
+    {
+      "model": "google/gemma-4-31b-it",
+      "ticks": 1440,
+      "duration_s": 20.03,
+      "stats": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "473.920685,687.968750,24.031250",
+        "hash": "35db5394"
+      },
+      "cycles": 25,
+      "applied": 25,
+      "recoveries": 0,
+      "expired": 0,
+      "timings": [
+        727,
+        442,
+        605,
+        551,
+        387,
+        445,
+        385,
+        611,
+        329,
+        383,
+        386,
+        387,
+        441,
+        445,
+        384,
+        387,
+        553,
+        444,
+        607,
+        445,
+        386,
+        444,
+        385,
+        606,
+        383
+      ]
+    },
+    {
+      "model": "qwen/qwen3.8-27b",
+      "ticks": 1444,
+      "duration_s": 20.1,
+      "stats": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "482.263397,136.262680,24.031250",
+        "hash": "324655bd"
+      },
+      "cycles": 22,
+      "applied": 22,
+      "recoveries": 0,
+      "expired": 0,
+      "timings": [
+        727,
+        498,
+        387,
+        444,
+        437,
+        494,
+        447,
+        441,
+        499,
+        438,
+        444,
+        440,
+        438,
+        494,
+        610,
+        500,
+        442,
+        495,
+        440,
+        1661,
+        1105,
+        1218
+      ]
+    }
+  ]
+}

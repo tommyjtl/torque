@@ -1,0 +1,392 @@
+{
+  "date": "2026-11-19",
+  "scope": "Mac, native E1M1 and RGB camera feedback. The close combat comparisons and death/restore replay are staged checks. No E1M1 completion is asserted.",
+  "overlay_ablation": {
+    "weapon test": {
+      "frames": 14,
+      "original_detected": 14,
+      "diagnostic_weapon_hidden": 0,
+      "visible_rgb_filtered": 0,
+      "ticks": [
+        17507,
+        17681,
+        17901,
+        17909,
+        17981,
+        17989,
+        18065,
+        18073,
+        18141,
+        18149,
+        18217,
+        18225,
+        18297,
+        18305
+      ]
+    },
+    "real character": {
+      "frames": 3,
+      "original_detected": 2,
+      "diagnostic_weapon_hidden": 2,
+      "visible_rgb_filtered": 2,
+      "ticks": [
+        3600,
+        3708,
+        3828
+      ]
+    }
+  },
+  "native_timing_ms_median": 22.4,
+  "ammo_and_center_text": {
+    "correct": 780,
+    "unreadable": 0,
+    "wrong": 0,
+    "ammo_changes": [
+      [
+        13367,
+        0,
+        1
+      ]
+    ],
+    "notices": {
+      "You can jump up here...": 44,
+      "You can jump up here  .": 1,
+      "You can jump up here..": 1
+    }
+  },
+  "calibration": "472 first-person weapon poses in the start hub. Saved gameplay hashes matched between weapon-on and weapon-off cameras. Only ordinary RGB with the weapon visible is used at runtime.",
+  "experimental_models": {
+    "generic": {
+      "original": {
+        "positive_frames": 5,
+        "located": 2,
+        "wrong_target": 0,
+        "negative_frames": 7,
+        "false_alarm": 0,
+        "median_ms_when_detected": 18.0
+      },
+      "held": {
+        "positive_frames": 11,
+        "located": 2,
+        "wrong_target": 0,
+        "negative_frames": 21,
+        "false_alarm": 0,
+        "median_ms_when_detected": 16.35
+      },
+      "fresh_negative": {
+        "positive_frames": 0,
+        "located": 0,
+        "wrong_target": 0,
+        "negative_frames": 22,
+        "false_alarm": 0,
+        "median_ms_when_detected": null
+      }
+    },
+    "quake": {
+      "original": {
+        "positive_frames": 5,
+        "located": 4,
+        "wrong_target": 1,
+        "negative_frames": 7,
+        "false_alarm": 0,
+        "median_ms_when_detected": 16.1
+      },
+      "held": {
+        "positive_frames": 11,
+        "located": 5,
+        "wrong_target": 4,
+        "negative_frames": 21,
+        "false_alarm": 3,
+        "median_ms_when_detected": 15.8
+      },
+      "fresh_negative": {
+        "positive_frames": 0,
+        "located": 0,
+        "wrong_target": 0,
+        "negative_frames": 22,
+        "false_alarm": 4,
+        "median_ms_when_detected": 15.950000000000001
+      }
+    },
+    "two_class": {
+      "original": {
+        "positive_frames": 5,
+        "located": 3,
+        "wrong_target": 0,
+        "negative_frames": 7,
+        "false_alarm": 3,
+        "median_ms_when_detected": 15.850000000000001
+      },
+      "held": {
+        "positive_frames": 11,
+        "located": 5,
+        "wrong_target": 3,
+        "negative_frames": 21,
+        "false_alarm": 2,
+        "median_ms_when_detected": 15.9
+      },
+      "fresh_negative": {
+        "positive_frames": 0,
+        "located": 0,
+        "wrong_target": 0,
+        "negative_frames": 22,
+        "false_alarm": 2,
+        "median_ms_when_detected": 15.75
+      }
+    }
+  },
+  "training": "The single-class prototype used 1800 synthesized training images made from local Quake character art and start-hub screenshots. An additional two-class prototype used generated rooms and a fallen-character label. No E1M1 layout, demonstration route or enemy coordinates were used for training. The additional models found more labeled enemies and also selected scenery or fallen characters. The public controller retained the generic model with RGB weapon filtering.",
+  "short_native_comparisons": {
+    "baseline-A": {
+      "arm": "baseline",
+      "source": "session-a3r45s03",
+      "start": 64809,
+      "start_state": {
+        "map": "e1m1",
+        "hp": "40",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "-80.017937,537.382996,-215.968750",
+        "hash": "20ee4f28"
+      },
+      "end_tick": 65310,
+      "final": {
+        "map": "e1m1",
+        "hp": "-7",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "-165.197845,648.129761,-208.642334",
+        "hash": "ec89775a"
+      },
+      "applied": 10,
+      "dodge_windows": 0,
+      "tracking_updates": 1,
+      "patch_updates": 0
+    },
+    "updated-B": {
+      "arm": "updated",
+      "source": "session-a3r45s03",
+      "start": 66343,
+      "start_state": {
+        "map": "e1m1",
+        "hp": "24",
+        "kills": "2/23",
+        "intermission": "0",
+        "pos": "22.145741,756.294678,-199.968750",
+        "hash": "9520d4b7"
+      },
+      "end_tick": 67351,
+      "final": {
+        "map": "e1m1",
+        "hp": "0",
+        "kills": "2/23",
+        "intermission": "0",
+        "pos": "23.617365,999.162048,-197.335495",
+        "hash": "ed45aaad"
+      },
+      "applied": 19,
+      "dodge_windows": 4,
+      "tracking_updates": 1,
+      "patch_updates": 0
+    },
+    "game_model-B": {
+      "arm": "game_model",
+      "source": "session-a3r45s03",
+      "start": 66343,
+      "start_state": {
+        "map": "e1m1",
+        "hp": "24",
+        "kills": "2/23",
+        "intermission": "0",
+        "pos": "22.145741,756.294678,-199.968750",
+        "hash": "9520d4b7"
+      },
+      "end_tick": 69225,
+      "final": {
+        "map": "e1m1",
+        "hp": "24",
+        "kills": "3/23",
+        "intermission": "0",
+        "pos": "-86.851791,640.115051,-215.968750",
+        "hash": "7fcd476f"
+      },
+      "applied": 116,
+      "dodge_windows": 0,
+      "tracking_updates": 202,
+      "patch_updates": 29
+    },
+    "masked-repeat": {
+      "arm": "masked",
+      "source": "session-5z74eimo",
+      "start": 17155,
+      "start_state": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "400.031250,603.316345,29.710224",
+        "hash": "c09f2f15"
+      },
+      "end_tick": 19527,
+      "final": {
+        "map": "e1m1",
+        "hp": "0",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "537.307129,-399.968750,88.031250",
+        "hash": "f43ae500"
+      },
+      "applied": 29,
+      "dodge_windows": 7,
+      "tracking_updates": 0,
+      "patch_updates": 0
+    },
+    "baseline-B": {
+      "arm": "baseline",
+      "source": "session-a3r45s03",
+      "start": 66343,
+      "start_state": {
+        "map": "e1m1",
+        "hp": "24",
+        "kills": "2/23",
+        "intermission": "0",
+        "pos": "22.145741,756.294678,-199.968750",
+        "hash": "9520d4b7"
+      },
+      "end_tick": 67868,
+      "final": {
+        "map": "e1m1",
+        "hp": "0",
+        "kills": "2/23",
+        "intermission": "0",
+        "pos": "31.968750,1048.602905,-199.968750",
+        "hash": "9498dc9c"
+      },
+      "applied": 26,
+      "dodge_windows": 0,
+      "tracking_updates": 1,
+      "patch_updates": 0
+    },
+    "updated-A": {
+      "arm": "updated",
+      "source": "session-a3r45s03",
+      "start": 64809,
+      "start_state": {
+        "map": "e1m1",
+        "hp": "40",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "-80.017937,537.382996,-215.968750",
+        "hash": "20ee4f28"
+      },
+      "end_tick": 67691,
+      "final": {
+        "map": "e1m1",
+        "hp": "20",
+        "kills": "2/23",
+        "intermission": "0",
+        "pos": "-116.095230,639.899536,-216.031250",
+        "hash": "f98730ae"
+      },
+      "applied": 81,
+      "dodge_windows": 9,
+      "tracking_updates": 103,
+      "patch_updates": 31
+    },
+    "game_model-A": {
+      "arm": "game_model",
+      "source": "session-a3r45s03",
+      "start": 64809,
+      "start_state": {
+        "map": "e1m1",
+        "hp": "40",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "-80.017937,537.382996,-215.968750",
+        "hash": "20ee4f28"
+      },
+      "end_tick": 65245,
+      "final": {
+        "map": "e1m1",
+        "hp": "-6",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "-156.339249,685.464661,-169.543045",
+        "hash": "42f6a63c"
+      },
+      "applied": 12,
+      "dodge_windows": 4,
+      "tracking_updates": 10,
+      "patch_updates": 2
+    }
+  },
+  "native_death_restore_fixture": {
+    "entrance": {
+      "map": "e1m1",
+      "hp": "100",
+      "kills": "0/23",
+      "intermission": "0",
+      "pos": "480.000000,-352.000000,88.031250",
+      "hash": "d64567c8"
+    },
+    "death": {
+      "map": "e1m1",
+      "hp": "0",
+      "kills": "0/23",
+      "intermission": "0",
+      "pos": "591.968750,687.968750,40.031250",
+      "hash": "3510b7be"
+    },
+    "restored": {
+      "map": "e1m1",
+      "hp": "100",
+      "kills": "0/23",
+      "intermission": "0",
+      "pos": "480.000000,-352.000000,88.031250",
+      "hash": "10bc9833"
+    },
+    "receipt": {
+      "id": "session-5f1nndcr",
+      "scenario": "entrance",
+      "result": "Step limit reached",
+      "gpu": false,
+      "finished": "2026-11-20T02:24:20.203522+00:00",
+      "status": "Ready",
+      "steps": 3,
+      "duration": 57.72
+    },
+    "save": {
+      "op": "save",
+      "slot": 1,
+      "saved_tick": 24,
+      "place": 0,
+      "visible_hp": 100,
+      "visible_ammo": 25,
+      "known_views": 1,
+      "landmark": "",
+      "direction": 0,
+      "state_hash": "d64567c8",
+      "save_sha256": "e67b24d6b1b47d0820c7118ebc10a24902e0c6cc7715f9ca410e87a3d19f275a"
+    },
+    "load": {
+      "op": "load",
+      "slot": 1,
+      "failed_slot": 1,
+      "failed_direction": null,
+      "last_scene": "",
+      "state_hash": "d64567c8",
+      "save_sha256": "e67b24d6b1b47d0820c7118ebc10a24902e0c6cc7715f9ca410e87a3d19f275a"
+    }
+  },
+  "fixture_note": "Recorded unsuccessful movement exercises actual death, automatic reload, MP4 verification and session restoration. This is a software regression fixture, separate from autonomous completion attempts.",
+  "autonomous_reload": {
+    "trial": "Fresh entrance, empty route memory, DeepSeek V4.1 Flash and local RGB character tracking",
+    "slot": 11,
+    "saved_at": 18998,
+    "reload_at": 46077,
+    "same_snapshot": true,
+    "before_hp": "-2",
+    "after_hp": "100",
+    "hash": "262afffc"
+  }
+}

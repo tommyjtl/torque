@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-20",
+  "hardware": "tommy-uno-q",
+  "visible_game": "E1M1 \u00b7 640 \u00d7 480 X11 window on DSI-1",
+  "renderer": "Mojo software",
+  "arm64_sha256": "63cd6d03abdf9409aee54311e04c2b995e40a3c9cbdee0ed209fbea2a88df4ad",
+  "path": "Native board game -> SSH -> Mac controller -> Modular Gemma -> SSH -> native board input. MiniMax planned on a separate worker.",
+  "first_single_step": {
+    "id": 1,
+    "source_tick": 28,
+    "before_yaw": 90.0,
+    "status": "applied",
+    "capture_to_mac_ms": 356.7,
+    "objective": "Inspect one side of the entrance",
+    "action": "turn_left",
+    "scene": "The player is facing the E1M1 entrance and needs to check the left side of the corridor.",
+    "api_ms": 523,
+    "applied_tick": 91,
+    "age_ms": 874.2,
+    "end_tick": 102,
+    "end_state": {
+      "hash": "2496605e",
+      "map": "e1m1",
+      "yaw": "121.99768",
+      "pos": "480.000000,-352.000000,88.031250",
+      "hp": "100",
+      "kills": "0/23",
+      "intermission": "0"
+    }
+  },
+  "display_check": {
+    "tick": 102,
+    "mean_pixel_error_0_255": 3.38,
+    "error_vs_entrance": 12.8,
+    "game_hash": "2496605e"
+  },
+  "method": "Separate foreground browser Play trial after the first single step. Board simulation and rendering use a local monotonic clock. Browser preview age is an estimate at image presentation, synchronized to the Mac and board clocks. Frame age to applied input uses one board clock and includes the first applied native chunk. RTT is the best ping observation on this connection. Values are specific to this board, network and provider run.",
+  "applied_moves": 34,
+  "tick_rate_hz": {
+    "samples": 287,
+    "median": 72.0,
+    "p95": 72.5
+  },
+  "physical_render_updates_per_second": {
+    "samples": 287,
+    "median": 60.0,
+    "p95": 60.3
+  },
+  "mac_preview_fps": {
+    "samples": 282,
+    "median": 14.8,
+    "p95": 16.8
+  },
+  "browser_preview_age_ms": {
+    "samples": 314,
+    "median": 34.0,
+    "p95": 170
+  },
+  "board_frame_to_mac_at_decision_ms": {
+    "samples": 34,
+    "median": 31.2,
+    "p95": 216.4
+  },
+  "gemma_ms": {
+    "samples": 34,
+    "median": 265.5,
+    "p95": 323
+  },
+  "frame_to_applied_input_ms": {
+    "samples": 34,
+    "median": 319.6,
+    "p95": 496.2
+  },
+  "best_ssh_round_trip_ms": 4.0,
+  "replaced_preview_frames": 79,
+  "expired_inputs": 0,
+  "audio_check": "Quake PipeWire stream linked to both channels of the board lineout. Physical audibility was not observed."
+}

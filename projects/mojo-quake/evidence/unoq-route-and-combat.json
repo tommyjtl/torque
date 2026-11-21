@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-20",
+  "map": "E1M1",
+  "host": "tommy-uno-q",
+  "navigation_trial": {
+    "door_crossed_at_tick": 241,
+    "far_y": 685.982361,
+    "estimated_places": 16,
+    "last_reference_section": "Entrance corridor",
+    "lift_descent_verified": false
+  },
+  "encounter_trial": {
+    "start": "703 ordinary setup ticks from the start hub with the attack button released",
+    "start_hash": "b85dca63",
+    "start_shells": 25,
+    "end_shells": 23,
+    "start_kills": "0/23",
+    "end_kills": "1/23",
+    "end_hp": "100",
+    "inputs": [
+      {
+        "id": 1,
+        "source_tick": 708,
+        "applied_tick": 760,
+        "action": "fire",
+        "opponent": "live_ahead",
+        "native_state_hash": "63d746fa"
+      },
+      {
+        "id": 3,
+        "source_tick": 856,
+        "applied_tick": 879,
+        "action": "fire",
+        "opponent": "live_ahead",
+        "native_state_hash": "6340a5cf"
+      }
+    ]
+  }
+}

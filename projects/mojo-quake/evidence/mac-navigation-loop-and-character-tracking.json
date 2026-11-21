@@ -1,0 +1,673 @@
+{
+  "source": "E1M1 unsuccessful autonomous entrance session-i7jnxmr7; original saved at tick 57481 with HP 52, 1/23 kills and no intermission.",
+  "loop_review": "From 6:52 through 7:52, 67 decisions, zero marked enemies; independent local silhouette pass also found no confident character on these 67 input frames. Unchanged HP and kills. The native position is used only by the evaluator.",
+  "thresholds": {
+    "tick_rate": 72,
+    "no_sustained_new_views_seconds": 45,
+    "recent_window_seconds": 30,
+    "min_samples": 12,
+    "min_observed_span_seconds": 20,
+    "min_revisit_fraction": 0.88,
+    "min_seconds_since_novel": 12,
+    "cooldown_seconds": 30,
+    "familiarity": "Bearing-aligned RGB patches, with at least 65 overlapping samples and texture contrast; three successive moving samples with new views count as renewed visual progress. Turning alone is excluded."
+  },
+  "diagnostic_replay": {
+    "original_run": "session-i7jnxmr7",
+    "through_tick": 34016,
+    "alerts": [
+      {
+        "seconds_since_new_views": 45.5,
+        "familiar_moving_views": 28,
+        "sampled_moving_views": 32,
+        "recoveries": 1,
+        "state": "changing route",
+        "tick": 12726,
+        "reason": "45 seconds without sustained new moving views.",
+        "new_64_unit_cells_in_last_30s": 2,
+        "visited_64_unit_cells_total": 68
+      },
+      {
+        "seconds_since_new_views": 75.7,
+        "familiar_moving_views": 34,
+        "sampled_moving_views": 36,
+        "recoveries": 2,
+        "state": "changing route",
+        "tick": 14900,
+        "reason": "Most moving views in the last 30 seconds were familiar.",
+        "new_64_unit_cells_in_last_30s": 4,
+        "visited_64_unit_cells_total": 72
+      },
+      {
+        "seconds_since_new_views": 106.0,
+        "familiar_moving_views": 24,
+        "sampled_moving_views": 29,
+        "recoveries": 3,
+        "state": "changing route",
+        "tick": 17082,
+        "reason": "45 seconds without sustained new moving views.",
+        "new_64_unit_cells_in_last_30s": 3,
+        "visited_64_unit_cells_total": 75
+      },
+      {
+        "seconds_since_new_views": 136.6,
+        "familiar_moving_views": 33,
+        "sampled_moving_views": 34,
+        "recoveries": 4,
+        "state": "changing route",
+        "tick": 19283,
+        "reason": "Most moving views in the last 30 seconds were familiar.",
+        "new_64_unit_cells_in_last_30s": 1,
+        "visited_64_unit_cells_total": 76
+      },
+      {
+        "seconds_since_new_views": 166.8,
+        "familiar_moving_views": 22,
+        "sampled_moving_views": 23,
+        "recoveries": 5,
+        "state": "changing route",
+        "tick": 21462,
+        "reason": "Most moving views in the last 30 seconds were familiar.",
+        "new_64_unit_cells_in_last_30s": 1,
+        "visited_64_unit_cells_total": 77
+      },
+      {
+        "seconds_since_new_views": 197.3,
+        "familiar_moving_views": 23,
+        "sampled_moving_views": 25,
+        "recoveries": 6,
+        "state": "changing route",
+        "tick": 23658,
+        "reason": "Most moving views in the last 30 seconds were familiar.",
+        "new_64_unit_cells_in_last_30s": 1,
+        "visited_64_unit_cells_total": 78
+      },
+      {
+        "seconds_since_new_views": 28.9,
+        "familiar_moving_views": 25,
+        "sampled_moving_views": 28,
+        "recoveries": 7,
+        "state": "changing route",
+        "tick": 26388,
+        "reason": "Most moving views in the last 30 seconds were familiar.",
+        "new_64_unit_cells_in_last_30s": 0,
+        "visited_64_unit_cells_total": 78
+      },
+      {
+        "seconds_since_new_views": 60.0,
+        "familiar_moving_views": 30,
+        "sampled_moving_views": 32,
+        "recoveries": 8,
+        "state": "changing route",
+        "tick": 28621,
+        "reason": "Most moving views in the last 30 seconds were familiar.",
+        "new_64_unit_cells_in_last_30s": 1,
+        "visited_64_unit_cells_total": 79
+      },
+      {
+        "seconds_since_new_views": 90.8,
+        "familiar_moving_views": 23,
+        "sampled_moving_views": 26,
+        "recoveries": 9,
+        "state": "changing route",
+        "tick": 30844,
+        "reason": "Most moving views in the last 30 seconds were familiar.",
+        "new_64_unit_cells_in_last_30s": 0,
+        "visited_64_unit_cells_total": 79
+      },
+      {
+        "seconds_since_new_views": 121.5,
+        "familiar_moving_views": 18,
+        "sampled_moving_views": 18,
+        "recoveries": 10,
+        "state": "changing route",
+        "tick": 33055,
+        "reason": "Most moving views in the last 30 seconds were familiar.",
+        "new_64_unit_cells_in_last_30s": 0,
+        "visited_64_unit_cells_total": 79
+      }
+    ],
+    "frames": 941
+  },
+  "paired_45s_branch": {
+    "source": "session-i7jnxmr7",
+    "cut": 26010,
+    "start_hash": "496b6c0e",
+    "window_end": 29252,
+    "coverage_cell_units": 64,
+    "original": {
+      "decisions": 55,
+      "previously_unseen_cells": 2,
+      "distinct_cells": 24,
+      "end": {
+        "map": "e1m1",
+        "hp": "52",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "400.031250,-303.968750,72.031250",
+        "hash": "28e3d541"
+      },
+      "local_changes": []
+    },
+    "watchdog": {
+      "decisions": 42,
+      "previously_unseen_cells": 6,
+      "distinct_cells": 25,
+      "end": {
+        "map": "e1m1",
+        "hp": "52",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "521.336731,360.069061,24.000849",
+        "hash": "2662a73a"
+      },
+      "local_changes": [
+        [
+          468,
+          "back_up",
+          "Most moving views in the last 30 seconds were familiar."
+        ],
+        [
+          469,
+          "branch_turn",
+          "Looking for a less explored branch."
+        ],
+        [
+          470,
+          "advance",
+          "Testing the new branch across successive moving views."
+        ],
+        [
+          471,
+          "advance",
+          "Testing the new branch across successive moving views."
+        ],
+        [
+          472,
+          "advance",
+          "Testing the new branch across successive moving views."
+        ],
+        [
+          503,
+          "back_up",
+          "Most moving views in the last 30 seconds were familiar."
+        ]
+      ]
+    }
+  },
+  "encounter_comparison": {
+    "local": {
+      "arm": "local",
+      "start": {
+        "map": "e1m1",
+        "hp": "64",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "572.365540,687.968750,40.031250",
+        "hash": "6f3d90ba"
+      },
+      "end": {
+        "map": "e1m1",
+        "hp": "64",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "572.365540,687.968750,40.031250",
+        "hash": "8ce0c636"
+      },
+      "end_tick": 3962,
+      "events": [
+        {
+          "seq": 1,
+          "action": "aim_fire",
+          "input_source": "Local character detector",
+          "tracking": [
+            {
+              "point": [
+                11.36,
+                65.5
+              ],
+              "confidence": 0.78,
+              "ms": 17.5,
+              "tick": 3600,
+              "firing": false
+            },
+            {
+              "point": [
+                28.87,
+                56.86
+              ],
+              "confidence": 0.861,
+              "ms": 18.3,
+              "tick": 3604,
+              "firing": false
+            }
+          ],
+          "applied_tick": 3600,
+          "note": "Character left the detector view"
+        },
+        {
+          "seq": 2,
+          "action": null,
+          "input_source": null,
+          "tracking": null,
+          "applied_tick": null,
+          "note": "Visible character acquired"
+        },
+        {
+          "seq": 3,
+          "action": "aim_fire",
+          "input_source": "Local character detector",
+          "tracking": [
+            {
+              "point": [
+                41.56,
+                51.99
+              ],
+              "confidence": 0.676,
+              "ms": 16.3,
+              "tick": 3616,
+              "firing": true
+            }
+          ],
+          "applied_tick": 3616,
+          "note": "Character left the detector view"
+        },
+        {
+          "seq": 4,
+          "action": null,
+          "input_source": null,
+          "tracking": null,
+          "applied_tick": null,
+          "note": "Visible character acquired"
+        },
+        {
+          "seq": 5,
+          "action": "aim_fire",
+          "input_source": "Local character detector",
+          "tracking": [
+            {
+              "point": [
+                49.79,
+                54.28
+              ],
+              "confidence": 0.535,
+              "ms": 15.9,
+              "tick": 3656,
+              "firing": true
+            },
+            {
+              "point": [
+                48.61,
+                49.74
+              ],
+              "confidence": 0.535,
+              "ms": 15.9,
+              "tick": 3660,
+              "firing": true
+            },
+            {
+              "point": [
+                50.82,
+                48.57
+              ],
+              "confidence": 0.708,
+              "ms": 15.9,
+              "tick": 3664,
+              "firing": true
+            }
+          ],
+          "applied_tick": 3656,
+          "note": "Character left the detector view"
+        },
+        {
+          "seq": 6,
+          "action": "aim_fire",
+          "input_source": "model",
+          "tracking": null,
+          "applied_tick": 3748,
+          "note": ""
+        },
+        {
+          "seq": 7,
+          "action": "aim_fire",
+          "input_source": "model",
+          "tracking": null,
+          "applied_tick": 3810,
+          "note": ""
+        },
+        {
+          "seq": 8,
+          "action": "aim_fire",
+          "input_source": "model",
+          "tracking": null,
+          "applied_tick": 3880,
+          "note": ""
+        },
+        {
+          "seq": 9,
+          "action": "aim_fire",
+          "input_source": "model",
+          "tracking": null,
+          "applied_tick": 3942,
+          "note": "Run interrupted"
+        }
+      ]
+    },
+    "cloud": {
+      "arm": "cloud",
+      "start": {
+        "map": "e1m1",
+        "hp": "64",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "572.365540,687.968750,40.031250",
+        "hash": "6f3d90ba"
+      },
+      "end": {
+        "map": "e1m1",
+        "hp": "32",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "401.092285,623.109802,24.031250",
+        "hash": "0014e20d"
+      },
+      "end_tick": 3960,
+      "events": [
+        {
+          "seq": 1,
+          "action": "back_up",
+          "input_source": "local recovery",
+          "tracking": null,
+          "applied_tick": 3668,
+          "note": "Interrupted by visible health loss"
+        },
+        {
+          "seq": 2,
+          "action": "evade_and_scan",
+          "input_source": "HUD reflex",
+          "tracking": null,
+          "applied_tick": 3672,
+          "note": ""
+        },
+        {
+          "seq": 3,
+          "action": "turn_around",
+          "input_source": "model",
+          "tracking": null,
+          "applied_tick": 3740,
+          "note": ""
+        },
+        {
+          "seq": 4,
+          "action": null,
+          "input_source": null,
+          "tracking": null,
+          "applied_tick": null,
+          "note": "Interrupted by visible health loss"
+        },
+        {
+          "seq": 5,
+          "action": "jump_back",
+          "input_source": "HUD reflex",
+          "tracking": null,
+          "applied_tick": 3788,
+          "note": ""
+        },
+        {
+          "seq": 6,
+          "action": "jump_forward",
+          "input_source": "model",
+          "tracking": null,
+          "applied_tick": 3856,
+          "note": ""
+        },
+        {
+          "seq": 7,
+          "action": "follow_route",
+          "input_source": "model",
+          "tracking": null,
+          "applied_tick": 3948,
+          "note": "Run interrupted"
+        }
+      ]
+    }
+  },
+  "limits": "One paired branch from a failed run and one close encounter are regression checks. New evaluation cells do not verify an exit; different cloud choices and request latencies may affect the branch.",
+  "repeated_loop_trials": {
+    "passage_survey": {
+      "source": "session-qghg76n9",
+      "start_tick": 32200,
+      "start_hash": "97550cc0",
+      "end_tick": 36522,
+      "original": {
+        "distinct_cells": 33,
+        "previously_unseen_cells": 1,
+        "final_hp": "100",
+        "level_complete": false,
+        "probes": {}
+      },
+      "watchdog": {
+        "distinct_cells": 10,
+        "previously_unseen_cells": 0,
+        "final_hp": "100",
+        "level_complete": false,
+        "probes": {
+          "crossed": 19,
+          "no confirmed travel": 18
+        }
+      }
+    },
+    "survey_with_visual_revisits": {
+      "source": "session-qghg76n9",
+      "start_tick": 32200,
+      "start_hash": "97550cc0",
+      "end_tick": 36520,
+      "original": {
+        "distinct_cells": 33,
+        "previously_unseen_cells": 1,
+        "final_hp": "100",
+        "level_complete": false,
+        "probes": {}
+      },
+      "watchdog": {
+        "distinct_cells": 16,
+        "previously_unseen_cells": 1,
+        "final_hp": "100",
+        "level_complete": false,
+        "probes": {
+          "crossed": 25,
+          "no confirmed travel": 15
+        }
+      }
+    }
+  },
+  "probe_calibration": {
+    "session": "Accelerated exploratory entrance run, 84 distinct native 64-unit cells, player died at tick 7610. Navigation received only RGB and issued controls. No cloud planning or level completion claim.",
+    "evaluation": "Uninterrupted probes; crossing defined for evaluation as at least 32 units projected along the issued heading.",
+    "counts": {
+      "true_cross": 77,
+      "true_block": 45,
+      "missed_cross": 1,
+      "false_cross": 3
+    }
+  },
+  "public_resumed_run": {
+    "source": "session-qghg76n9",
+    "recording": "session-a3r45s03",
+    "continued_at_tick": 59351,
+    "continued_state_hash": "c0bf617e",
+    "continued_health": 40,
+    "continued_kills": "1/23",
+    "end_tick": 67543,
+    "final": {
+      "map": "e1m1",
+      "hp": "-8",
+      "kills": "2/23",
+      "intermission": "0",
+      "pos": "-96.031250,703.697083,-200.043396",
+      "hash": "741a047b"
+    },
+    "previously_visited_64_unit_cells": 84,
+    "additional_cells_at_decision_end": 21,
+    "elapsed_game_seconds": 113.78,
+    "partial_result": "Left earlier territory, reached a second kill and died; no exit."
+  },
+  "turn_oscillation": {
+    "original_60s": {
+      "branch_turn": 74,
+      "walking_probes": 0
+    },
+    "matched_native_state": {
+      "source": "session-z53n587u",
+      "start": 46875,
+      "start_hash": "f022a8e6",
+      "end": 47599,
+      "actions": [
+        "test_passage",
+        "branch_turn",
+        "test_passage",
+        "test_passage",
+        "branch_turn",
+        "test_passage",
+        "branch_turn",
+        "test_passage",
+        "branch_turn",
+        "test_passage",
+        "test_passage",
+        "test_passage"
+      ],
+      "probes": [
+        {
+          "from": [
+            -1,
+            -2
+          ],
+          "to": [
+            -1,
+            -2
+          ],
+          "heading": 2,
+          "jump": false,
+          "result": "no confirmed travel",
+          "flow_samples": 11,
+          "net_expansion": 0.0
+        },
+        {
+          "from": [
+            -1,
+            -2
+          ],
+          "to": [
+            0,
+            -2
+          ],
+          "heading": 0,
+          "jump": false,
+          "result": "crossed",
+          "flow_samples": 11,
+          "net_expansion": 0.611
+        },
+        {
+          "from": [
+            0,
+            -2
+          ],
+          "to": [
+            1,
+            -2
+          ],
+          "heading": 0,
+          "jump": false,
+          "result": "crossed",
+          "flow_samples": 11,
+          "net_expansion": 1.359
+        },
+        {
+          "from": [
+            1,
+            -2
+          ],
+          "to": [
+            1,
+            -2
+          ],
+          "heading": 1,
+          "jump": false,
+          "result": "no confirmed travel",
+          "flow_samples": 11,
+          "net_expansion": 0.0
+        },
+        {
+          "from": [
+            1,
+            -2
+          ],
+          "to": [
+            1,
+            -3
+          ],
+          "heading": 3,
+          "jump": false,
+          "result": "crossed",
+          "flow_samples": 10,
+          "net_expansion": 0.481
+        },
+        {
+          "from": [
+            1,
+            -3
+          ],
+          "to": [
+            2,
+            -3
+          ],
+          "heading": 0,
+          "jump": false,
+          "result": "crossed",
+          "flow_samples": 11,
+          "net_expansion": 0.499
+        },
+        {
+          "from": [
+            2,
+            -3
+          ],
+          "to": [
+            3,
+            -3
+          ],
+          "heading": 0,
+          "jump": false,
+          "result": "crossed",
+          "flow_samples": 11,
+          "net_expansion": 0.611
+        },
+        {
+          "from": [
+            3,
+            -3
+          ],
+          "to": [
+            4,
+            -3
+          ],
+          "heading": 0,
+          "jump": false,
+          "result": "crossed",
+          "flow_samples": 11,
+          "net_expansion": 0.675
+        }
+      ],
+      "movement_ticks": 112,
+      "final": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "486.684723,608.544067,24.031250",
+        "hash": "dd69d3d9"
+      }
+    },
+    "fix": "A reserved passage survives a visual place match or a new platform hypothesis during camera rotation. When aligned, the local controller tests it before asking for another model decision. Live sightings and health-loss responses can interrupt the movement."
+  }
+}

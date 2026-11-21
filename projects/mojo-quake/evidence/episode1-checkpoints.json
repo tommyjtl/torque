@@ -1,0 +1,615 @@
+{
+  "board": "Arduino UNO Q",
+  "date": "2026-11-19",
+  "desktop_release": "eb61e0f50aa4973e810e",
+  "renderer": "FD702",
+  "pak0_sha256": "35a9c55e5e5a284a159ad2a62e0e8def23d829561fe2f54eb402dbc0a9a946af",
+  "binary_sha256": {
+    "tyr-quake": "8a0717810f37df0e6b5817ffec6fddb7e303de03dc223e42840c978fcf627813",
+    "tyr-glquake": "210aa51f7b9f090bd7264710138a8b3cad8e2b1ba54b5aa8238d634066c9f83f"
+  },
+  "routes": {
+    "ordinary": {
+      "ticks": 46767,
+      "trace_sha256": "fe4260e87fcc91f7fafd2b642f3a7dd4105f615c558b6b819d0f46a053dba347",
+      "checkpoints": [
+        {
+          "event": "ENTER",
+          "map": "start",
+          "command": "0",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/0",
+          "runes": "0",
+          "hash": "1d995c62"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m1",
+          "command": "400",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/23",
+          "runes": "0",
+          "hash": "d2d5c3e6"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m1",
+          "command": "3629",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "88",
+          "kills": "21/23",
+          "runes": "0",
+          "hash": "cb975cdd"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m2",
+          "command": "3840",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "88",
+          "kills": "0/24",
+          "runes": "0",
+          "hash": "d155b593"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m2",
+          "command": "8453",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "50",
+          "kills": "16/24",
+          "runes": "0",
+          "hash": "6fdf4149"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m3",
+          "command": "8690",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "50",
+          "kills": "0/47",
+          "runes": "0",
+          "hash": "1aa6cb3a"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m3",
+          "command": "17294",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "22",
+          "kills": "12/47",
+          "runes": "0",
+          "hash": "6db42f0f"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m4",
+          "command": "17506",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "50",
+          "kills": "0/42",
+          "runes": "0",
+          "hash": "f1505520"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m4",
+          "command": "22826",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "55",
+          "kills": "20/42",
+          "runes": "0",
+          "hash": "79423fc2"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m5",
+          "command": "23038",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "55",
+          "kills": "0/39",
+          "runes": "0",
+          "hash": "7833e4e2"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m5",
+          "command": "31976",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "31",
+          "kills": "25/39",
+          "runes": "0",
+          "hash": "e755ec78"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m6",
+          "command": "32191",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "50",
+          "kills": "0/24",
+          "runes": "0",
+          "hash": "aec1c19d"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m6",
+          "command": "40996",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "10/24",
+          "runes": "0",
+          "hash": "5586b262"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m7",
+          "command": "41229",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/21",
+          "runes": "0",
+          "hash": "adcecab7"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m7",
+          "command": "45715",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "80",
+          "kills": "1/21",
+          "runes": "1",
+          "hash": "7d78100d"
+        },
+        {
+          "event": "FINALE",
+          "map": "e1m7",
+          "command": "46040",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "80",
+          "kills": "13/21",
+          "runes": "1",
+          "hash": "5d34341a"
+        },
+        {
+          "event": "ENTER",
+          "map": "start",
+          "command": "46694",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/0",
+          "runes": "1",
+          "hash": "842c541b"
+        },
+        {
+          "event": "END",
+          "map": "start",
+          "command": "46767",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/0",
+          "runes": "1",
+          "hash": "c9a2b52f"
+        }
+      ],
+      "boss": [
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "41229",
+          "health": "0"
+        },
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "41325",
+          "health": "3"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "42307",
+          "action": "south"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "42782",
+          "action": "north"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "43047",
+          "action": "lightning"
+        },
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "43061",
+          "health": "2"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "43327",
+          "action": "south"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "43768",
+          "action": "north"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "44054",
+          "action": "lightning"
+        },
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "44068",
+          "health": "1"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "44339",
+          "action": "south"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "44772",
+          "action": "north"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "45062",
+          "action": "lightning"
+        },
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "45076",
+          "health": "0"
+        }
+      ]
+    },
+    "secret": {
+      "ticks": 58685,
+      "trace_sha256": "602d73b7aa984a20040178f498c5a818037efc9dc915bbf30700f3dcee841e30",
+      "checkpoints": [
+        {
+          "event": "ENTER",
+          "map": "start",
+          "command": "0",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/0",
+          "runes": "0",
+          "hash": "1d995c62"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m1",
+          "command": "400",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/23",
+          "runes": "0",
+          "hash": "d2d5c3e6"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m1",
+          "command": "3629",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "88",
+          "kills": "21/23",
+          "runes": "0",
+          "hash": "cb975cdd"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m2",
+          "command": "3840",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "88",
+          "kills": "0/24",
+          "runes": "0",
+          "hash": "d155b593"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m2",
+          "command": "8453",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "50",
+          "kills": "16/24",
+          "runes": "0",
+          "hash": "6fdf4149"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m3",
+          "command": "8690",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "50",
+          "kills": "0/47",
+          "runes": "0",
+          "hash": "1aa6cb3a"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m3",
+          "command": "17294",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "22",
+          "kills": "12/47",
+          "runes": "0",
+          "hash": "6db42f0f"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m4",
+          "command": "17506",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "50",
+          "kills": "0/42",
+          "runes": "0",
+          "hash": "f1505520"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m4",
+          "command": "26059",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "81",
+          "kills": "23/42",
+          "runes": "0",
+          "hash": "aa7379bb"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m8",
+          "command": "26272",
+          "skill": "1",
+          "gravity": "100",
+          "hp": "81",
+          "kills": "0/28",
+          "runes": "0",
+          "hash": "6fa31f87"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m8",
+          "command": "34729",
+          "skill": "1",
+          "gravity": "100",
+          "hp": "49",
+          "kills": "17/28",
+          "runes": "0",
+          "hash": "c1af8ab4"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m5",
+          "command": "34956",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "50",
+          "kills": "0/39",
+          "runes": "0",
+          "hash": "63d68246"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m5",
+          "command": "43894",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "31",
+          "kills": "25/39",
+          "runes": "0",
+          "hash": "9ef6c94f"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m6",
+          "command": "44109",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "50",
+          "kills": "0/24",
+          "runes": "0",
+          "hash": "5fd68e9d"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m6",
+          "command": "52914",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "10/24",
+          "runes": "0",
+          "hash": "636a4098"
+        },
+        {
+          "event": "ENTER",
+          "map": "e1m7",
+          "command": "53147",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/21",
+          "runes": "0",
+          "hash": "5d0272b3"
+        },
+        {
+          "event": "EXIT",
+          "map": "e1m7",
+          "command": "57633",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "80",
+          "kills": "1/21",
+          "runes": "1",
+          "hash": "c5ab20e9"
+        },
+        {
+          "event": "FINALE",
+          "map": "e1m7",
+          "command": "57958",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "80",
+          "kills": "13/21",
+          "runes": "1",
+          "hash": "cfe2aaa6"
+        },
+        {
+          "event": "ENTER",
+          "map": "start",
+          "command": "58612",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/0",
+          "runes": "1",
+          "hash": "842c541b"
+        },
+        {
+          "event": "END",
+          "map": "start",
+          "command": "58685",
+          "skill": "1",
+          "gravity": "800",
+          "hp": "100",
+          "kills": "0/0",
+          "runes": "1",
+          "hash": "c9a2b52f"
+        }
+      ],
+      "boss": [
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "53147",
+          "health": "0"
+        },
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "53243",
+          "health": "3"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "54225",
+          "action": "south"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "54700",
+          "action": "north"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "54965",
+          "action": "lightning"
+        },
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "54979",
+          "health": "2"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "55245",
+          "action": "south"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "55686",
+          "action": "north"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "55972",
+          "action": "lightning"
+        },
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "55986",
+          "health": "1"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "56257",
+          "action": "south"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "56690",
+          "action": "north"
+        },
+        {
+          "event": "PLATE",
+          "map": "e1m7",
+          "command": "56980",
+          "action": "lightning"
+        },
+        {
+          "event": "BOSS",
+          "map": "e1m7",
+          "command": "56994",
+          "health": "0"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "date": "2026-11-19",
+  "host": "Apple M3 Max",
+  "start": "E1M1 encounter via 703 recorded navigation ticks from start. All attack inputs removed during setup.",
+  "models": {
+    "vision": "google/gemma-4-31b-it \u00b7 Modular Cloud",
+    "decision": "gemma4:e4b-mlx \u00b7 Mac Ollama"
+  },
+  "median_combined_model_ms": 1055.5,
+  "replay_sha256": "f9480b9c17e43b2d26323eebec1a48bff7cef58ab89a1d9a1f5b795c264a7ee2",
+  "replay_results": {
+    "tyr-quake": {
+      "map": "e1m1",
+      "command": "823",
+      "kills": "1/23",
+      "hp": "100",
+      "hash": "3edd51ca"
+    },
+    "tyr-glquake": {
+      "map": "e1m1",
+      "command": "823",
+      "kills": "1/23",
+      "hp": "100",
+      "hash": "3edd51ca"
+    }
+  },
+  "decisions": [
+    {
+      "seq": 1,
+      "observed_tick": 703,
+      "observed_stats": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "326.606201,583.517334,24.031250",
+        "hash": "b85dca63"
+      },
+      "vision": {
+        "scene": "A stone corridor with a gap in the floor and a single enemy standing across from the player.",
+        "enemy": [
+          48,
+          50
+        ],
+        "route": [
+          48,
+          42
+        ]
+      },
+      "action": "aim_fire",
+      "reason": "A visible opening offers a route forward.",
+      "vision_ms": 721,
+      "decision_ms": 1003,
+      "end_tick": 733,
+      "ticks": 30,
+      "view_change_pct": 5.1,
+      "evaluator": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "298.796875,607.169434,24.031250",
+        "hash": "677beb96"
+      }
+    },
+    {
+      "seq": 2,
+      "observed_tick": 733,
+      "observed_stats": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "298.796875,607.169434,24.031250",
+        "hash": "677beb96"
+      },
+      "vision": {
+        "scene": "A narrow industrial corridor with a gap in the floor and an open doorway ahead.",
+        "enemy": [
+          45,
+          46
+        ],
+        "route": [
+          46,
+          48
+        ]
+      },
+      "action": "aim_fire",
+      "reason": "A visible opening offers a route forward.",
+      "vision_ms": 519,
+      "decision_ms": 556,
+      "end_tick": 763,
+      "ticks": 30,
+      "view_change_pct": 3.7,
+      "evaluator": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "298.796875,607.169434,24.031250",
+        "hash": "99a1c444"
+      }
+    },
+    {
+      "seq": 3,
+      "observed_tick": 763,
+      "observed_stats": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "0/23",
+        "intermission": "0",
+        "pos": "298.796875,607.169434,24.031250",
+        "hash": "99a1c444"
+      },
+      "vision": {
+        "scene": "A dark industrial corridor with a gap in the floor and a single enemy standing across it.",
+        "enemy": [
+          50,
+          48
+        ],
+        "route": [
+          50,
+          52
+        ]
+      },
+      "action": "aim_fire",
+      "reason": "A visible opening offers a route forward.",
+      "vision_ms": 305,
+      "decision_ms": 598,
+      "end_tick": 793,
+      "ticks": 30,
+      "view_change_pct": 0.9,
+      "evaluator": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "298.796875,607.169434,24.031250",
+        "hash": "543412b9"
+      }
+    },
+    {
+      "seq": 4,
+      "observed_tick": 793,
+      "observed_stats": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "298.796875,607.169434,24.031250",
+        "hash": "543412b9"
+      },
+      "vision": {
+        "scene": "A dark stone corridor with a gap in the floor and a doorway at the end.",
+        "enemy": [
+          51,
+          43
+        ],
+        "route": [
+          51,
+          30
+        ]
+      },
+      "action": "aim_fire",
+      "reason": "A visible opening offers a route forward.",
+      "vision_ms": 461,
+      "decision_ms": 575,
+      "end_tick": 823,
+      "ticks": 30,
+      "view_change_pct": 1.8,
+      "evaluator": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "298.796875,607.169434,24.031250",
+        "hash": "3edd51ca"
+      }
+    }
+  ]
+}

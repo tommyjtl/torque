@@ -1,0 +1,134 @@
+{
+  "run": "session-4vd2p_fz",
+  "level": "E1M1",
+  "reported_step": 747,
+  "source_tick": 40320,
+  "screenshot_live_tick": 40344,
+  "source_jpeg_sha256": "191ef824b03a549f62325f9b6c9939f1b326d2a7ed5f4db9e0e05a6ff6791bfe",
+  "visual_review": "The foreground soldier is prone and appears defeated. The crosshair stays over its torso. This is a human visual label; the policy has no entity-life flag.",
+  "trace_window": [
+    40184,
+    40464
+  ],
+  "attack_button_ticks": 96,
+  "local_aim_steps": [
+    738,
+    740,
+    742,
+    744,
+    746,
+    748,
+    750,
+    752,
+    753,
+    755
+  ],
+  "step_747": {
+    "input": null,
+    "hp": "16",
+    "kills_at_start": "1/23",
+    "kills_at_end": "1/23"
+  },
+  "regression_criterion": "Replay the fallen-soldier frames and measure attack-button ticks after the death animation settles, ammunition spent, and time to resume navigation. Check a live soldier in a similar view for prompt acquisition and shots. Preserve close moving targets and partially occluded enemies.",
+  "planner_handoff": "Keep standing, fallen and uncertain as separate camera observations. The local player should release an unconfirmed lock promptly. A planner may request disengagement or a fresh look; advice expires when the player leaves or reloads the scene. An unchanged total kill count alone cannot establish a particular target is dead.",
+  "isolated_planner_check": {
+    "model": "MiniMaxAI/MiniMax-M3.1-Flash",
+    "method": "Both archived RGB inputs were passed independently to the background planner. The reported case included recent game actions and the visible HP value. The control contained a standing enemy. Labels were inspected before the requests.",
+    "results": [
+      {
+        "case": "reported",
+        "plan": {
+          "intent": "resupply",
+          "character": "fallen",
+          "objective": "Find ammunition and health before continuing.",
+          "evidence": "The HUD shows 16 health and the ammunition counter appears empty.",
+          "success": "The ammunition or health display increases after collecting a pickup."
+        },
+        "latency_ms": 3398
+      },
+      {
+        "case": "active-control",
+        "plan": {
+          "intent": "explore",
+          "character": "active",
+          "objective": "Advance down the corridor past the armed enemy.",
+          "evidence": "An armed enemy stands on the left beside the corridor.",
+          "success": "You reach the far end of the visible corridor."
+        },
+        "latency_ms": 2407
+      }
+    ],
+    "scope": "Two image classifications. This does not demonstrate that the live local detector releases a fallen target.",
+    "interpretation": "MiniMax labeled the prone figure fallen and the standing control active. It also described the ammunition display as apparently empty on the prone frame. The visible HUD read 14. A correct character label does not validate the rest of the advice or establish that the live player released the lock."
+  },
+  "visible_hud": {
+    "step_738_ammo": 18,
+    "step_747_ammo": 14,
+    "step_755_ammo": 11,
+    "step_747_hp": 16
+  },
+  "posture_and_motion_check": {
+    "method": "Replay each recorded input and own save/load operation. Check saved observation hashes. Feed actual RGB images, camera inputs, attack-button state and HUD ammunition to the tracker. A completely visible broad silhouette must match its earlier texture through repeated shots before the lock is retired. A changed appearance can be reacquired.",
+    "windows": [
+      {
+        "source": "session-4vd2p_fz",
+        "label": "reported prone soldier",
+        "start_tick": 40184,
+        "end_tick": 40464,
+        "samples": 71,
+        "old_tracking_samples": 22,
+        "revised_tracking_samples": 0
+      },
+      {
+        "source": "session-lfmak4c8",
+        "label": "approaching live dog",
+        "start_tick": 10260,
+        "end_tick": 10403,
+        "samples": 36,
+        "old_tracking_samples": 4,
+        "revised_tracking_samples": 4
+      },
+      {
+        "source": "session-lfmak4c8",
+        "label": "fallen dog",
+        "start_tick": 10530,
+        "end_tick": 11340,
+        "samples": 202,
+        "old_tracking_samples": 105,
+        "revised_tracking_samples": 77
+      },
+      {
+        "source": "session-3sebkm5_",
+        "label": "live soldier",
+        "start_tick": 3350,
+        "end_tick": 3970,
+        "samples": 155,
+        "old_tracking_samples": 23,
+        "revised_tracking_samples": 23
+      }
+    ],
+    "native_branch": {
+      "source": "session-4vd2p_fz",
+      "start_tick": 40184,
+      "end_tick": 41048,
+      "initial_state": {
+        "map": "e1m1",
+        "hp": "16",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "432.031250,180.622177,24.031250",
+        "hash": "d8d14c69"
+      },
+      "final_state": {
+        "map": "e1m1",
+        "hp": "16",
+        "kills": "1/23",
+        "intermission": "0",
+        "pos": "430.412323,-175.957336,68.021652",
+        "hash": "80d544ba"
+      },
+      "reported_releases": 0,
+      "interpretation": "The changed live branch moved away from the body. No retained-pose release was logged in that branch, so attribution to the rejection rule comes from the identical-frame comparison."
+    }
+  }
+}

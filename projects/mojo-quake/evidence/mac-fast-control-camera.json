@@ -1,0 +1,146 @@
+[
+  {
+    "scene": "ledge",
+    "yaw_delta": 6,
+    "method": "patch",
+    "local_ms": 2.485,
+    "tracked_x_pct": 55.3125,
+    "expected_static_x_pct": 55.26,
+    "error_px": 0.2
+  },
+  {
+    "scene": "ledge",
+    "yaw_delta": 6,
+    "method": "features",
+    "local_ms": 7.538,
+    "tracked_x_pct": 55.3125,
+    "expected_static_x_pct": 55.26,
+    "error_px": 0.2
+  },
+  {
+    "scene": "ledge",
+    "yaw_delta": -8,
+    "method": "patch",
+    "local_ms": 0.413,
+    "tracked_x_pct": 42.8125,
+    "expected_static_x_pct": 42.97,
+    "error_px": 0.5
+  },
+  {
+    "scene": "ledge",
+    "yaw_delta": -8,
+    "method": "features",
+    "local_ms": 5.103,
+    "tracked_x_pct": 43.125,
+    "expected_static_x_pct": 42.97,
+    "error_px": 0.5
+  },
+  {
+    "scene": "ledge",
+    "yaw_delta": 12,
+    "method": "patch",
+    "local_ms": 0.43,
+    "tracked_x_pct": 60.625,
+    "expected_static_x_pct": 60.63,
+    "error_px": 0.0
+  },
+  {
+    "scene": "ledge",
+    "yaw_delta": 12,
+    "method": "features",
+    "local_ms": 4.379,
+    "tracked_x_pct": 60.625,
+    "expected_static_x_pct": 60.63,
+    "error_px": 0.0
+  },
+  {
+    "scene": "ledge",
+    "yaw_delta": -14,
+    "method": "patch",
+    "local_ms": 0.44,
+    "tracked_x_pct": 37.5,
+    "expected_static_x_pct": 37.53,
+    "error_px": 0.1
+  },
+  {
+    "scene": "ledge",
+    "yaw_delta": -14,
+    "method": "features",
+    "local_ms": 3.983,
+    "tracked_x_pct": 37.5,
+    "expected_static_x_pct": 37.53,
+    "error_px": 0.1
+  },
+  {
+    "scene": "enemy",
+    "yaw_delta": 6,
+    "method": "patch",
+    "local_ms": 0.359,
+    "tracked_x_pct": null,
+    "expected_static_x_pct": 53.24,
+    "error_px": null
+  },
+  {
+    "scene": "enemy",
+    "yaw_delta": 6,
+    "method": "features",
+    "local_ms": 4.585,
+    "tracked_x_pct": null,
+    "expected_static_x_pct": 53.24,
+    "error_px": null
+  },
+  {
+    "scene": "enemy",
+    "yaw_delta": -8,
+    "method": "patch",
+    "local_ms": 0.419,
+    "tracked_x_pct": null,
+    "expected_static_x_pct": 40.92,
+    "error_px": null
+  },
+  {
+    "scene": "enemy",
+    "yaw_delta": -8,
+    "method": "features",
+    "local_ms": 5.94,
+    "tracked_x_pct": null,
+    "expected_static_x_pct": 40.92,
+    "error_px": null
+  },
+  {
+    "scene": "enemy",
+    "yaw_delta": 12,
+    "method": "patch",
+    "local_ms": 0.367,
+    "tracked_x_pct": null,
+    "expected_static_x_pct": 58.56,
+    "error_px": null
+  },
+  {
+    "scene": "enemy",
+    "yaw_delta": 12,
+    "method": "features",
+    "local_ms": 5.64,
+    "tracked_x_pct": null,
+    "expected_static_x_pct": 58.56,
+    "error_px": null
+  },
+  {
+    "scene": "enemy",
+    "yaw_delta": -14,
+    "method": "patch",
+    "local_ms": 0.422,
+    "tracked_x_pct": null,
+    "expected_static_x_pct": 35.39,
+    "error_px": null
+  },
+  {
+    "scene": "enemy",
+    "yaw_delta": -14,
+    "method": "features",
+    "local_ms": 6.617,
+    "tracked_x_pct": null,
+    "expected_static_x_pct": 35.39,
+    "error_px": null
+  }
+]

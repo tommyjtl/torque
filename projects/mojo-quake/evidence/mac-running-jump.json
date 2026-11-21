@@ -1,0 +1,104 @@
+{
+  "source_run": "session-or7fobwi",
+  "screenshot_decision": 19,
+  "screenshot_action": "advance",
+  "method": "Replayed entry inputs to tick 5142, then faced the E1M1 tutorial ledge from the lower floor. Cloud vision and Mac Gemma made the next decision in real time. Compared the actual running jump with three alternatives after the same inference interval. Engine state used only for evaluation.",
+  "live": {
+    "vision": {
+      "scene": "The player faces a high wall of machinery and panels with a jump tutorial message and a narrow ledge above the floor.",
+      "enemy": null,
+      "route": [
+        50,
+        40
+      ],
+      "landing": [
+        50,
+        42
+      ]
+    },
+    "action": "jump_forward",
+    "applied_tick": 5270,
+    "jump_press_tick": 5279,
+    "jump_release_tick": 5283,
+    "end_tick": 5330,
+    "ticks": 60,
+    "evaluator": {
+      "map": "e1m1",
+      "hp": "100",
+      "kills": "0/23",
+      "intermission": "0",
+      "pos": "703.968750,222.750259,72.031250",
+      "hash": "6f1c54dd"
+    }
+  },
+  "conditions": {
+    "walk": {
+      "start_hash": "75101e81",
+      "end_hash": "aa2312aa",
+      "start": [
+        577.155334,
+        222.750259,
+        40.03125
+      ],
+      "end": [
+        623.96875,
+        222.750259,
+        40.03125
+      ],
+      "horizontal_distance": 46.81,
+      "rise": 0.0,
+      "grounded": true
+    },
+    "old_jump": {
+      "start_hash": "75101e81",
+      "end_hash": "fc0dc260",
+      "start": [
+        577.155334,
+        222.750259,
+        40.03125
+      ],
+      "end": [
+        608.758972,
+        222.750259,
+        40.03125
+      ],
+      "horizontal_distance": 31.6,
+      "rise": 0.0,
+      "grounded": true
+    },
+    "immediate_jump_with_full_forward_hold": {
+      "start_hash": "75101e81",
+      "end_hash": "41c2aedc",
+      "start": [
+        577.155334,
+        222.750259,
+        40.03125
+      ],
+      "end": [
+        623.96875,
+        222.750259,
+        40.03125
+      ],
+      "horizontal_distance": 46.81,
+      "rise": 0.0,
+      "grounded": true
+    },
+    "running_jump": {
+      "start_hash": "75101e81",
+      "end_hash": "e05826c2",
+      "start": [
+        577.155334,
+        222.750259,
+        40.03125
+      ],
+      "end": [
+        703.96875,
+        222.750259,
+        72.03125
+      ],
+      "horizontal_distance": 126.81,
+      "rise": 32.0,
+      "grounded": true
+    }
+  }
+}

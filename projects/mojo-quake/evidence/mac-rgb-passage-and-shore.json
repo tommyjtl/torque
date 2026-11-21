@@ -1,0 +1,1148 @@
+{
+  "date": "2026-11-19",
+  "input": "Ordinary 320 \u00d7 240 game-camera pixels. The local model crops the 320 \u00d7 192 playing area, runs a generic monocular network at 196 \u00d7 112, and ranks left, straight and right by their visible surface estimates. A floor fit can request a scan when all three headings look too close. The renderer supplies no distances.",
+  "model": {
+    "export": "onnx-community/depth-anything-v2-small",
+    "file": "onnx/model.onnx",
+    "sha256": "afb6a5c28f3b6bf1618c6e43f02073ef9dfdc70e937502d51603e57b0a1df10c"
+  },
+  "path_test": "At each observed view the evaluator starts the three movement probes from identical game state. Turn 32 degrees left, stay centered, or turn 32 degrees right; hold forward for 44 ticks. A viable input travels at least 96 projected Quake units with no drop greater than 64. The predictor receives the camera image alone.",
+  "shared_rgb_frames": {
+    "sample": {
+      "n": 36,
+      "local_correct": 30,
+      "gemma_correct": 31,
+      "median_ms": 42.1
+    },
+    "challenge": {
+      "n": 24,
+      "local_correct": 21,
+      "gemma_correct": 6,
+      "median_ms": 42.5
+    }
+  },
+  "new_rgb_views": {
+    "source": "session-v93rvis5",
+    "selection": "58 distinct 90-unit native cells sampled in seeded order from the previous unsuccessful autonomous run, for evaluation only. Neutral camera and preselected offsets. All three directions were probed after prediction.",
+    "cases": [
+      {
+        "tick": 1725,
+        "heading_offset": 25,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": true
+        },
+        "travel": {
+          "left": 62.8,
+          "center": 94.5,
+          "right": 101.6
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 1937,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 179.2,
+          "center": 179.2,
+          "right": 150.8
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 3046,
+        "heading_offset": 42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": true
+        },
+        "travel": {
+          "left": 15.4,
+          "center": 17.6,
+          "right": 134.5
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 3078,
+        "heading_offset": 42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 0.1,
+          "center": 8.6,
+          "right": 15.4
+        },
+        "pick": "right",
+        "correct": false
+      },
+      {
+        "tick": 3887,
+        "heading_offset": -25,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": true
+        },
+        "travel": {
+          "left": 25.5,
+          "center": 95.9,
+          "right": 98.7
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 4726,
+        "heading_offset": 42,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 179.5,
+          "center": 131.2,
+          "right": 98.5
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 4886,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 116.0,
+          "center": 153.1,
+          "right": 178.0
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 5070,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": false
+        },
+        "travel": {
+          "left": 180.0,
+          "center": 132.5,
+          "right": 29.0
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 5378,
+        "heading_offset": 0,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": false
+        },
+        "travel": {
+          "left": 173.0,
+          "center": 137.1,
+          "right": 82.0
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 6188,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": false
+        },
+        "travel": {
+          "left": 134.3,
+          "center": 118.0,
+          "right": 37.8
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 6285,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 100.8,
+          "center": 1.2,
+          "right": 0.0
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 7517,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 175.9,
+          "center": 175.3,
+          "right": 158.0
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 9713,
+        "heading_offset": -42,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 184.5,
+          "center": 183.1,
+          "right": 180.4
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 10420,
+        "heading_offset": 42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 14.6,
+          "center": 0.0,
+          "right": 0.0
+        },
+        "pick": "left",
+        "correct": false
+      },
+      {
+        "tick": 11510,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 133.6,
+          "center": 130.9,
+          "right": 180.0
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 12065,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 142.4,
+          "center": 157.1,
+          "right": 138.1
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 12727,
+        "heading_offset": 42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 81.2,
+          "center": 3.9,
+          "right": 1.4
+        },
+        "pick": "left",
+        "correct": false
+      },
+      {
+        "tick": 13564,
+        "heading_offset": 0,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 148.4,
+          "center": 115.5,
+          "right": 120.4
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 18239,
+        "heading_offset": 42,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 152.8,
+          "center": 136.0,
+          "right": 138.4
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 18830,
+        "heading_offset": -25,
+        "truth": {
+          "left": false,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 0.0,
+          "center": 123.2,
+          "right": 138.8
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 21069,
+        "heading_offset": -42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": true
+        },
+        "travel": {
+          "left": 10.4,
+          "center": 15.0,
+          "right": 152.6
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 21523,
+        "heading_offset": -42,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 173.0,
+          "center": 19.2,
+          "right": 17.5
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 22506,
+        "heading_offset": -42,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": false
+        },
+        "travel": {
+          "left": 179.2,
+          "center": 129.3,
+          "right": 68.4
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 23834,
+        "heading_offset": 42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 91.0,
+          "center": 38.0,
+          "right": 0.8
+        },
+        "pick": "left",
+        "correct": false
+      },
+      {
+        "tick": 24324,
+        "heading_offset": -42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 22.9,
+          "center": 26.4,
+          "right": 43.3
+        },
+        "pick": "right",
+        "correct": false
+      },
+      {
+        "tick": 25109,
+        "heading_offset": 42,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 142.0,
+          "center": 157.8,
+          "right": 170.9
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 27563,
+        "heading_offset": -42,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": false
+        },
+        "travel": {
+          "left": 179.2,
+          "center": 131.7,
+          "right": 88.3
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 28016,
+        "heading_offset": 0,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 175.7,
+          "center": 118.3,
+          "right": 179.0
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 28056,
+        "heading_offset": -42,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": true
+        },
+        "travel": {
+          "left": 179.2,
+          "center": 24.7,
+          "right": 164.8
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 28149,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 102.1,
+          "center": 161.9,
+          "right": 179.2
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 28797,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": true
+        },
+        "travel": {
+          "left": 114.3,
+          "center": 88.0,
+          "right": 127.3
+        },
+        "pick": "center",
+        "correct": false
+      },
+      {
+        "tick": 29188,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 148.4,
+          "center": 179.2,
+          "right": 179.2
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 29905,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 141.2,
+          "center": 85.4,
+          "right": 74.5
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 29951,
+        "heading_offset": 42,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 139.5,
+          "center": 37.4,
+          "right": 2.0
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 30151,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 139.2,
+          "center": 8.2,
+          "right": 0.1
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 32039,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": false
+        },
+        "travel": {
+          "left": 135.9,
+          "center": 158.4,
+          "right": 53.7
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 32209,
+        "heading_offset": 42,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 162.1,
+          "center": 58.7,
+          "right": 53.6
+        },
+        "pick": "center",
+        "correct": false
+      },
+      {
+        "tick": 39405,
+        "heading_offset": 42,
+        "truth": {
+          "left": false,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 54.4,
+          "center": 115.8,
+          "right": 135.3
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 40095,
+        "heading_offset": -25,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": true
+        },
+        "travel": {
+          "left": 0.0,
+          "center": 8.2,
+          "right": 154.9
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 46095,
+        "heading_offset": 0,
+        "truth": {
+          "left": false,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 95.9,
+          "center": 115.1,
+          "right": 122.0
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 48293,
+        "heading_offset": 42,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 118.4,
+          "center": 87.0,
+          "right": 5.4
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 49003,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 122.2,
+          "center": 122.2,
+          "right": 122.1
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 50765,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 122.1,
+          "center": 122.1,
+          "right": 122.1
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 51471,
+        "heading_offset": 25,
+        "truth": {
+          "left": false,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 65.2,
+          "center": 138.0,
+          "right": 122.2
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 51733,
+        "heading_offset": 42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 19.6,
+          "center": 13.6,
+          "right": 1.7
+        },
+        "pick": "left",
+        "correct": false
+      },
+      {
+        "tick": 53399,
+        "heading_offset": 25,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 13.5,
+          "center": 18.6,
+          "right": 21.4
+        },
+        "pick": "center",
+        "correct": false
+      },
+      {
+        "tick": 57357,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 179.2,
+          "center": 72.1,
+          "right": 50.9
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 57768,
+        "heading_offset": 25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 114.3,
+          "center": 119.9,
+          "right": 120.3
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 58917,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": false
+        },
+        "travel": {
+          "left": 121.1,
+          "center": 116.2,
+          "right": 69.9
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 59084,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 100.5,
+          "center": 47.4,
+          "right": 40.1
+        },
+        "pick": "left",
+        "correct": true
+      },
+      {
+        "tick": 59785,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 121.1,
+          "center": 121.2,
+          "right": 121.5
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 59930,
+        "heading_offset": -42,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": false
+        },
+        "travel": {
+          "left": 118.3,
+          "center": 112.5,
+          "right": 69.1
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 60035,
+        "heading_offset": -25,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": true
+        },
+        "travel": {
+          "left": 109.6,
+          "center": 120.1,
+          "right": 98.3
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 60645,
+        "heading_offset": -25,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": true
+        },
+        "travel": {
+          "left": 0.4,
+          "center": 81.6,
+          "right": 113.7
+        },
+        "pick": "right",
+        "correct": true
+      },
+      {
+        "tick": 86387,
+        "heading_offset": 42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 57.5,
+          "center": 19.4,
+          "right": 0.9
+        },
+        "pick": "left",
+        "correct": false
+      },
+      {
+        "tick": 99685,
+        "heading_offset": -42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 27.2,
+          "center": 1.4,
+          "right": 9.5
+        },
+        "pick": "right",
+        "correct": false
+      },
+      {
+        "tick": 101191,
+        "heading_offset": 42,
+        "truth": {
+          "left": true,
+          "center": true,
+          "right": false
+        },
+        "travel": {
+          "left": 122.1,
+          "center": 122.1,
+          "right": 71.9
+        },
+        "pick": "center",
+        "correct": true
+      },
+      {
+        "tick": 101711,
+        "heading_offset": -42,
+        "truth": {
+          "left": false,
+          "center": false,
+          "right": false
+        },
+        "travel": {
+          "left": 7.7,
+          "center": 1.4,
+          "right": 37.4
+        },
+        "pick": "right",
+        "correct": false
+      }
+    ],
+    "n": 58,
+    "correct": 46,
+    "mixed_n": 30,
+    "mixed_correct": 28,
+    "mixed_straight": 13
+  },
+  "shore_experiment": {
+    "source": "session-v93rvis5",
+    "start_tick": 124017,
+    "hash": "a1b40d65",
+    "initial_water": "2",
+    "trials": [
+      {
+        "policy": "walk_along",
+        "seed": 0,
+        "ticks": 1174,
+        "emerged_at": 958,
+        "max_z": -248.0,
+        "end_water": "0",
+        "end": "1071.968750,1043.597290,-247.968750",
+        "hp": "100",
+        "new_cells": 18,
+        "guard_turns": 4
+      },
+      {
+        "policy": "walk_along",
+        "seed": 1,
+        "ticks": 2110,
+        "emerged_at": 868,
+        "max_z": 104.0,
+        "end_water": "0",
+        "end": "794.245239,496.031250,104.031250",
+        "hp": "100",
+        "new_cells": 48,
+        "guard_turns": 9
+      },
+      {
+        "policy": "walk_along",
+        "seed": 2,
+        "ticks": 2134,
+        "emerged_at": 1252,
+        "max_z": 104.0,
+        "end_water": "0",
+        "end": "760.391113,527.968750,104.031250",
+        "hp": "99",
+        "new_cells": 33,
+        "guard_turns": 6
+      },
+      {
+        "policy": "surface_along",
+        "seed": 0,
+        "ticks": 6742,
+        "emerged_at": 6526,
+        "max_z": -204.3,
+        "end_water": "0",
+        "end": "865.995728,1103.968750,-207.228012",
+        "hp": "100",
+        "new_cells": 53,
+        "guard_turns": 9
+      },
+      {
+        "policy": "surface_along",
+        "seed": 1,
+        "ticks": 7240,
+        "emerged_at": 7024,
+        "max_z": 147.7,
+        "end_water": "0",
+        "end": "738.311279,502.486725,147.734955",
+        "hp": "100",
+        "new_cells": 71,
+        "guard_turns": 12
+      },
+      {
+        "policy": "surface_along",
+        "seed": 2,
+        "ticks": 1606,
+        "emerged_at": 1390,
+        "max_z": -204.3,
+        "end_water": "0",
+        "end": "943.787842,1037.432983,-228.709488",
+        "hp": "100",
+        "new_cells": 24,
+        "guard_turns": 5
+      },
+      {
+        "policy": "vary_height",
+        "seed": 0,
+        "ticks": 6838,
+        "emerged_at": 6622,
+        "max_z": -204.3,
+        "end_water": "0",
+        "end": "984.009521,1103.968750,-244.123199",
+        "hp": "100",
+        "new_cells": 57,
+        "guard_turns": 8
+      },
+      {
+        "policy": "vary_height",
+        "seed": 1,
+        "ticks": 2254,
+        "emerged_at": 2038,
+        "max_z": -204.3,
+        "end_water": "0",
+        "end": "1004.616028,1059.214844,-228.735092",
+        "hp": "100",
+        "new_cells": 34,
+        "guard_turns": 5
+      },
+      {
+        "policy": "vary_height",
+        "seed": 2,
+        "ticks": 3034,
+        "emerged_at": 1492,
+        "max_z": 147.7,
+        "end_water": "0",
+        "end": "657.896729,496.000183,144.771988",
+        "hp": "100",
+        "new_cells": 43,
+        "guard_turns": 5
+      },
+      {
+        "policy": "seek_aperture",
+        "seed": 0,
+        "ticks": 8644,
+        "emerged_at": null,
+        "max_z": -257.3,
+        "end_water": "1",
+        "end": "260.877441,1308.946045,-280.286621",
+        "hp": "100",
+        "new_cells": 27,
+        "guard_turns": 9
+      },
+      {
+        "policy": "seek_aperture",
+        "seed": 1,
+        "ticks": 4054,
+        "emerged_at": 3838,
+        "max_z": -204.3,
+        "end_water": "0",
+        "end": "984.010559,1103.968750,-240.767792",
+        "hp": "100",
+        "new_cells": 27,
+        "guard_turns": 6
+      },
+      {
+        "policy": "seek_aperture",
+        "seed": 2,
+        "ticks": 2320,
+        "emerged_at": 2104,
+        "max_z": -204.3,
+        "end_water": "0",
+        "end": "1035.440063,976.000000,-215.746536",
+        "hp": "100",
+        "new_cells": 19,
+        "guard_turns": 6
+      }
+    ]
+  },
+  "limits": "The lane result is a short movement prediction, and clearance estimates can be wrong. The water trials are accelerated regression branches from the same already-visited position. Neither benchmark establishes a level exit.",
+  "real_time_comparison": {
+    "source": "session-v93rvis5",
+    "start_tick": 170905,
+    "start_hash": "cf4a9880",
+    "window_game_seconds": 175,
+    "short_probes": {
+      "decisions": 355,
+      "visited_cells": 6,
+      "previously_unvisited_cells": 0,
+      "last_state": {
+        "map": "e1m1",
+        "hp": "100",
+        "kills": "3/23",
+        "intermission": "0",
+        "pos": "523.518494,1279.968750,-311.999451",
+        "hash": "1325e1ca"
+      }
+    },
+    "sustained_travel": {
+      "decisions": 348,
+      "visited_cells": 97,
+      "previously_unvisited_cells": 45,
+      "last_state": {
+        "map": "e1m1",
+        "hp": "97",
+        "kills": "3/23",
+        "intermission": "0",
+        "pos": "431.256500,625.162720,24.031250",
+        "hash": "d9727dc2"
+      }
+    }
+  }
+}

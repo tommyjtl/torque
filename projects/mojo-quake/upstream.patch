@@ -1,0 +1,2055 @@
+diff --git a/Makefile b/Makefile
+index 3813fd0..5687161 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1039,6 +1039,7 @@ qwsw-list = $(COMMON_$(1)) $(CL_$(1)) $(QW_$(1)) $(QWCL_$(1)) $(SW_$(1)) $(QWSW_
+ qwgl-list = $(COMMON_$(1)) $(CL_$(1)) $(QW_$(1)) $(QWCL_$(1)) $(GL_$(1)) $(QWGL_$(1))
+ qwsv-list = $(COMMON_$(1)) $(SV_$(1)) $(QW_$(1)) $(QWSV_$(1))
+ 
++COMMON_CPPFLAGS += -DMOJO_QUAKE -I$(MQ_INCLUDE)
+ ALL_NQSW_CPPFLAGS := $(call nqsw-list,CPPFLAGS)
+ ALL_NQGL_CPPFLAGS := $(call nqgl-list,CPPFLAGS)
+ ALL_QWSW_CPPFLAGS := $(call qwsw-list,CPPFLAGS)
+@@ -1073,11 +1074,11 @@ ALL_QWSV_LFLAGS += $(patsubst %,-l%,$(ALL_QWSV_LIBS))
+ # Build Rules
+ # ============================================================================
+ 
+-$(BIN_DIR)/tyr-quake$(EXT):	$(patsubst %,$(NQSWDIR)/%,$(ALL_NQSW_OBJS))
++$(BIN_DIR)/tyr-quake$(EXT):	$(patsubst %,$(NQSWDIR)/%,$(ALL_NQSW_OBJS)) $(MQ_OBJECTS)
+ 	$(call do_cc_link,$(ALL_NQSW_LFLAGS))
+ 	$(call do_strip,$@)
+ 
+-$(BIN_DIR)/tyr-glquake$(EXT):	$(patsubst %,$(NQGLDIR)/%,$(ALL_NQGL_OBJS))
++$(BIN_DIR)/tyr-glquake$(EXT):	$(patsubst %,$(NQGLDIR)/%,$(ALL_NQGL_OBJS)) $(MQ_OBJECTS)
+ 	$(call do_cc_link,$(ALL_NQGL_LFLAGS))
+ 	$(call do_strip,$@)
+ 
+diff --git a/NQ/cl_parse.c b/NQ/cl_parse.c
+index bdbb893..103b097 100644
+--- a/NQ/cl_parse.c
++++ b/NQ/cl_parse.c
+@@ -1208,7 +1208,10 @@ CL_ParseServerMessage(void)
+ 	    break;
+ 
+ 	case svc_sellscreen:
+-	    Cmd_ExecuteString("help", src_command);
++            if (cl.intermission == 2)
++                cl.show_sell_screen = true;
++            else
++                Cmd_ExecuteString("help", src_command);
+ 	    break;
+ 
+ 	/* Various FITZ protocol messages - FIXME - !protocol => Host_Error */
+diff --git a/NQ/client.h b/NQ/client.h
+index 1d2e1cb..5866481 100644
+--- a/NQ/client.h
++++ b/NQ/client.h
+@@ -176,6 +176,7 @@ typedef struct {
+     qboolean inwater;
+ 
+     int intermission;		// don't change view angle, full screen, etc
++    qboolean show_sell_screen;	// Shareware end card during the episode finale
+     int completed_time;		// latched at intermission start
+ 
+     double mtime[2];		// the timestamp of last two messages
+diff --git a/NQ/host.c b/NQ/host.c
+index 8062507..e551fca 100644
+--- a/NQ/host.c
++++ b/NQ/host.c
+@@ -495,23 +495,9 @@ Returns false if the time is too short to run a frame
+ qboolean
+ Host_FilterTime(float time)
+ {
+-    realtime += time;
+-
+-    if (!cls.timedemo && realtime - oldrealtime < 1.0 / 72.0)
+-	return false;		// framerate is too high
+-
+-    host_frametime = realtime - oldrealtime;
+-    oldrealtime = realtime;
+-
+-    if (host_framerate.value > 0)
+-	host_frametime = host_framerate.value;
+-    else {			// don't allow really long or short frames
+-	if (host_frametime > 0.1)
+-	    host_frametime = 0.1;
+-	if (host_frametime < 0.001)
+-	    host_frametime = 0.001;
+-    }
+-
++    realtime+=time;
++    oldrealtime=realtime;
++    host_frametime=time;
+     return true;
+ }
+ 
+@@ -628,6 +614,14 @@ Host_Frame
+ Runs all active servers
+ ==================
+ */
++void mq_render_screen(void)
++{
++    if (setjmp(host_abort))
++        return;
++    SCR_UpdateScreen();
++    fps_count++;
++}
++
+ void
+ _Host_Frame(float time)
+ {
+@@ -700,7 +694,7 @@ _Host_Frame(float time)
+     if (host_speeds.value)
+ 	time1 = Sys_DoubleTime();
+ 
+-    SCR_UpdateScreen();
++
+     CL_RunParticles();
+ 
+     if (host_speeds.value)
+@@ -725,7 +719,6 @@ _Host_Frame(float time)
+     }
+ 
+     host_framecount++;
+-    fps_count++;
+ }
+ 
+ void
+diff --git a/NQ/host_cmd.c b/NQ/host_cmd.c
+index 02fe651..c2f7fcd 100644
+--- a/NQ/host_cmd.c
++++ b/NQ/host_cmd.c
+@@ -98,7 +98,7 @@ Host_Map_f(void)
+ 	return;
+     }
+ 
+-    cls.demonum = -1;		// stop demo loop in case this fails
++    if (strstr(Cmd_Argv(1), "..") || strchr(Cmd_Argv(1), '/')) return;
+ 
+     CL_Disconnect();
+     Host_ShutdownServer(false);
+@@ -226,7 +226,7 @@ Host_Connect_f(void)
+ {
+     char name[MAX_QPATH];
+ 
+-    cls.demonum = -1;		// stop demo loop in case this fails
++    if (strstr(Cmd_Argv(1), "..") || strchr(Cmd_Argv(1), '/')) return;
+     if (cls.demoplayback) {
+ 	CL_StopPlayback();
+ 	CL_Disconnect();
+@@ -262,7 +262,7 @@ Host_SavegameComment(char *text)
+ 
+     for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
+ 	text[i] = ' ';
+-    memcpy(text, cl.levelname, strlen(cl.levelname));
++    memcpy(text, cl.levelname, strnlen(cl.levelname, 22));
+     qsnprintf(kills, sizeof(kills), "kills:%3i/%3i", cl.stats[STAT_MONSTERS],
+ 	    cl.stats[STAT_TOTALMONSTERS]);
+     memcpy(text + 22, kills, strlen(kills));
+@@ -279,11 +279,13 @@ Host_SavegameComment(char *text)
+ Host_Savegame_f
+ ===============
+ */
++#include "save_bridge.inc"
++#include "legacy_save.inc"
++
+ static void
+ Host_Savegame_f(void)
+ {
+     char name[MAX_OSPATH];
+-    FILE *f;
+     int i, length, err;
+     char comment[SAVEGAME_COMMENT_LENGTH + 1];
+ 
+@@ -330,38 +332,11 @@ Host_Savegame_f(void)
+     }
+ 
+     Con_Printf("Saving game to %s...\n", name);
+-    f = fopen(name, "w");
+-    if (!f) {
+-	Con_Printf("ERROR: couldn't open.\n");
+-	return;
+-    }
+-
+-    fprintf(f, "%i\n", SAVEGAME_VERSION);
+     Host_SavegameComment(comment);
+-    fprintf(f, "%s\n", comment);
+-    for (i = 0; i < NUM_SPAWN_PARMS; i++)
+-	fprintf(f, "%f\n", svs.clients->spawn_parms[i]);
+-    fprintf(f, "%d\n", current_skill);
+-    fprintf(f, "%s\n", sv.name);
+-    fprintf(f, "%f\n", sv.time);
+-
+-// write the light styles
+-
+-    for (i = 0; i < MAX_LIGHTSTYLES; i++) {
+-	if (sv.lightstyles[i])
+-	    fprintf(f, "%s\n", sv.lightstyles[i]);
+-	else
+-	    fprintf(f, "m\n");
+-    }
+-
+-
+-    ED_WriteGlobals(f);
+-    for (i = 0; i < sv.num_edicts; i++) {
+-	ED_Write(f, EDICT_NUM(i));
+-	fflush(f);
+-    }
+-    fclose(f);
+-    Con_Printf("done.\n");
++    if (mq_save_slot(name, comment))
++        Con_Printf("done.\n");
++    else
++        Con_Printf("Could not write snapshot.\n");
+ }
+ 
+ 
+@@ -373,7 +348,7 @@ Host_Loadgame_f
+ static void
+ Host_Loadgame_f(void)
+ {
+-    char name[MAX_QPATH];
++    char name[MAX_OSPATH];
+     FILE *f;
+     float time, tfloat;
+     const char *start;
+@@ -399,7 +374,7 @@ Host_Loadgame_f(void)
+ 	return;
+     }
+ 
+-    cls.demonum = -1;		// stop demo loop in case this fails
++    if (strstr(Cmd_Argv(1), "..") || strchr(Cmd_Argv(1), '/')) return;
+ 
+     length = qsnprintf(name, sizeof(name), "%s/%s", com_gamedir, Cmd_Argv(1));
+     err = COM_DefaultExtension(name, ".sav", name, sizeof(name));
+@@ -419,13 +394,27 @@ Host_Loadgame_f(void)
+ 	return;
+     }
+ 
+-    fscanf(f, "%i\n", &version);
++    char version_line[16];
++    if (!fgets(version_line, sizeof version_line, f)) { fclose(f); return; }
++    if (!strcmp(version_line, "6\n")) {
++        qboolean loaded = mq_load_slot(f);
++        fclose(f);
++        if (!loaded) Con_Printf("Snapshot rejected; current game preserved.\n");
++        return;
++    }
++    version = !strcmp(version_line, "5\n") ? 5 : -1;
+     if (version != SAVEGAME_VERSION) {
+ 	fclose(f);
+ 	Con_Printf("Savegame is version %i, not %i\n", version,
+ 		   SAVEGAME_VERSION);
+ 	return;
+     }
++    if (!mq_legacy_valid(f)) {
++        fclose(f);
++        Con_Printf("Legacy save rejected; current game preserved.\n");
++        return;
++    }
++    cls.demonum = -1;
+     FREAD_STRING_LINE(f);
+     for (i = 0; i < NUM_SPAWN_PARMS; i++)
+ 	fscanf(f, "%f\n", &spawn_parms[i]);
+diff --git a/NQ/sv_main.c b/NQ/sv_main.c
+index 15fca33..bf50aae 100644
+--- a/NQ/sv_main.c
++++ b/NQ/sv_main.c
+@@ -1305,6 +1305,11 @@ This is called at the start of each level
+ void
+ SV_SpawnServer(const char *server)
+ {
++    extern void mq_reset_server_random(void);
++    extern void mq_cancel_restore(void);
++    extern void mq_begin_inventory(void);
++    mq_cancel_restore();
++    mq_reset_server_random();
+     model_t *model;
+     client_t *client;
+     edict_t *ent;
+@@ -1346,6 +1351,7 @@ SV_SpawnServer(const char *server)
+ 
+     strcpy(sv.name, server);
+ 
++    mq_begin_inventory();
+     sv.protocol = sv_protocol;
+ 
+ // load progs to get entity field count
+diff --git a/NQ/sv_user.c b/NQ/sv_user.c
+index dbb745a..4578f32 100644
+--- a/NQ/sv_user.c
++++ b/NQ/sv_user.c
+@@ -154,46 +154,17 @@ SV_Accelerate
+ cvar_t sv_maxspeed = { "sv_maxspeed", "320", .server = true };
+ cvar_t sv_accelerate = { "sv_accelerate", "10" };
+ 
+-static void
+-SV_Accelerate(const vec3_t wishdir, const vec_t wishspeed, vec3_t velocity)
+-{
+-    int i;
+-    float addspeed, accelspeed, currentspeed;
+-
+-    currentspeed = DotProduct(velocity, wishdir);
+-    addspeed = wishspeed - currentspeed;
+-    if (addspeed <= 0)
+-	return;
+-    accelspeed = sv_accelerate.value * host_frametime * wishspeed;
+-    if (accelspeed > addspeed)
+-	accelspeed = addspeed;
+-
+-    for (i = 0; i < 3; i++)
+-	velocity[i] += accelspeed * wishdir[i];
++extern void mq_accelerate(float *,const float *,float,float,float,float);
++static void SV_Accelerate(const vec3_t dir,vec_t speed,vec3_t velocity) {
++    mq_accelerate(velocity,dir,speed,speed,sv_accelerate.value,host_frametime);
+ }
+-
+-static void
+-SV_AirAccelerate(vec3_t wishveloc, const vec_t wishspeed, vec3_t velocity)
+-{
+-    int i;
+-    float addspeed, wishspd, accelspeed, currentspeed;
+-
+-    wishspd = VectorNormalize(wishveloc);
+-    if (wishspd > 30)
+-	wishspd = 30;
+-    currentspeed = DotProduct(velocity, wishveloc);
+-    addspeed = wishspd - currentspeed;
+-    if (addspeed <= 0)
+-	return;
+-    accelspeed = sv_accelerate.value * wishspeed * host_frametime;
+-    if (accelspeed > addspeed)
+-	accelspeed = addspeed;
+-
+-    for (i = 0; i < 3; i++)
+-	velocity[i] += accelspeed * wishveloc[i];
++static void SV_AirAccelerate(vec3_t dir,vec_t speed,vec3_t velocity) {
++    float capped=VectorNormalize(dir);
++    mq_accelerate(velocity,dir,qmin(capped,30),speed,sv_accelerate.value,host_frametime);
+ }
+ 
+ 
++
+ static void
+ DropPunchAngle(vec3_t punchangle)
+ {
+@@ -865,7 +836,8 @@ SV_Spawn_f(client_t *client)
+ 
+     if (sv.loadgame) {
+ 	/* Loaded games are fully inited, make sure to unpause */
+-	sv.paused = false;
++        extern int mq_restore_in_progress(void);
++        sv.paused = mq_restore_in_progress();
+     } else {
+ 	/* run the entrance script */
+ 	player = client->edict;
+diff --git a/common/alias_model.c b/common/alias_model.c
+index 677fb90..ece3c26 100644
+--- a/common/alias_model.c
++++ b/common/alias_model.c
+@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ 
+ */
+ 
++#include <limits.h>
+ #include <float.h>
+ #include <math.h>
+ #include <string.h>
+@@ -46,7 +47,7 @@ Mod_LoadAliasFrame(aliashdr_t *aliashdr, void *buffer,
+     float *intervals = (float *)((byte *)aliashdr + aliashdr->poseintervals);
+     int i;
+ 
+-    qsnprintf(frame->name, sizeof(frame->name), "%s", dframe->name);
++    qsnprintf(frame->name, sizeof(frame->name), "%.16s", dframe->name);
+     frame->firstpose = posedata->numposes;
+     frame->numposes = 1;
+     for (i = 0; i < 3; i++) {
+@@ -89,7 +90,7 @@ Mod_LoadAliasFrameGroup(aliashdr_t *aliashdr, void *buffer,
+ 
+     /* Group frames start after the interval data */
+     dframe = (const daliasframe_t *)&group->intervals[frame->numposes];
+-    qsnprintf(frame->name, sizeof(frame->name), "%s", dframe->name);
++    qsnprintf(frame->name, sizeof(frame->name), "%.16s", dframe->name);
+ 
+     vert = &posedata->verts[posedata->numposes];
+     interval += posedata->numposes;
+@@ -271,41 +272,15 @@ Mod_LoadAliasSkins(aliashdr_t *aliashdr, const alias_loader_t *loader,
+ }
+ 
+ static void *
+-Mod_LoadAliasSTVerts(const aliashdr_t *aliashdr, void *buffer,
+-		     alias_meshdata_t *meshdata)
++Mod_LoadAliasMesh(const aliashdr_t *header, void *buffer, alias_meshdata_t *mesh,
++                  const model_t *model)
+ {
+-    const stvert_t *in = buffer;
+-    stvert_t *out = meshdata->stverts;
+-    int i;
+-
+-    for (i = 0; i < aliashdr->numverts; i++, in++, out++) {
+-	out->onseam = LittleLong(in->onseam);
+-	out->s = LittleLong(in->s);
+-	out->t = LittleLong(in->t);
+-    }
+-
+-    return (byte *)buffer + aliashdr->numverts * sizeof(*in);
+-}
+-
+-static void *
+-Mod_LoadAliasTriangles(const aliashdr_t *aliashdr, void *buffer,
+-		       alias_meshdata_t *meshdata, const model_t *model)
+-{
+-    const dtriangle_t *in = buffer;
+-    mtriangle_t *out = meshdata->triangles;
+-    int i, j;
+-
+-    for (i = 0; i < aliashdr->numtris; i++, in++, out++) {
+-	out->facesfront = LittleLong(in->facesfront);
+-	for (j = 0; j < 3; j++) {
+-	    const int index = out->vertindex[j] = LittleLong(in->vertindex[j]);
+-	    if (index < 0 || index >= aliashdr->numverts)
+-		Sys_Error("%s: invalid vertex index (%d of %d) in %s\n",
+-			  __func__, index, aliashdr->numverts, model->name);
+-	}
+-    }
+-
+-    return (byte *)buffer + aliashdr->numtris * sizeof(*in);
++    extern int mq_alias_mesh(const byte *, int, int, int *, int *);
++    _Static_assert(sizeof(stvert_t) == 12 && sizeof(mtriangle_t) == 16, "MDL mesh ABI");
++    if (!mq_alias_mesh(buffer, header->numverts, header->numtris, (int *)mesh->stverts,
++                       (int *)mesh->triangles))
++        Sys_Error("%s: invalid triangle in %s", __func__, model->name);
++    return (byte *)buffer + header->numverts * sizeof(stvert_t) + header->numtris * sizeof(dtriangle_t);
+ }
+ 
+ static void
+@@ -337,71 +312,19 @@ Mod_AliasCRC(const model_t *model, const byte *buffer, int bufferlen)
+  * Make temporary space on the low hunk to save away various model
+  * data for later processing by the driver-specific loader.
+  */
+-void
+-Mod_AliasLoaderAlloc(const mdl_t *mdl, alias_meshdata_t *meshdata,
+-		     alias_posedata_t *posedata, alias_skindata_t *skindata)
++static void
++Mod_AliasLoaderAlloc(const mdl_t *mdl, const int counts[2], alias_meshdata_t *mesh,
++                     alias_posedata_t *poses, alias_skindata_t *skins)
+ {
+-    const void *buffer;
+-    int i, skinsize, numverts, numskins, numframes, count;
+-
+-    /* Skin data follows the header */
+-    buffer = mdl + 1;
+-
+-    /* Expand skin groups for total skin count */
+-    count = 0;
+-    numskins = LittleLong(mdl->numskins);
+-    skinsize = LittleLong(mdl->skinwidth) * LittleLong(mdl->skinheight);
+-    for (i = 0; i < numskins; i++) {
+-	const daliasskintype_t *const dskintype = buffer;
+-	const aliasskintype_t skintype = LittleLong(dskintype->type);
+-	buffer = (const byte *)buffer + sizeof(daliasskintype_t);
+-	if (skintype == ALIAS_SKIN_SINGLE) {
+-	    buffer = (const byte *)buffer + skinsize;
+-	    count++;
+-	} else {
+-	    /* skin group */
+-	    const daliasskingroup_t *const dskingroup = buffer;
+-	    const int groupskins = LittleLong(dskingroup->numskins);
+-	    buffer = (const byte *)buffer + sizeof(daliasskingroup_t);
+-	    buffer = (const byte *)buffer + groupskins * sizeof(daliasskininterval_t);
+-	    buffer = (const byte *)buffer + groupskins * skinsize;
+-	    count += groupskins;
+-	}
+-    }
+-    skindata->numskins = count; /* to be incremented as data is filled in */
+-    skindata->data = Hunk_AllocName(count * sizeof(byte *), "modeltmp");
+-
+-    /* Verticies and triangles are simple */
+-    numverts = LittleLong(mdl->numverts);
+-    buffer = (const byte *)buffer + numverts * sizeof(stvert_t);
+-    count = LittleLong(mdl->numtris);
+-    buffer = (const byte *)buffer + count * sizeof(dtriangle_t);
+-    meshdata->stverts = Hunk_AllocName(numverts * sizeof(*meshdata->stverts), "modeltmp");
+-    meshdata->triangles = Hunk_AllocName(count * sizeof(*meshdata->triangles), "modeltmp");
+-
+-    /* Expand frame groups to get total pose count */
+-    count = 0;
+-    numframes = LittleLong(mdl->numframes);
+-    for (i = 0; i < numframes; i++) {
+-	const daliasframetype_t *const dframetype = buffer;
+-	const aliasframetype_t frametype = LittleLong(dframetype->type);
+-	buffer = (const byte *)buffer + sizeof(daliasframetype_t);
+-	if (frametype == ALIAS_SINGLE) {
+-	    buffer = &((const daliasframe_t *)buffer)->verts[numverts];
+-	    count++;
+-	} else {
+-	    const daliasgroup_t *const group = buffer;
+-	    const int groupframes = LittleLong(group->numframes);
+-	    const int framesize = offsetof(daliasframe_t, verts[numverts]);
+-	    buffer = &group->intervals[groupframes];
+-	    buffer = (const byte *)buffer + groupframes * framesize;
+-	    count += groupframes;
+-	}
+-    }
+-    posedata->numposes = count;
+-    posedata->verts = Hunk_AllocName(count * sizeof(trivertx_t *), "modeltmp");
++    skins->numskins = counts[0];
++    skins->data = Hunk_AllocName(counts[0] * sizeof(*skins->data), "modeltmp");
++    poses->numposes = counts[1];
++    poses->verts = Hunk_AllocName(counts[1] * sizeof(*poses->verts), "modeltmp");
++    mesh->stverts = Hunk_AllocName(LittleLong(mdl->numverts) * sizeof(*mesh->stverts), "modeltmp");
++    mesh->triangles = Hunk_AllocName(LittleLong(mdl->numtris) * sizeof(*mesh->triangles), "modeltmp");
+ }
+ 
++
+ /*
+ =================
+ Mod_LoadAliasModel
+@@ -420,6 +343,11 @@ Mod_LoadAliasModel(const alias_loader_t *loader, model_t *model, void *buffer, s
+     alias_posedata_t posedata;
+     alias_skindata_t skindata;
+ 
++    extern int mq_alias_layout(const byte *, int, int *);
++    int counts[2];
++    _Static_assert(sizeof(mdl_t) == 84, "MDL version 6 header");
++    if (buffersize > INT_MAX || !mq_alias_layout(buffer, (int)buffersize, counts))
++        Sys_Error("%s: invalid MDL skin, mesh or pose directory", model->name);
+     model->type = mod_alias;
+     model->flags = LittleLong(mdl->flags);
+     model->synctype = LittleLong(mdl->synctype);
+@@ -434,7 +362,7 @@ Mod_LoadAliasModel(const alias_loader_t *loader, model_t *model, void *buffer, s
+ 
+     /* Allocate loader temporary space */
+     lowmark = Hunk_LowMark();
+-    Mod_AliasLoaderAlloc(mdl, &meshdata, &posedata, &skindata);
++    Mod_AliasLoaderAlloc(mdl, counts, &meshdata, &posedata, &skindata);
+ 
+     /*
+      * Allocate space for the alias header, plus frame data.
+@@ -481,8 +409,7 @@ Mod_LoadAliasModel(const alias_loader_t *loader, model_t *model, void *buffer, s
+     /* Load the rest of the data */
+     buffer = (byte *)buffer + sizeof(*mdl);
+     buffer = Mod_LoadAliasSkins(aliashdr, loader, model, buffer, &skindata);
+-    buffer = Mod_LoadAliasSTVerts(aliashdr, buffer, &meshdata);
+-    buffer = Mod_LoadAliasTriangles(aliashdr, buffer, &meshdata, model);
++    buffer = Mod_LoadAliasMesh(aliashdr, buffer, &meshdata, model);
+     buffer = Mod_LoadAliasFrames(aliashdr, buffer, &posedata);
+ 
+     /* Fill in the bounds used for frustum culling */
+diff --git a/common/cd_common.c b/common/cd_common.c
+index efef791..1467f50 100644
+--- a/common/cd_common.c
++++ b/common/cd_common.c
+@@ -188,8 +188,7 @@ CDAudio_Play(byte track, qboolean looping)
+ 	playTrack = track;
+ 	playing = true;
+     }
+-    if (cdvolume == 0.0)
+-	CDAudio_Pause();
++    /* File playback keeps its position while the mixer gain is zero. */
+ }
+ 
+ void
+@@ -201,6 +200,8 @@ CDAudio_InvalidateDisk(void)
+ void
+ CDAudio_Update(void)
+ {
++    extern void mq_update_music(void);
++    mq_update_music();
+     static time_t lastchk;
+ 
+     if (!enabled)
+@@ -344,6 +345,8 @@ CDAudio_Init(void)
+ 	remap[i] = i;
+     initialized = true;
+     enabled = true;
++    cdvolume = -1.0f;
++    CDAudio_SetVolume_f(&bgmvolume);
+ 
+     Con_Printf("CD Audio Initialized\n");
+     if (CDAudio_GetAudioDiskInfo()) {
+diff --git a/common/cd_null.c b/common/cd_null.c
+index 2807dfb..d3f7f5f 100644
+--- a/common/cd_null.c
++++ b/common/cd_null.c
+@@ -20,15 +20,5 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ 
+ #include "cdaudio_driver.h"
+ 
+-int CDDrv_IsAudioTrack(byte track) { return 0; }
+-int CDDrv_PlayTrack(byte track) { return 1; }
+-int CDDrv_IsPlaying(byte track) { return 0; }
+-int CDDrv_InitDevice(void) { return -1; }
+-void CDDrv_CloseDevice(void) { }
+-void CDDrv_Eject(void) { }
+-void CDDrv_CloseDoor(void) { }
+-void CDDrv_Stop(void) { }
+-void CDDrv_Pause(void) { }
+-void CDDrv_Resume(byte track) { }
+-int CDDrv_GetMaxTrack(byte *track) { return 0; }
+-int CDDrv_SetVolume(byte volume) { return -1; }
++#include <unistd.h>
++#include "music_bridge.inc"
+diff --git a/common/cl_input.c b/common/cl_input.c
+index 75c90c5..3a9b7c3 100644
+--- a/common/cl_input.c
++++ b/common/cl_input.c
+@@ -518,6 +518,8 @@ CL_BaseMove(usercmd_t *cmd)
+ CL_SendMove
+ ==============
+ */
++#include "replay_bridge.inc"
++
+ static void
+ CL_SendMove(usercmd_t *cmd)
+ {
+@@ -530,6 +532,21 @@ CL_SendMove(usercmd_t *cmd)
+     buf.cursize = 0;
+     buf.data = data;
+ 
++    bits = 0;
++
++    if (in_attack.state & 3)
++	bits |= 1;
++    in_attack.state &= ~2;
++
++    if (in_jump.state & 3)
++	bits |= 2;
++    in_jump.state &= ~2;
++
++    if (!cls.demoplayback && cl.movemessages >= 2) {
++        extern void mq_before_player_move(void);
++        mq_before_player_move();
++        mq_move(cmd, &bits, &in_impulse);
++    }
+     cl.cmd = *cmd;
+ 
+     /*
+@@ -551,16 +568,6 @@ CL_SendMove(usercmd_t *cmd)
+     /*
+      * send button bits
+      */
+-    bits = 0;
+-
+-    if (in_attack.state & 3)
+-	bits |= 1;
+-    in_attack.state &= ~2;
+-
+-    if (in_jump.state & 3)
+-	bits |= 2;
+-    in_jump.state &= ~2;
+-
+     MSG_WriteByte(&buf, bits);
+     MSG_WriteByte(&buf, in_impulse);
+     in_impulse = 0;
+diff --git a/common/common.c b/common/common.c
+index 44829c6..af36064 100644
+--- a/common/common.c
++++ b/common/common.c
+@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+ // common.c -- misc functions used in client and server
+ 
++#include <limits.h>
+ #include <ctype.h>
+ #include <dirent.h>
+ #include <stdarg.h>
+@@ -1772,19 +1773,19 @@ COM_LoadPackFile(const char *packfile)
+     dpackfile_t *dfiles;
+     packfile_t *mfiles;
+     pack_t *pack;
+-    int i, numfiles;
++    int numfiles;
+     unsigned short crc;
+ 
+-    if (COM_FileOpenRead(packfile, &packhandle) == -1)
+-	return NULL;
+-
+-    fread(&header, 1, sizeof(header), packhandle);
+-    if (header.id[0] != 'P' || header.id[1] != 'A' || header.id[2] != 'C' || header.id[3] != 'K')
+-	Sys_Error("%s is not a packfile", packfile);
+-    header.dirofs = LittleLong(header.dirofs);
+-    header.dirlen = LittleLong(header.dirlen);
+-
+-    numfiles = header.dirlen / sizeof(dpackfile_t);
++    int file_size = COM_FileOpenRead(packfile, &packhandle);
++    if (file_size < 0) return NULL;
++    extern int mq_pak_header(const void *, int, int *);
++    extern int mq_pak_entries(const void *, int, int, void *, int);
++    int directory;
++    if (fread(&header, 1, sizeof header, packhandle) != sizeof header ||
++        (numfiles = mq_pak_header(&header, file_size, &directory)) < 0 ||
++        (size_t)numfiles > INT_MAX / sizeof(*mfiles))
++        Sys_Error("Invalid PAK directory in %s", packfile);
++    header.dirlen = numfiles * sizeof(*dfiles);
+     if (numfiles != ID1_PAK0_COUNT)
+ 	com_modified = true;	// not the original file
+ 
+@@ -1792,8 +1793,8 @@ COM_LoadPackFile(const char *packfile)
+     int mark = Hunk_LowMark();
+     dfiles = Hunk_AllocName(numfiles * sizeof(*dfiles), "packtmp");
+ 
+-    fseek(packhandle, header.dirofs, SEEK_SET);
+-    fread(dfiles, 1, header.dirlen, packhandle);
++    if (fseek(packhandle, directory, SEEK_SET) || fread(dfiles, 1, header.dirlen, packhandle) != (size_t)header.dirlen)
++        Sys_Error("Could not read PAK directory in %s", packfile);
+     fclose(packhandle);
+ 
+     /* crc the directory to check for modifications */
+@@ -1814,12 +1815,9 @@ COM_LoadPackFile(const char *packfile)
+ 	break;
+     }
+ 
+-    /* parse the directory */
+-    for (i = 0; i < numfiles; i++) {
+-	qsnprintf(mfiles[i].name, sizeof(mfiles[i].name), "%s", dfiles[i].name);
+-	mfiles[i].filepos = LittleLong(dfiles[i].filepos);
+-	mfiles[i].filelen = LittleLong(dfiles[i].filelen);
+-    }
++    _Static_assert(sizeof(packfile_t) == MAX_QPATH+8, "PAK index layout");
++    if (!mq_pak_entries(dfiles, numfiles, file_size, mfiles, MAX_QPATH))
++        Sys_Error("Invalid PAK member in %s", packfile);
+ 
+     Hunk_FreeToLowMark(mark);
+     pack = Hunk_AllocName(sizeof(pack_t), "pakheadr");
+diff --git a/common/d_scan.c b/common/d_scan.c
+index 9a0fd34..a2eed9c 100644
+--- a/common/d_scan.c
++++ b/common/d_scan.c
+@@ -329,6 +329,9 @@ Turbulent8(espan_t *pspan)
+ D_DrawSpans8
+ =============
+ */
++#ifdef MOJO_QUAKE
++#include "span_bridge.inc"
++#else
+ void
+ D_DrawSpans8(espan_t *pspan)
+ {
+@@ -449,6 +452,8 @@ D_DrawSpans8(espan_t *pspan)
+     } while ((pspan = pspan->pnext) != NULL);
+ }
+ 
++#endif /* MOJO_QUAKE */
++
+ #endif
+ 
+ /*
+diff --git a/common/gl_rsurf.c b/common/gl_rsurf.c
+index 106a2ba..e68de8b 100644
+--- a/common/gl_rsurf.c
++++ b/common/gl_rsurf.c
+@@ -115,7 +115,7 @@ static void
+ R_BuildLightMap(msurface_t *surf, byte *dest, int stride)
+ {
+     int smax, tmax;
+-    int i, j, size;
++    int i, size;
+     byte *lightmap;
+     unsigned scale;
+     int map;
+@@ -159,16 +159,9 @@ R_BuildLightMap(msurface_t *surf, byte *dest, int stride)
+ 
+     /* bound, invert, and shift */
+   store:
+-    block = blocklights;
+-    int shift = gl_overbright.value ? 8 : 7;
+-    for (i = 0; i < tmax; i++, dest += stride - (smax * gl_lightmap_bytes)) {
+-        for (j = 0; j < smax; j++) {
+-            *dest++ = qmin(*block++ >> shift, 255u);
+-            *dest++ = qmin(*block++ >> shift, 255u);
+-            *dest++ = qmin(*block++ >> shift, 255u);
+-            *dest++ = 255;
+-            block++;
+-        }
++    {
++        extern void mq_lightmap(byte *,const unsigned *,int,int,int,int);
++        mq_lightmap(dest,blocklights,smax,tmax,stride,gl_overbright.value!=0);
+     }
+ }
+ 
+@@ -639,19 +632,14 @@ TriBuf_CheckSpacePoly(const triangle_buffer_t *buffer, const glpoly_t *poly)
+ static inline void
+ TriBuf_AddPolyIndices(triangle_buffer_t *buffer, const glpoly_t *poly)
+ {
+-    int i;
+-    uint16_t *index = &buffer->indices[buffer->numindices];
+-    const int offset = buffer->numverts;
+-    for (i = 1; i < poly->numverts - 1; i++) {
+-	*index++ = offset;
+-	*index++ = offset + i;
+-	*index++ = offset + i + 1;
+-    }
++    extern void mq_fan(uint16_t *,int,int);
++    const int offset=buffer->numverts;
++    mq_fan(&buffer->indices[buffer->numindices],offset,poly->numverts);
+     buffer->numverts += poly->numverts;
+     buffer->numindices += (poly->numverts - 2) * 3;
+ 
+     buffer->min_index = qmin((uint16_t)offset, buffer->min_index);
+-    buffer->max_index = qmax(*(index - 1), buffer->max_index);
++    buffer->max_index = qmax((uint16_t)(offset+poly->numverts-1), buffer->max_index);
+ 
+     c_brush_polys++;
+ }
+@@ -672,20 +660,14 @@ TriBuf_AddSurf(triangle_buffer_t *buffer, const msurface_t *surf)
+ {
+     assert(buffer->material);
+ 
+-    uint16_t *index = &buffer->indices[buffer->numindices];
+-    const int offset = surf->buffer_offset;
+-    /* TODO: strip order instead of fan? */
+-    for (int i = 1; i < surf->numedges - 1; i++) {
+-        *index++ = offset;
+-        *index++ = offset + i;
+-        *index++ = offset + i + 1;
+-    }
+-
++    extern void mq_fan(uint16_t *,int,int);
++    const int offset=surf->buffer_offset;
++    mq_fan(&buffer->indices[buffer->numindices],offset,surf->numedges);
+     buffer->numverts += surf->numedges;
+     buffer->numindices += (surf->numedges - 2) * 3;
+ 
+     buffer->min_index = qmin((uint16_t)offset, buffer->min_index);
+-    buffer->max_index = qmax(*(index - 1), buffer->max_index);
++    buffer->max_index = qmax((uint16_t)(offset+surf->numedges-1), buffer->max_index);
+ 
+     c_brush_polys++;
+ }
+@@ -908,6 +890,7 @@ TriBuf_DrawFullbrightSolid(triangle_buffer_t *buffer, const texture_t *texture)
+     }
+ }
+ 
++#include "glsl.inc"
+ static void
+ TriBuf_DrawSolid(triangle_buffer_t *buffer, const texture_t *texture, lm_block_t *block, int flags, float alpha)
+ {
+@@ -956,7 +939,9 @@ TriBuf_DrawSolid(triangle_buffer_t *buffer, const texture_t *texture, lm_block_t
+             state.texcoords[2].slot = 0;
+         }
+ 
+-	TriBuf_DrawElements(buffer, &state);
++	mq_use_lightmap(state.texcoords[2].active,gl_overbright.value ? 2.0f : 1.0f,alpha);
++        TriBuf_DrawElements(buffer, &state);
++        mq_gl.UseProgram(0);
+ 
+         if (gl_num_texture_units > 2 && TextureIsValid(texture->gl_texturenum_fullbright) && gl_fullbrights.value) {
+             glDisable(GL_TEXTURE_2D);
+diff --git a/common/in_sdl.c b/common/in_sdl.c
+index fcb7c6a..db1b57c 100644
+--- a/common/in_sdl.c
++++ b/common/in_sdl.c
+@@ -80,6 +80,9 @@ windowed_mouse_f(struct cvar_s *var)
+         IN_UngrabMouse();
+ }
+ 
++#include "menu.h"
++#include "input_bridge.inc"
++
+ void
+ IN_SDL_HandleEvent(SDL_Event *event)
+ {
+@@ -96,13 +99,15 @@ IN_SDL_HandleEvent(SDL_Event *event)
+                     break;
+                 case SDL_WINDOWEVENT_FOCUS_LOST:
+                     have_focus = false;
++                    mq_clear_keys();
+                     IN_UngrabMouse();
+                     break;
+             }
+             break;
+ 	case SDL_KEYDOWN:
+ 	case SDL_KEYUP:
+-	    keycode = event->key.keysym.sym;
++	    if(mq_key(&event->key)) break;
++            keycode = event->key.keysym.sym;
+ 	    keystate = event->key.state;
+ 	    switch (keycode) {
+                 case SDLK_UNKNOWN:
+diff --git a/common/model.c b/common/model.c
+index dd0d26b..67556d5 100644
+--- a/common/model.c
++++ b/common/model.c
+@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ // models are the only shared resource between a client and server running
+ // on the same machine.
+ 
++#include <limits.h>
+ #include <float.h>
+ #include <math.h>
+ #include <stdint.h>
+@@ -368,46 +369,17 @@ Mod_DecompressVis
+ static void
+ Mod_DecompressVis(const byte *in, const brushmodel_t *model, leafbits_t *dest)
+ {
+-    leafblock_t *out;
+-    int num_out;
+-    int shift;
+-    int count;
+-
+     dest->numleafs = model->numleafs;
+-    out = dest->bits;
+-
+     if (!in) {
+-	/* no vis info, so make all visible */
+-	memset(out, 0xff, pvscache_bytes);
+-	return;
++        memset(dest->bits, 0xff, pvscache_bytes);
++        return;
+     }
+-
+-    memset(out, 0, pvscache_bytes);
+-    num_out = 0;
+-    shift = 0;
+-    do {
+-	if (*in) {
+-	    *out |= (leafblock_t)*in++ << shift;
+-	    shift += 8;
+-	    num_out += 8;
+-	    if (shift == (1 << LEAFSHIFT)) {
+-		shift = 0;
+-		out++;
+-	    }
+-	    continue;
+-	}
+-
+-	/* Run of zeros - skip over */
+-	count = in[1];
+-	in += 2;
+-	out += count / sizeof(leafblock_t);
+-	shift += (count % sizeof(leafblock_t)) << 3;
+-	num_out += count << 3;
+-	if (shift >= (1 << LEAFSHIFT)) {
+-	    shift -= (1 << LEAFSHIFT);
+-	    out++;
+-	}
+-    } while (num_out < dest->numleafs);
++    extern int mq_visibility_row(const byte *, int, byte *, int, int);
++    int offset = (int)(in - model->visdata);
++    if (offset < 0 || offset >= model->visdata_size ||
++        !mq_visibility_row(in, model->visdata_size-offset, (byte *)dest->bits, pvscache_bytes,
++                           model->numleafs))
++        SV_Error("%s: invalid visibility row for %s", __func__, model->model.name);
+ }
+ 
+ const leafbits_t *
+@@ -932,6 +904,7 @@ Mod_LoadVisibility
+ static void
+ Mod_LoadVisibility(brushmodel_t *brushmodel, dheader_t *header)
+ {
++    brushmodel->visdata_size = header->lumps[LUMP_VISIBILITY].filelen;
+     brushmodel->visdata = Mod_LoadBytes(brushmodel, header, LUMP_VISIBILITY);
+ }
+ 
+@@ -960,7 +933,7 @@ Mod_LoadVertexes(brushmodel_t *brushmodel, const dheader_t *header)
+     const lump_t *headerlump = &header->lumps[LUMP_VERTEXES];
+     const dvertex_t *in;
+     mvertex_t *out;
+-    int i, count;
++    int count;
+ 
+     in = (const dvertex_t *)((const byte *)header + headerlump->fileofs);
+     if (headerlump->filelen % sizeof(*in))
+@@ -971,11 +944,9 @@ Mod_LoadVertexes(brushmodel_t *brushmodel, const dheader_t *header)
+     brushmodel->vertexes = out;
+     brushmodel->numvertexes = count;
+ 
+-    for (i = 0; i < count; i++, in++, out++) {
+-	out->position[0] = LittleFloat(in->point[0]);
+-	out->position[1] = LittleFloat(in->point[1]);
+-	out->position[2] = LittleFloat(in->point[2]);
+-    }
++    extern void mq_vertices(const void *, void *, int);
++    _Static_assert(sizeof(dvertex_t) == 12 && sizeof(mvertex_t) == 12, "vertex layout");
++    mq_vertices(in, out, count);
+ }
+ 
+ /*
+@@ -1536,10 +1507,12 @@ Mod_LoadLeafs_BSP29(brushmodel_t *brushmodel, dheader_t *header)
+ 	out->nummarksurfaces = (uint16_t)LittleShort(in->nummarksurfaces);
+ 
+ 	visofs = LittleLong(in->visofs);
+-	if (visofs == -1)
++	if (visofs == -1 || !brushmodel->visdata)
+ 	    out->compressed_vis = NULL;
+-	else
++	else if (visofs >= 0 && visofs < brushmodel->visdata_size)
+ 	    out->compressed_vis = brushmodel->visdata + visofs;
++	else
++	    SV_Error("%s: invalid leaf visibility offset", __func__);
+ 
+ 	for (j = 0; j < 3; j++) {
+ 	    out->mins[j] = LittleShort(in->mins[j]);
+@@ -1576,10 +1549,12 @@ Mod_LoadLeafs_BSP2rmq(brushmodel_t *brushmodel, dheader_t *header)
+ 	out->nummarksurfaces = (uint32_t)LittleLong(in->nummarksurfaces);
+ 
+ 	visofs = LittleLong(in->visofs);
+-	if (visofs == -1)
++	if (visofs == -1 || !brushmodel->visdata)
+ 	    out->compressed_vis = NULL;
+-	else
++	else if (visofs >= 0 && visofs < brushmodel->visdata_size)
+ 	    out->compressed_vis = brushmodel->visdata + visofs;
++	else
++	    SV_Error("%s: invalid leaf visibility offset", __func__);
+ 
+ 	for (j = 0; j < 3; j++) {
+ 	    out->mins[j] = LittleShort(in->mins[j]);
+@@ -1616,10 +1591,12 @@ Mod_LoadLeafs_BSP2(brushmodel_t *brushmodel, dheader_t *header)
+ 	out->nummarksurfaces = (uint32_t)LittleLong(in->nummarksurfaces);
+ 
+ 	visofs = LittleLong(in->visofs);
+-	if (visofs == -1)
++	if (visofs == -1 || !brushmodel->visdata)
+ 	    out->compressed_vis = NULL;
+-	else
++	else if (visofs >= 0 && visofs < brushmodel->visdata_size)
+ 	    out->compressed_vis = brushmodel->visdata + visofs;
++	else
++	    SV_Error("%s: invalid leaf visibility offset", __func__);
+ 
+ 	for (j = 0; j < 3; j++) {
+ 	    out->mins[j] = LittleFloat(in->mins[j]);
+@@ -1673,7 +1650,7 @@ Mod_LoadClipnodes_BSP29(brushmodel_t *brushmodel, dheader_t *header)
+     const lump_t *headerlump = &header->lumps[LUMP_CLIPNODES];
+     const bsp29_dclipnode_t *in;
+     mclipnode_t *out;
+-    int i, j, count;
++    int count;
+ 
+     in = (bsp29_dclipnode_t *)((byte *)header + headerlump->fileofs);
+     if (headerlump->filelen % sizeof(*in))
+@@ -1685,16 +1662,9 @@ Mod_LoadClipnodes_BSP29(brushmodel_t *brushmodel, dheader_t *header)
+     brushmodel->numclipnodes = count;
+     Mod_MakeClipHulls(brushmodel);
+ 
+-    for (i = 0; i < count; i++, out++, in++) {
+-	out->planenum = LittleLong(in->planenum);
+-	for (j = 0; j < 2; j++) {
+-	    out->children[j] = (uint16_t)LittleShort(in->children[j]);
+-	    if (out->children[j] > 0xfff0)
+-		out->children[j] -= 0x10000;
+-	    if (out->children[j] >= count)
+-		SV_Error("%s: bad clipnode child number", __func__);
+-	}
+-    }
++    extern int mq_clipnodes(const void *, void *, int, int);
++    if (!mq_clipnodes(in, out, count, brushmodel->numplanes))
++        SV_Error("Invalid BSP29 collision nodes in %s", model->name);
+ }
+ 
+ static void
+@@ -1862,7 +1832,7 @@ Mod_LoadPlanes(brushmodel_t *brushmodel, dheader_t *header)
+     const lump_t *headerlump = &header->lumps[LUMP_PLANES];
+     const dplane_t *in;
+     mplane_t *out;
+-    int i, j, count;
++    int count;
+ 
+     in = (dplane_t *)((byte *)header + headerlump->fileofs);
+     if (headerlump->filelen % sizeof(*in))
+@@ -1873,17 +1843,8 @@ Mod_LoadPlanes(brushmodel_t *brushmodel, dheader_t *header)
+     brushmodel->planes = out;
+     brushmodel->numplanes = count;
+ 
+-    for (i = 0; i < count; i++, in++, out++) {
+-	int signbits = 0;
+-	for (j = 0; j < 3; j++) {
+-	    out->normal[j] = LittleFloat(in->normal[j]);
+-	    if (out->normal[j] < 0)
+-		signbits |= 1 << j;
+-	}
+-	out->dist = LittleFloat(in->dist);
+-	out->type = LittleLong(in->type);
+-	out->signbits = signbits;
+-    }
++    extern int mq_planes(const void *, const void *, void *, void *, int);
++    if (!mq_planes(in, in, out, out, count)) SV_Error("Invalid BSP planes in %s", model->name);
+ }
+ 
+ /*
+@@ -1987,47 +1948,17 @@ Mod_LoadBrushModel(brushmodel_t *brushmodel, void *buffer, size_t size)
+ {
+     model_t *model = &brushmodel->model;
+     dheader_t *header = buffer;
+-    int i, j;
++#ifdef QW_HACK
++    int i;
++#endif
+ 
+     model->type = mod_brush;
+ 
+-    /* swap all the header entries */
+-    header->version = LittleLong(header->version);
+-    for (i = 0; i < HEADER_LUMPS; i++) {
+-	header->lumps[i].fileofs = LittleLong(header->lumps[i].fileofs);
+-	header->lumps[i].filelen = LittleLong(header->lumps[i].filelen);
+-    }
+-
++    extern int mq_bsp_directory(const void *, int);
++    if (size > INT_MAX || !mq_bsp_directory(buffer, size))
++        SV_Error("Invalid BSP directory in %s", model->name);
+     if (!BSPVersionSupported(header->version))
+-	SV_Error("%s: %s has unsupported version %s",
+-		 __func__, model->name, BSPVersionString(header->version));
+-
+-    /*
+-     * Check the lump extents
+-     * FIXME - do this more generally... cleanly...?
+-     */
+-    for (i = 0; i < HEADER_LUMPS; ++i) {
+-	int b1 = header->lumps[i].fileofs;
+-	int e1 = b1 + header->lumps[i].filelen;
+-
+-	/*
+-	 * Sanity checks
+-	 * - begin and end >= 0 (end might overflow).
+-	 * - end > begin (again, overflow reqd.)
+-	 * - end < size of file.
+-	 */
+-	if (b1 > e1 || e1 > size || b1 < 0 || e1 < 0)
+-	    SV_Error("%s: bad lump extents in %s", __func__, model->name);
+-
+-	/* Now, check that it doesn't overlap any other lumps */
+-	for (j = 0; j < HEADER_LUMPS; ++j) {
+-	    int b2 = header->lumps[j].fileofs;
+-	    int e2 = b2 + header->lumps[j].filelen;
+-
+-	    if ((b1 < b2 && e1 > b2) || (b2 < b1 && e2 > b1))
+-		SV_Error("%s: overlapping lumps in %s", __func__, model->name);
+-	}
+-    }
++        SV_Error("Unsupported BSP version %s in %s", BSPVersionString(header->version), model->name);
+ 
+ #ifdef QW_HACK
+     brushmodel->checksum = 0;
+@@ -2317,32 +2248,18 @@ Mod_HullPointContents
+ ==================
+ */
+ #ifndef USE_X86_ASM
+-int
+-Mod_HullPointContents(const hull_t *hull, int nodenum, const vec3_t point)
+-{
+-    float dist;
+-    const mclipnode_t *node;
+-    const mplane_t *plane;
+-
+-    while (nodenum >= 0) {
+-	if (nodenum < hull->firstclipnode || nodenum > hull->lastclipnode)
+-	    SV_Error("%s: bad node number (%i)", __func__, nodenum);
+-
+-	node = hull->clipnodes + nodenum;
+-	plane = hull->planes + node->planenum;
+-
+-	if (plane->type < 3)
+-	    dist = point[plane->type] - plane->dist;
+-	else
+-	    dist = DotProduct(plane->normal, point) - plane->dist;
+-	if (dist < 0)
+-	    nodenum = node->children[1];
+-	else
+-	    nodenum = node->children[0];
+-    }
+-
+-    return nodenum;
++extern int mq_contents(const int32_t *,const float *,const byte *,int,int,int,float,float,float);
++unsigned long long mq_hull_queries;
++int Mod_HullPointContents(const hull_t *hull,int node,const vec3_t p) {
++    _Static_assert(sizeof(mplane_t)==20 && sizeof(mclipnode_t)==12,"Mojo BSP hull layout");
++    ++mq_hull_queries;
++    int c=mq_contents((const int32_t *)hull->clipnodes,(const float *)hull->planes,
++                      (const byte *)hull->planes,hull->firstclipnode,hull->lastclipnode,
++                      node,p[0],p[1],p[2]);
++    if(c==-99999) SV_Error("Invalid BSP collision node");
++    return c;
+ }
++
+ #endif
+ 
+ /* 1/32 epsilon to keep floating point happy */
+@@ -2353,6 +2270,9 @@ Mod_HullPointContents(const hull_t *hull, int nodenum, const vec3_t point)
+ MOD_TraceHull
+ ==================
+ */
++#ifdef MOJO_QUAKE
++#include "collision_bridge.inc"
++#else
+ static qboolean
+ Mod_TraceHull_r(const hull_t *hull, int nodenum,
+ 		const float p1f, const float p2f,
+@@ -2487,3 +2407,4 @@ Mod_TraceHull(const hull_t *hull, int nodenum,
+ {
+     return Mod_TraceHull_r(hull, nodenum, 0, 1, p1, p2, trace);
+ }
++#endif /* MOJO_QUAKE */
+diff --git a/common/pr_cmds.c b/common/pr_cmds.c
+index c0da0e1..8e91d18 100644
+--- a/common/pr_cmds.c
++++ b/common/pr_cmds.c
+@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ 
+ */
+ 
++extern int mq_server_random(void);
+ #include <float.h>
+ 
+ #include "cmd.h"
+@@ -564,7 +565,7 @@ PF_random(void)
+ {
+     float num;
+ 
+-    num = (rand() & 0x7fff) / ((float)0x7fff);
++    num = (mq_server_random() & 0x7fff) / ((float)0x7fff);
+ 
+     G_FLOAT(OFS_RETURN) = num;
+ }
+@@ -1036,7 +1037,7 @@ PF_dprint(void)
+     Con_DPrintf("%s", PF_VarString(0));
+ }
+ 
+-static char pr_string_temp[128];
++char pr_string_temp[128];
+ 
+ static void
+ PF_ftos(void)
+diff --git a/common/pr_edict.c b/common/pr_edict.c
+index bfff507..1f9df09 100644
+--- a/common/pr_edict.c
++++ b/common/pr_edict.c
+@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+ // sv_edict.c -- entity dictionary
+ 
++#include <limits.h>
+ #include "cmd.h"
+ #include "console.h"
+ #include "crc.h"
+@@ -1090,6 +1091,8 @@ PR_LoadProgs(void)
+ #endif
+     if (!progs)
+ 	SV_Error("%s: couldn't load progs.dat", __func__);
++    extern int mq_qc_directory(const void *, int);
++    if (progs_size > INT_MAX || !mq_qc_directory(progs, progs_size)) SV_Error("Invalid QuakeC directory");
+     Con_DPrintf("Programs occupy %iK.\n", (int)(progs_size / 1024));
+ 
+ #ifdef NQ_HACK
+@@ -1161,6 +1164,18 @@ PR_LoadProgs(void)
+ 	pr_globaldefs[i].s_name = LittleLong(pr_globaldefs[i].s_name);
+     }
+ 
++    extern int mq_validate_code(const dstatement_t *,int,int);
++    int rejected=mq_validate_code(pr_statements,progs->numstatements,progs->numglobals);
++    if (rejected) SV_Error("Invalid QuakeC statement %d",rejected-1);
++    for (i=0;i<progs->numfunctions;i++) {
++        dfunction_t *fn=&pr_functions[i];
++        if (fn->numparms<0 || fn->numparms>MAX_PARMS || fn->locals<0 || fn->parm_start<0 ||
++            fn->locals>progs->numglobals-fn->parm_start || fn->first_statement>=progs->numstatements)
++            SV_Error("Invalid QuakeC function %d", i);
++        int words=0;
++        for(int j=0;j<fn->numparms;j++) words+=fn->parm_size[j];
++        if (words>progs->numglobals-fn->parm_start && fn->first_statement>=0) SV_Error("Invalid QuakeC parameters %d",i);
++    }
+     pr_alpha_supported = false;
+     for (i = 0; i < progs->numfielddefs; i++) {
+ 	pr_fielddefs[i].type = LittleShort(pr_fielddefs[i].type);
+diff --git a/common/pr_exec.c b/common/pr_exec.c
+index ca508fa..8218516 100644
+--- a/common/pr_exec.c
++++ b/common/pr_exec.c
+@@ -35,8 +35,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ 
+ typedef struct {
+     int s;
+-    dfunction_t *f;
++    int function;
+ } prstack_t;
++_Static_assert(sizeof(prstack_t) == 2*sizeof(int32_t), "QuakeC frame layout");
+ 
+ #define	MAX_STACK_DEPTH		32
+ prstack_t pr_stack[MAX_STACK_DEPTH];
+@@ -196,9 +197,9 @@ PR_StackTrace_Internal(void (*Print)(const char *fmt, ...))
+ 	return;
+     }
+ 
+-    pr_stack[pr_depth].f = pr_xfunction;
++    pr_stack[pr_depth].function = pr_xfunction ? (int)(pr_xfunction-pr_functions) : -1;
+     for (i = pr_depth; i >= 0; i--) {
+-	f = pr_stack[i].f;
++	f = pr_stack[i].function >= 0 ? &pr_functions[pr_stack[i].function] : NULL;
+ 	if (!f)
+ 	    Print("<NO FUNCTION>\n");
+ 	else
+@@ -298,36 +299,15 @@ Returns the new program statement counter
+ int
+ PR_EnterFunction(dfunction_t *f)
+ {
+-    int i, j, c, o;
+-
+-    pr_stack[pr_depth].s = pr_xstatement;
+-    pr_stack[pr_depth].f = pr_xfunction;
+-    pr_depth++;
+-    if (pr_depth >= MAX_STACK_DEPTH)
+-	PR_RunError("stack overflow");
+-
+-// save off any locals that the new function steps on
+-    c = f->locals;
+-    if (localstack_used + c > LOCALSTACK_SIZE)
+-	PR_RunError("PR_ExecuteProgram: locals stack overflow\n");
+-
+-    for (i = 0; i < c; i++)
+-	localstack[localstack_used + i] =
+-	    ((int *)pr_globals)[f->parm_start + i];
+-    localstack_used += c;
+-
+-// copy parameters
+-    o = f->parm_start;
+-    for (i = 0; i < f->numparms; i++) {
+-	for (j = 0; j < f->parm_size[i]; j++) {
+-	    ((int *)pr_globals)[o] =
+-		((int *)pr_globals)[OFS_PARM0 + i * 3 + j];
+-	    o++;
+-	}
+-    }
+-
++    extern int mq_push_frame(int *, int *, int, int *, int *, int, int *, int,
++                             int, int, int, int, const byte *, int);
++    int caller = pr_xfunction ? (int)(pr_xfunction - pr_functions) : -1;
++    if (!mq_push_frame((int *)pr_stack, &pr_depth, MAX_STACK_DEPTH, localstack, &localstack_used,
++                       LOCALSTACK_SIZE, (int *)pr_globals, progs->numglobals, caller, pr_xstatement,
++                       f->parm_start, f->locals, f->parm_size, f->numparms))
++        PR_RunError("QuakeC call frame exceeds its stack or globals");
+     pr_xfunction = f;
+-    return f->first_statement - 1;	// offset the s++
++    return f->first_statement - 1;
+ }
+ 
+ /*
+@@ -338,30 +318,13 @@ PR_LeaveFunction
+ int
+ PR_LeaveFunction(void)
+ {
+-    int i, c;
+-
+-    if (pr_depth <= 0)
+-#ifdef NQ_HACK
+-	Sys_Error("prog stack underflow");
+-#endif
+-#ifdef QW_HACK
+-	SV_Error("prog stack underflow");
+-#endif
+-
+-// restore locals from the stack
+-    c = pr_xfunction->locals;
+-    localstack_used -= c;
+-    if (localstack_used < 0)
+-	PR_RunError("PR_ExecuteProgram: locals stack underflow\n");
+-
+-    for (i = 0; i < c; i++)
+-	((int *)pr_globals)[pr_xfunction->parm_start + i] =
+-	    localstack[localstack_used + i];
+-
+-// up stack
+-    pr_depth--;
+-    pr_xfunction = pr_stack[pr_depth].f;
+-    return pr_stack[pr_depth].s;
++    extern int mq_pop_frame(int *, int *, int *, int *, int *, int, int, int *, int *);
++    int caller, pc;
++    if (!pr_xfunction || !mq_pop_frame((int *)pr_stack, &pr_depth, localstack, &localstack_used,
++             (int *)pr_globals, pr_xfunction->parm_start, pr_xfunction->locals, &caller, &pc))
++        PR_RunError("QuakeC call frame underflow");
++    pr_xfunction = caller >= 0 ? &pr_functions[caller] : NULL;
++    return pc;
+ }
+ 
+ 
+@@ -370,6 +333,9 @@ PR_LeaveFunction(void)
+ PR_ExecuteProgram
+ ====================
+ */
++#ifdef MOJO_QUAKE
++#include "qc_bridge.inc"
++#else
+ void
+ PR_ExecuteProgram(func_t fnum)
+ {
+@@ -678,6 +644,8 @@ PR_ExecuteProgram(func_t fnum)
+     }
+ }
+ 
++#endif /* MOJO_QUAKE */
++
+ /*----------------------*/
+ 
+ #define PR_STRTBL_CHUNK 256
+@@ -696,6 +664,18 @@ PR_InitStringTable(void)
+     num_prstr = 0;
+ }
+ 
++int mq_string_count(void) { return num_prstr; }
++
++void mq_define_string(int i, const char *value)
++{
++    if (i == pr_strtbl_size) {
++        pr_strtbl_size += PR_STRTBL_CHUNK;
++        pr_strtbl = Z_Realloc(mainzone, pr_strtbl, pr_strtbl_size * sizeof(*pr_strtbl));
++    }
++    pr_strtbl[i] = value;
++    if (num_prstr <= i) num_prstr = i+1;
++}
++
+ const char *
+ PR_GetString(int num)
+ {
+diff --git a/common/screen.c b/common/screen.c
+index 9b4f7e8..05b27fa 100644
+--- a/common/screen.c
++++ b/common/screen.c
+@@ -1077,6 +1077,8 @@ int glx, gly, glwidth, glheight;
+ SCR_ScreenShot_f
+ ==================
+ */
++#include "agent_frame.inc"
++
+ static void
+ SCR_ScreenShot_f(void)
+ {
+@@ -1153,8 +1155,9 @@ SCR_ScreenShot_f(void)
+ //
+     D_EnableBackBufferAccess();	// enable direct drawing of console to back buffer
+ 
++    extern const byte *mq_display_palette(void);
+     WritePCXfile(pcxname, vid.buffer, vid.width, vid.height, vid.rowbytes,
+-		 host_basepal, false);
++                 mq_display_palette(), false);
+ 
+     D_DisableBackBufferAccess();	// for adapters that can't stay mapped in
+     //  for linear writes all the time
+@@ -1400,6 +1403,16 @@ SCR_UpdateScreen(void)
+ #endif
+     } else if (cl.intermission == 1 && key_dest == key_game) {
+ 	Sbar_IntermissionOverlay();
++#ifdef NQ_HACK
++    } else if (cl.show_sell_screen && key_dest == key_game) {
++        const qpic8_t *card = Draw_CachePic("gfx/help0.lmp");
++        const char *hint = "Enter or fire to continue";
++        int y = (scr_scaled_height - card->height) / 2;
++        Draw_Pic((scr_scaled_width - card->width) / 2, y, card);
++        int line = qmin(y + card->height + 4, scr_scaled_height - 8);
++        Draw_String((scr_scaled_width - (int)strlen(hint) * 8) / 2, line, hint);
++        scr_copyeverything = true;
++#endif
+     } else if (cl.intermission == 2 && key_dest == key_game) {
+ 	Sbar_FinaleOverlay();
+ 	SCR_DrawCenterString();
+@@ -1429,6 +1442,15 @@ SCR_UpdateScreen(void)
+ 
+     V_UpdatePalette();
+ 
++    extern int mq_capture_frame;
++    if (mq_capture_frame) {
++        if (mq_capture_frame & 1)
++            SCR_ScreenShot_f();
++        if (mq_capture_frame & 2)
++            mq_write_agent_frame();
++        mq_capture_frame = 0;
++    }
++
+ #ifdef GLQUAKE
+     GL_EndRendering();
+ #else
+diff --git a/common/snd_dma.c b/common/snd_dma.c
+index 8e4852b..4a2db93 100644
+--- a/common/snd_dma.c
++++ b/common/snd_dma.c
+@@ -64,6 +64,7 @@ static vec3_t listener_up;
+ static vec_t sound_nominal_clip_dist = 1000.0;
+ 
+ static int soundtime;		/* sample PAIRS */
++unsigned long long mq_audio_starves;
+ int paintedtime;		/* sample PAIRS */
+ 
+ #define	MAX_SFX 512
+@@ -870,6 +871,7 @@ S_Update_(void)
+ 
+     /* check to make sure that we haven't overshot */
+     if (paintedtime < soundtime) {
++        if (paintedtime) ++mq_audio_starves;
+ 	/* FIXME - handle init & wrap properly and report actual overflow */
+ 	Con_DPrintf("%s: overflow\n", __func__);
+ 	paintedtime = soundtime;
+diff --git a/common/snd_mem.c b/common/snd_mem.c
+index 05eec02..c0785a9 100644
+--- a/common/snd_mem.c
++++ b/common/snd_mem.c
+@@ -47,10 +47,7 @@ static void
+ ResampleSfx(sfx_t *sfx, int inrate, int inwidth, const byte *data)
+ {
+     int outcount;
+-    int srcsample;
+     float stepscale;
+-    int i;
+-    int sample;
+     sfxcache_t *sc;
+ 
+     sc = Cache_Check(&sfx->cache);
+@@ -71,45 +68,8 @@ ResampleSfx(sfx_t *sfx, int inrate, int inwidth, const byte *data)
+     sc->width = loadas8bit.value ? 1 : inwidth;
+     sc->stereo = 0;
+ 
+-    // Resample / decimate to the current source rate
+-    //
+-    // TODO: Performance: We have to make sure multiplying out the step scale doesn't overflow the
+-    // source buffer (because it really can in practice).  Maybe remove the qmin() from the loop and
+-    // just check backwards from the end of the srcsample calculations until we are sure we're
+-    // inside the valid range.
+-    //
+-    if (stepscale == 1 && inwidth == 1 && sc->width == 1) {
+-	for (i = 0; i < outcount; i++)
+-	    ((signed char *)sc->data)[i] = (int)((unsigned char)(data[i]) - 128);
+-        srcsample = in_length - 1;
+-    } else if (inwidth == 1 && sc->width == 1) {
+-        for (i = 0; i < outcount; i++) {
+-            srcsample = qmin((int)(i * stepscale), in_length - 1);
+-            ((int8_t *)sc->data)[i] = (int)((uint8_t)(data[srcsample])) - 128;
+-        }
+-    } else if (inwidth == 1 && sc->width == 2) {
+-        for (i = 0; i < outcount; i++) {
+-            srcsample = qmin((int)(i * stepscale), in_length - 1);
+-            sample = (int)((unsigned char)(data[srcsample]) - 128) << 8;
+-            ((short *)sc->data)[i] = sample;
+-        }
+-    } else if (inwidth == 2 && sc->width == 1) {
+-        for (i = 0; i < outcount; i++) {
+-            srcsample = qmin((int)(i * stepscale), in_length - 1);
+-            sample = LittleShort(((const short *)data)[srcsample]);
+-            ((signed char *)sc->data)[i] = sample >> 8;
+-        }
+-    } else if (inwidth == 2 && sc->width == 2) {
+-        for (i = 0; i < outcount; i++) {
+-            srcsample = qmin((int)(i * stepscale), in_length - 1);
+-            sample = LittleShort(((const short *)data)[srcsample]);
+-            ((short *)sc->data)[i] = sample;
+-        }
+-    } else {
+-        assert(!"Unsupported sound width in resampler");
+-    }
+-
+-    assert(srcsample < in_length);
++    extern void mq_resample_pcm(const byte *, int, int, byte *, int, int, float);
++    mq_resample_pcm(data, in_length, inwidth, sc->data, outcount, sc->width, stepscale);
+ }
+ 
+ const byte *snd_ramp;
+@@ -501,171 +461,22 @@ WAV loading
+ */
+ 
+ 
+-static const byte *data_p;
+-static const byte *iff_end;
+-static const byte *last_chunk;
+-static const byte *iff_data;
+-static int iff_chunk_len;
+-
+-
+-static short
+-GetLittleShort(void)
+-{
+-    short val = 0;
+-
+-    val = *data_p;
+-    val = val + (*(data_p + 1) << 8);
+-    data_p += 2;
+-    return val;
+-}
+-
+-static int
+-GetLittleLong(void)
+-{
+-    int val = 0;
+-
+-    val = *data_p;
+-    val = val + (*(data_p + 1) << 8);
+-    val = val + (*(data_p + 2) << 16);
+-    val = val + (*(data_p + 3) << 24);
+-    data_p += 4;
+-    return val;
+-}
+-
+-static void
+-FindNextChunk(const char *name, const char *filename)
+-{
+-    while (1) {
+-	/* Need at least 8 bytes for a chunk */
+-	if (last_chunk + 8 >= iff_end) {
+-	    data_p = NULL;
+-	    return;
+-	}
+-
+-	data_p = last_chunk + 4;
+-	iff_chunk_len = GetLittleLong();
+-	if (iff_chunk_len < 0 || iff_chunk_len > iff_end - data_p) {
+-	    Con_DPrintf("Bad \"%s\" chunk length (%d) in wav file %s\n",
+-			name, iff_chunk_len, filename);
+-	    data_p = NULL;
+-	    return;
+-	}
+-	last_chunk = data_p + ((iff_chunk_len + 1) & ~1);
+-	data_p -= 8;
+-	if (!strncmp((const char *)data_p, name, 4))
+-	    return;
+-    }
+-}
+-
+-static void
+-FindChunk(const char *name, const char *filename)
+-{
+-    last_chunk = iff_data;
+-    FindNextChunk(name, filename);
+-}
+-
+-#if 0
+-static void
+-DumpChunks(void)
+-{
+-    char str[5];
+-
+-    str[4] = 0;
+-    data_p = iff_data;
+-    do {
+-	memcpy(str, data_p, 4);
+-	data_p += 4;
+-	iff_chunk_len = GetLittleLong();
+-	Con_Printf("0x%x : %s (%d)\n", (int)(data_p - 4), str, iff_chunk_len);
+-	data_p += (iff_chunk_len + 1) & ~1;
+-    } while (data_p < iff_end);
+-}
+-#endif
+-
+-/*
+-============
+-GetWavinfo
+-============
+-*/
+ static wavinfo_t *
+ GetWavinfo(const char *name, const byte *wav, int wavlength)
+ {
++    extern int mq_wave_info(const byte *, int, int *);
+     static wavinfo_t info;
+-    int i;
+-    int format;
+-    int samples;
+-
++    int fields[6];
+     memset(&info, 0, sizeof(info));
+-
+-    if (!wav)
+-	return &info;
+-
+-    iff_data = wav;
+-    iff_end = wav + wavlength;
+-
+-// find "RIFF" chunk
+-    FindChunk("RIFF", name);
+-    if (!(data_p && !strncmp((char *)data_p + 8, "WAVE", 4))) {
+-	Con_DPrintf("Missing RIFF/WAVE chunks\n");
+-	return &info;
++    if (!wav || !mq_wave_info(wav, wavlength, fields)) {
++        Con_DPrintf("Unsupported or incomplete PCM sound %s\n", name);
++        return &info;
+     }
+-// get "fmt " chunk
+-    iff_data = data_p + 12;
+-// DumpChunks ();
+-
+-    FindChunk("fmt ", name);
+-    if (!data_p) {
+-	Con_DPrintf("Missing fmt chunk\n");
+-	return &info;
+-    }
+-    data_p += 8;
+-    format = GetLittleShort();
+-    if (format != 1) {
+-	Con_DPrintf("Microsoft PCM format only\n");
+-	return &info;
+-    }
+-
+-    info.channels = GetLittleShort();
+-    info.rate = GetLittleLong();
+-    data_p += 4 + 2;
+-    info.width = GetLittleShort() / 8;
+-
+-// get cue chunk
+-    FindChunk("cue ", name);
+-    if (data_p) {
+-	data_p += 32;
+-	info.loopstart = GetLittleLong();
+-
+-	// if the next chunk is a LIST chunk, look for a cue length marker
+-	FindNextChunk("LIST", name);
+-	if (data_p) {
+-	    /* this is not a proper parse, but it works with cooledit... */
+-	    if (!strncmp((char *)data_p + 28, "mark", 4)) {
+-		data_p += 24;
+-		i = GetLittleLong();	// samples in loop
+-		info.samples = info.loopstart + i;
+-	    }
+-	}
+-    } else
+-	info.loopstart = -1;
+-
+-// find data chunk
+-    FindChunk("data", name);
+-    if (!data_p) {
+-	Con_DPrintf("Missing data chunk\n");
+-	return &info;
+-    }
+-
+-    data_p += 4;
+-    samples = GetLittleLong() / info.width;
+-
+-    if (info.samples) {
+-	if (samples < info.samples)
+-	    Sys_Error("Sound %s has a bad loop length", name);
+-    } else
+-	info.samples = samples;
+-
+-    info.dataofs = data_p - wav;
+-
++    info.rate = fields[0];
++    info.width = fields[1];
++    info.channels = fields[2];
++    info.loopstart = fields[3];
++    info.samples = fields[4];
++    info.dataofs = fields[5];
+     return &info;
+ }
+diff --git a/common/snd_mix.c b/common/snd_mix.c
+index ad6e854..29adfc5 100644
+--- a/common/snd_mix.c
++++ b/common/snd_mix.c
+@@ -259,6 +259,9 @@ SND_InitScaletable(void)
+     }
+ }
+ 
++#ifdef MOJO_QUAKE
++#include "mix_bridge.inc"
++#else
+ static void
+ SND_PaintChannelFrom8_Generic(channel_t *ch, sfxcache_t *sc, int count, int paintstart)
+ {
+@@ -339,3 +342,4 @@ SND_PaintChannelFrom16(channel_t *ch, sfxcache_t *sc, int count, int paintstart)
+ 
+     ch->pos += count;
+ }
++#endif /* MOJO_QUAKE */
+diff --git a/common/snd_sdl.c b/common/snd_sdl.c
+index c2ed9fe..5189f65 100644
+--- a/common/snd_sdl.c
++++ b/common/snd_sdl.c
+@@ -49,6 +49,8 @@ static int sdl_read_index;
+ static void
+ paint_audio(void *unused, Uint8 *stream, int len)
+ {
++    byte *output = stream;
++    int length = len;
+     assert(!(len % (shm->channels * shm->samplebits)));
+ 
+     int read_buffer_size = shm->samples * (shm->samplebits / 8);
+@@ -63,6 +65,8 @@ paint_audio(void *unused, Uint8 *stream, int len)
+         memcpy(stream, shm->buffer + sdl_read_index, len);
+         sdl_read_index = (sdl_read_index + len) & (read_buffer_size - 1);
+     }
++    extern void mq_mix_music(byte *, int);
++    mq_mix_music(output, length);
+ }
+ 
+ qboolean
+diff --git a/common/sv_move.c b/common/sv_move.c
+index a608982..9de5647 100644
+--- a/common/sv_move.c
++++ b/common/sv_move.c
+@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ // sv_move.c -- monster movement
+ 
+ #ifdef NQ_HACK
++extern int mq_server_random(void);
+ #include "progs.h"
+ #endif
+ 
+@@ -319,7 +320,7 @@ SV_NewChaseDir(edict_t *actor, edict_t *enemy, float dist)
+ 	    return;
+     }
+ // try other directions
+-    if (((rand() & 3) & 1) || fabsf(deltay) > fabsf(deltax)) {
++    if (((mq_server_random() & 3) & 1) || fabsf(deltay) > fabsf(deltax)) {
+ 	tdir = d[1];
+ 	d[1] = d[2];
+ 	d[2] = tdir;
+@@ -338,7 +339,7 @@ SV_NewChaseDir(edict_t *actor, edict_t *enemy, float dist)
+     if (olddir != DI_NODIR && SV_StepDirection(actor, olddir, dist))
+ 	return;
+ 
+-    if (rand() & 1) {		/*randomly determine direction of search */
++    if (mq_server_random() & 1) {		/*randomly determine direction of search */
+ 	for (tdir = 0; tdir <= 315; tdir += 45)
+ 	    if (tdir != turnaround && SV_StepDirection(actor, tdir, dist))
+ 		return;
+@@ -407,7 +408,7 @@ SV_MoveToGoal(void)
+ 	return;
+ 
+ // bump around...
+-    if ((rand() & 3) == 1 || !SV_StepDirection(ent, ent->v.ideal_yaw, dist)) {
++    if ((mq_server_random() & 3) == 1 || !SV_StepDirection(ent, ent->v.ideal_yaw, dist)) {
+ 	SV_NewChaseDir(ent, goal, dist);
+     }
+ }
+diff --git a/common/sys_unix.c b/common/sys_unix.c
+index 35cd9dc..8a427c4 100644
+--- a/common/sys_unix.c
++++ b/common/sys_unix.c
+@@ -71,9 +71,11 @@ const char *
+ Sys_UserDataDirectory()
+ {
+     static char unix_userdir[MAX_OSPATH];
++    const char *profile=getenv("MOJO_QUAKE_PROFILE");
++    if(profile && *profile) return profile;
+     const char *home = getenv("HOME");
+     if (home) {
+-        qsnprintf(unix_userdir, sizeof(unix_userdir), "%s/.tyrquake", home);
++        qsnprintf(unix_userdir, sizeof(unix_userdir), "%s/.local/share/mojo-quake/profile", home);
+         return unix_userdir;
+     }
+ 
+@@ -361,6 +363,8 @@ Sys_MakeCodeUnwriteable(void *start_addr, void *end_addr)
+  * ===========================================================================
+  */
+ 
++#include "clock_bridge.inc"
++
+ int
+ main(int argc, char **argv)
+ {
+@@ -412,6 +416,23 @@ main(int argc, char **argv)
+ 
+     Sys_Init();
+     Host_Init(&parms, NULL);
++    int option=COM_CheckParm("-mqticks");
++    if(option && option+1<com_argc) mq_limit=atoi(com_argv[option+1]);
++    extern void mq_replay_init(void);
++    mq_replay_init();
++    option = COM_CheckParm("-mqwarmup");
++    if (option && option+1 < com_argc) mq_warmup = atoi(com_argv[option+1]);
++    mq_fast = COM_CheckParm("-mqfast") || mq_warmup > 0;
++    if (mq_fast && mq_limit <= 0 && !COM_CheckParm("-mqreplay")) Sys_Error("A benchmark needs a tick limit or replay");
++    mq_start_sample();
++    if (mq_fast) {
++        while (!mq_warmup || mq_count < mq_warmup)
++            mq_tick(1.0f/72.0f, mq_count % (COM_CheckParm("-mqshotat") ? 6 : 72) == 0);
++        mq_fast = 0;
++        mq_start_sample();
++    }
++    mq_clock_loop();
++    return 0;
+ #endif /* SERVERONLY */
+ 
+     /*
+diff --git a/common/vid_mode.c b/common/vid_mode.c
+index cfcc2ba..fed2a61 100644
+--- a/common/vid_mode.c
++++ b/common/vid_mode.c
+@@ -159,6 +159,12 @@ VID_Mode_SetupViddef(const qvidmode_t *mode, viddef_t *vid)
+     vid->width = qmax((vid->width + 7) & ~7, MINWIDTH);
+     vid->height = qmax(vid->height, MINHEIGHT);
+ 
++#ifndef GLQUAKE
++    if(COM_CheckParm("-mqcpu2x")) {
++        vid->width=qmax(MINWIDTH,((mode->width/2+7)&~7));
++        vid->height=qmax(MINHEIGHT,mode->height/2);
++    }
++#endif
+     /* Ensure output is at least as big as render resolution */
+     vid->output.width = qmax(vid->output.width, vid->width);
+     vid->output.height = qmax(vid->output.height, vid->height);
+diff --git a/common/vid_sdl.c b/common/vid_sdl.c
+index 6985445..196075f 100644
+--- a/common/vid_sdl.c
++++ b/common/vid_sdl.c
+@@ -102,6 +102,8 @@ void VID_Shutdown(void)
+ }
+ 
+ static qboolean palette_changed;
++static byte mq_active_palette[768];
++const byte *mq_display_palette(void) { return mq_active_palette; }
+ 
+ void
+ VID_ShiftPalette(const byte *palette)
+@@ -210,7 +212,7 @@ VID_SetMode(const qvidmode_t *mode, const byte *palette)
+ 	_windowed_mouse.callback(&_windowed_mouse);
+     }
+ 
+-    flags = SDL_WINDOW_SHOWN;
++    flags = (COM_CheckParm("-mqhidden") ? SDL_WINDOW_HIDDEN : SDL_WINDOW_SHOWN);
+     if (mode != &vid_windowed_mode)
+ 	flags |= SDL_WINDOW_FULLSCREEN;
+ 
+@@ -224,7 +226,7 @@ VID_SetMode(const qvidmode_t *mode, const byte *palette)
+     format = (const qvidformat_t *)mode->driverdata;
+     sdl_format = SDL_AllocFormat(format->format);
+ 
+-    sdl_window = SDL_CreateWindow("TyrQuake",
++    sdl_window = SDL_CreateWindow("Mojo Quake",
+ 				  SDL_WINDOWPOS_UNDEFINED,
+ 				  SDL_WINDOWPOS_UNDEFINED,
+ 				  mode->width, mode->height, flags);
+@@ -295,6 +297,7 @@ VID_SetPalette(const byte *palette)
+ {
+     unsigned i, r, g, b;
+ 
++    memcpy(mq_active_palette, palette, sizeof mq_active_palette);
+     switch (SDL_PIXELTYPE(sdl_format->format)) {
+     case SDL_PIXELTYPE_PACKED32:
+ 	for (i = 0; i < 256; i++) {
+@@ -406,6 +409,9 @@ VID_SDL_BlitRect(int x, int y, int width, int height)
+     int err = SDL_RenderCopy(renderer, texture, &src_rect, &dst_rect);
+     if (err)
+ 	Sys_Error("%s: unable to render texture (%s)", __func__, SDL_GetError());
++    extern void mq_pace_present(void);
++    SDL_RenderFlush(renderer);
++    mq_pace_present();
+     SDL_RenderPresent(renderer);
+ }
+ 
+@@ -431,8 +437,8 @@ VID_Update(vrect_t *rects)
+         palette_changed = false;
+         fullrect.x = 0;
+         fullrect.y = 0;
+-        fullrect.width = vid_currentmode->width;
+-        fullrect.height = vid_currentmode->height;
++        fullrect.width = vid.width;
++        fullrect.height = vid.height;
+         fullrect.pnext = NULL;
+         rects = &fullrect;
+     }
+@@ -449,10 +455,10 @@ VID_Update(vrect_t *rects)
+             continue;
+         if (rect.y >= lock_rect.h)
+             continue;
+-        if (rect.x + rect.width > lock_rect.w)
+-            rect.width = lock_rect.w - rect.x;
+-        if (rect.y + rect.height > lock_rect.h)
+-            rect.height = lock_rect.h - rect.y;
++        if (rect.x + rect.width > vid.width)
++            rect.width = vid.width - rect.x;
++        if (rect.y + rect.height > vid.height)
++            rect.height = vid.height - rect.y;
+ 
+         src = vid.buffer + rect.y * vid.width + rect.x;
+         height = rect.height;
+diff --git a/common/vid_sgl.c b/common/vid_sgl.c
+index c46cd47..a1f2db1 100644
+--- a/common/vid_sgl.c
++++ b/common/vid_sgl.c
+@@ -113,7 +113,7 @@ VID_SetMode(const qvidmode_t *mode, const byte *palette)
+     if (sdl_window)
+ 	SDL_DestroyWindow(sdl_window);
+ 
+-    flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
++    flags = (COM_CheckParm("-mqhidden") ? SDL_WINDOW_HIDDEN : SDL_WINDOW_SHOWN) | SDL_WINDOW_OPENGL;
+     if (mode != &vid_windowed_mode)
+ 	flags |= SDL_WINDOW_FULLSCREEN;
+ 
+@@ -128,7 +128,7 @@ VID_SetMode(const qvidmode_t *mode, const byte *palette)
+ 
+     for (i = 0; i < ARRAY_SIZE(depths); i++) {
+         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, depths[i]);
+-        sdl_window = SDL_CreateWindow("TyrQuake",
++        sdl_window = SDL_CreateWindow("Mojo Quake",
+                                       SDL_WINDOWPOS_UNDEFINED,
+                                       SDL_WINDOWPOS_UNDEFINED,
+                                       mode->width, mode->height, flags);
+@@ -153,6 +153,9 @@ VID_SetMode(const qvidmode_t *mode, const byte *palette)
+     VID_InitColormap(palette);
+ 
+     GL_Init();
++    const char *renderer_name=(const char *)glGetString(GL_RENDERER);
++    if(!renderer_name || strstr(renderer_name,"llvmpipe") || strstr(renderer_name,"softpipe") ||
++       strstr(renderer_name,"Software Rasterizer")) Sys_Error("A hardware OpenGL renderer is required");
+     if (reload_textures)
+ 	GL_ReloadTextures();
+ 
+@@ -167,6 +170,7 @@ VID_SetMode(const qvidmode_t *mode, const byte *palette)
+     else if (vsync_available && vid_vsync.value)
+         swap_interval = 1;
+     SDL_GL_SetSwapInterval(swap_interval);
++    Con_Printf("Mojo Quake actual GPU swap interval %d\n", SDL_GL_GetSwapInterval());
+ 
+     vid.numpages = 0; /* Contents of the back buffer are undefined after swap */
+     vid.width = vid.conwidth = mode->width;
+@@ -273,6 +277,9 @@ void
+ GL_EndRendering(void)
+ {
+     glFlush();
++    extern void mq_pace_present(void);
++    glFlush();
++    mq_pace_present();
+     SDL_GL_SwapWindow(sdl_window);
+ }
+ 
+diff --git a/common/world.c b/common/world.c
+index 61d6171..b70f16f 100644
+--- a/common/world.c
++++ b/common/world.c
+@@ -479,6 +479,40 @@ SV_LinkEdict(edict_t *ent, qboolean touch_triggers)
+ 	SV_TouchLinks(ent, sv_areanodes);
+ }
+ 
++/* Capture exact membership and iteration order. QuakeC can change .solid
++ * between relinks, so recomputing a bucket from the current field loses state. */
++void mq_capture_links(int *codes)
++{
++    for (int i = 0; i < sv.num_edicts; ++i) codes[i] = -1;
++    for (int i = 0; i < sv_numareanodes; ++i) {
++        for (int type = 0; type < 2; ++type) {
++            link_t *head = type ? &sv_areanodes[i].trigger_edicts : &sv_areanodes[i].solid_edicts;
++            int rank = 0;
++            for (link_t *p = head->next; p != head; p = p->next) {
++                edict_t *e = (edict_t *)((byte *)p - offsetof(edict_t, area));
++                codes[NUM_FOR_EDICT(e)] = (2*i + type)*MAX_EDICTS + rank++;
++            }
++        }
++    }
++}
++
++int mq_link_code_valid(int code, int count)
++{
++    return code == -1 || (code >= 0 && code / MAX_EDICTS < 2*((1 << (AREA_DEPTH+1))-1) &&
++                          code % MAX_EDICTS < count);
++}
++
++void mq_restore_link(edict_t *e, int code)
++{
++    e->num_leafs = 0;
++    if (e == sv.edicts || e->free) return;
++    if (e->v.modelindex) SV_FindTouchedLeafs(e, sv.worldmodel->nodes);
++    if (code < 0) return;
++    int bucket = code / MAX_EDICTS;
++    areanode_t *node = &sv_areanodes[bucket/2];
++    InsertLinkBefore(&e->area, (bucket & 1) ? &node->trigger_edicts : &node->solid_edicts);
++}
++
+ /*
+ ==================
+ SV_PointContents
+diff --git a/include/model.h b/include/model.h
+index a1979b5..1573b6a 100644
+--- a/include/model.h
++++ b/include/model.h
+@@ -544,6 +544,7 @@ typedef struct brushmodel_s {
+ #endif
+ 
+     byte *visdata;
++    int visdata_size;
+     byte *lightdata;
+     char *entities;
+ } brushmodel_t;

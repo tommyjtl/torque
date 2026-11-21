@@ -1,0 +1,121 @@
+{
+  "scope": "Mac E1M1 runs starting with empty route memory. All native positions and moving-object comparisons below are offline evaluation measurements. The player sees the game camera, its visible HUD and its own inputs.",
+  "pair_method": "At up to 190 confirmed decision ticks per run, compared prior photos with similar coarse panoramas plus pairs assigned the same node in that run. Near means horizontal distance <=110 and vertical separation <=38 Quake units. Separate means horizontal distance >240 or vertical separation >80. Intermediate pairs excluded. Pairs within a run are correlated.",
+  "pair_results": [
+    {
+      "session": "session-7kdare10",
+      "old_graph": {
+        "separate_pairs": 1251,
+        "accepted_separate": 16,
+        "near_pairs": 686,
+        "accepted_near": 57
+      },
+      "multi_view_feature_check": {
+        "separate_pairs": 1251,
+        "near_pairs": 686,
+        "accepted_near": 282
+      }
+    },
+    {
+      "session": "session-rciaohql",
+      "old_graph": {
+        "separate_pairs": 1255,
+        "accepted_separate": 70,
+        "near_pairs": 577,
+        "accepted_near": 64
+      },
+      "multi_view_feature_check": {
+        "separate_pairs": 1255,
+        "near_pairs": 577,
+        "accepted_near": 299
+      }
+    },
+    {
+      "session": "session-u35632nj",
+      "old_graph": {
+        "separate_pairs": 1388,
+        "accepted_separate": 79,
+        "near_pairs": 460,
+        "accepted_near": 55
+      },
+      "multi_view_feature_check": {
+        "separate_pairs": 1388,
+        "near_pairs": 460,
+        "accepted_near": 206,
+        "accepted_separate": 3
+      }
+    }
+  ],
+  "new_live_map": {
+    "run": "session-9pjfzxqf",
+    "through_step": 1535,
+    "game_seconds": 1563.3,
+    "accepted_moves": 958,
+    "same_node_pairs": 1374,
+    "pairs_more_than_240_units_apart": 6,
+    "largest_separation_units": 318.4,
+    "batches_with_verified_return": 276,
+    "intermission": 0
+  },
+  "aim_check": {
+    "marked": {
+      "n": 4,
+      "median_old": 4.53,
+      "median_new": 0.4
+    },
+    "independent": {
+      "n": 7,
+      "median_old": 34.49,
+      "median_new": 0.95
+    },
+    "units": "pixel distance from center of aim after re-registering a stationary surface in independently rendered camera images"
+  },
+  "prior_control_effects": [
+    {
+      "run": "session-u35632nj",
+      "tested_inputs": 49,
+      "additional_moving_brush_over_idle": 3,
+      "additional_moving_brush_from_attack": 0
+    },
+    {
+      "run": "session-rciaohql",
+      "tested_inputs": 33,
+      "additional_moving_brush_over_idle": 1,
+      "additional_moving_brush_from_attack": 0
+    }
+  ],
+  "released_camera_holdout": {
+    "source_run": "session-9pjfzxqf",
+    "camera_holds": 209,
+    "method": "After braking for 16 ticks, measure fixed-heading camera flow every four ticks for 24 ticks. Native rising/descending displacements above 12 units count as positive, five units or less as negative. The trial oversamples periods with moving level machinery.",
+    "results": {
+      "rising": {
+        "positive": 57,
+        "identified": 56,
+        "negative": 150,
+        "false_positive": 2
+      },
+      "descending": {
+        "positive": 26,
+        "identified": 11,
+        "negative": 165,
+        "false_positive": 0
+      }
+    }
+  },
+  "native_ride_probes": {
+    "tested_ascending_starts": 8,
+    "held_for_continuing_lift": 6,
+    "height_changes_units": [
+      200.0,
+      200.0,
+      200.0,
+      200.0,
+      -30.6,
+      200.0,
+      200.0,
+      64.6
+    ],
+    "scope": "Native movement trials from snapshots in two previously observed runs, independent of campaign completion."
+  }
+}

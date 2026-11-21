@@ -1,0 +1,19 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Mojo Quake
+Comment=Play Dimension of the Doomed
+Exec="@ROOT@/current/mojo-quake" --renderer=gpu
+Icon=@ROOT@/current/quake.png
+Terminal=false
+StartupNotify=false
+Categories=Game;ActionGame;
+Actions=CPU;GPU;
+
+[Desktop Action CPU]
+Name=Play with the Mojo software renderer
+Exec="@ROOT@/current/mojo-quake" --renderer=cpu
+
+[Desktop Action GPU]
+Name=Play with Adreno OpenGL
+Exec="@ROOT@/current/mojo-quake" --renderer=gpu

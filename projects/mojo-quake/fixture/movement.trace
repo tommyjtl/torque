@@ -1,0 +1,21 @@
+# Settle at the entrance, climb four 8-unit risers, then stand under the beam.
+30 0 0 0 0 0 0 0
+state
+92 120 0 0 0 0 0 0
+state
+32 0 0 0 0 0 0 0
+state
+# Jump, contact the ceiling, and land on the raised deck.
+3 0 0 0 0 0 2 0
+state
+2 0 0 0 0 0 0 0
+state
+25 0 0 0 0 0 0 0
+state
+# Walk off the ledge, sink into the pool and swim up the far stairs.
+45 200 0 0 0 0 0 0
+state
+50 0 0 0 0 0 0 0
+state
+115 320 0 160 0 0 0 0
+state

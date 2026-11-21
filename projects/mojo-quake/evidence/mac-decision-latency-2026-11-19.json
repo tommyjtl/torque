@@ -1,0 +1,1765 @@
+{
+  "recorded_utc": "2026-11-19T21:46:52.737948+00:00",
+  "machine": "Apple M3 Max, 36 GiB unified memory; macOS 27.3",
+  "source": "Three original 320x240 JPEGs captured from the UNO Q Adreno renderer. Every endpoint saw the same bytes; no live game input.",
+  "frames": {
+    "frame.jpg": {
+      "tick": 3084,
+      "bytes": 24197,
+      "sha256": "08cd8f43a4d460e27f16d45528c67d0f4204c6dc600bc9d88791f9a6efeae53d"
+    },
+    "544.jpg": {
+      "tick": 544,
+      "bytes": 19766,
+      "sha256": "552ba67ede452edd326f02801f1d237838cd44d2d52488a67449ee773ba4de12"
+    },
+    "703.jpg": {
+      "tick": 703,
+      "bytes": 21223,
+      "sha256": "283f16af8b5c386ae8e371871f53d42d4999468eda6ddcde3d1192e26e8b225a"
+    }
+  },
+  "endpoint_host": "api.modular.com",
+  "model_ids": {
+    "minimax": "MiniMaxAI/MiniMax-M3.1-Flash",
+    "gemma": "google/gemma-4-31b-it",
+    "deepseek": "deepseek/deepseek-v4.1-flash-1017",
+    "muse": "meta-models/Muse-Glimmer-30B",
+    "qwen": "qwen/qwen3.8-27b"
+  },
+  "requests": {
+    "shared": "Six sequential streaming requests per model; three images presented twice; reproducibly shuffled model order per round; fresh TLS connection for each request. Clock starts before connection and ends on the first parsable JSON containing every required enum. Image capture and encoding occurred before timing. Validity is schema validity, not playing accuracy.",
+    "comparable": "Same JSON task, reasoning_effort=low, max_tokens=2048, API temperature default.",
+    "pilot": "Same task, reasoning_effort=low, max_tokens=384.",
+    "pooki_profile": "Same task, reasoning.enabled=false requested, max_tokens=1600. MiniMax Flash returned 400 for this setting.",
+    "cloud_prompt": "You are playing the video game Quake. From this screenshot report the horizontal sector of the nearest clearly visible enemy and of the clearest walkable opening, and choose one next game input. Use none if unsure. Return only JSON {\"enemy\":\"left|center|right|none\",\"opening\":\"left|center|right|none\",\"action\":\"turn_left|turn_right|advance|fire|scan\"}.",
+    "split": "Three perception-only calls per model. MiniMax low effort/2048 max; Gemma 31B reasoning.enabled=false requested/1600 max. Both return enemy/opening. The Mac translates the two fields into plain text, then selects an action using local Gemma E4B. End-to-end includes the completed network response and local inference.",
+    "local_choice": "10 authored text descriptions, 3 repeats each following a separate cold call. Laya under Ollaya 0.18.0 MLX Metal fp32 (manifest c305a9276531a47000bf93559d2c94f1ed6cbb67055c9151084682dad7655e9d). Gemma under Ollama 0.40.16 using gemma4:e4b-mlx, think=false, temperature zero and JSON schema. Includes HTTP round trip on loopback.",
+    "local_vision": "Warm local Gemma E4B via Ollama, prompt-only JSON, think=false, temperature zero, six requests, same three frames.",
+    "cases": [
+      [
+        "The hallway ahead is empty and clear. There is an open doorway straight ahead.",
+        "advance"
+      ],
+      [
+        "A grunt is standing directly under the crosshair, facing me.",
+        "fire"
+      ],
+      [
+        "A hostile is visible on the far left edge of the screen. The crosshair currently points at a wall.",
+        "turn_left"
+      ],
+      [
+        "A hostile is near the right edge. It is far to the right of my crosshair.",
+        "turn_right"
+      ],
+      [
+        "The exit is on the left-hand side. There are no enemies in view.",
+        "turn_left"
+      ],
+      [
+        "The room is empty of enemies. The only open doorway is on the right.",
+        "turn_right"
+      ],
+      [
+        "I am facing a blank wall. There are no visible enemies or exits in the image.",
+        "scan"
+      ],
+      [
+        "Clear walkway straight ahead. No enemy visible.",
+        "advance"
+      ],
+      [
+        "The enemy is centered in the crosshair. There is also a door on the left.",
+        "fire"
+      ],
+      [
+        "There is just a dark dead end here with no visible route or opponent.",
+        "scan"
+      ]
+    ],
+    "choices": {
+      "action": {
+        "type": "choice",
+        "instructions": "Pick the next Quake game input. Prioritize a visible enemy. With no enemy, approach the visible passage. If neither is visible, scan.",
+        "criteria": {
+          "turn_left": "Aim or steer left to align with a visible enemy or a left-side passage.",
+          "turn_right": "Aim or steer right to align with a visible enemy or a right-side passage.",
+          "advance": "Walk forward through the already aligned clear opening.",
+          "fire": "An enemy is aligned with the crosshair and can be hit now.",
+          "scan": "Rotate to look around because no enemy or usable passage is visible."
+        }
+      }
+    }
+  },
+  "cloud_comparable_s": {
+    "minimax": {
+      "valid": 6,
+      "attempts": 6,
+      "median": 3.2325,
+      "minimum": 1.802,
+      "maximum": 7.746
+    },
+    "gemma": {
+      "valid": 6,
+      "attempts": 6,
+      "median": 1.3455,
+      "minimum": 1.041,
+      "maximum": 3.24
+    },
+    "deepseek": {
+      "valid": 6,
+      "attempts": 6,
+      "median": 2.1525,
+      "minimum": 1.891,
+      "maximum": 3.573
+    },
+    "muse": {
+      "valid": 6,
+      "attempts": 6,
+      "median": 6.8365,
+      "minimum": 5.578,
+      "maximum": 10.308
+    },
+    "qwen": {
+      "valid": 6,
+      "attempts": 6,
+      "median": 1.788,
+      "minimum": 1.418,
+      "maximum": 6.435
+    }
+  },
+  "local_direct_vision_s": {
+    "valid": 6,
+    "attempts": 6,
+    "median": 0.5315,
+    "minimum": 0.404,
+    "maximum": 1.004
+  },
+  "hybrid_s": {
+    "minimax": {
+      "valid": 3,
+      "attempts": 3,
+      "median": 7.672,
+      "minimum": 2.627,
+      "maximum": 8.947
+    },
+    "gemma": {
+      "valid": 3,
+      "attempts": 3,
+      "median": 0.687,
+      "minimum": 0.633,
+      "maximum": 0.852
+    }
+  },
+  "local_deciders": {
+    "Laya English 421M": {
+      "cold_ms": 2082.66,
+      "warm_ms": {
+        "valid": 30,
+        "attempts": 30,
+        "median": 35.05,
+        "minimum": 33.55,
+        "maximum": 51.36
+      },
+      "distinct_cases_matching": 4,
+      "distinct_cases": 10
+    },
+    "Gemma 4 E4B": {
+      "cold_ms": 9757.44,
+      "warm_ms": {
+        "valid": 30,
+        "attempts": 30,
+        "median": 200.35,
+        "minimum": 161.66,
+        "maximum": 316.83
+      },
+      "distinct_cases_matching": 10,
+      "distinct_cases": 10
+    }
+  },
+  "estimated_cloud_cost": {
+    "usd": 0.028197,
+    "generated_calls_with_usage": 53,
+    "unit_rates_usd_per_million_input_output_from_console_screenshot": {
+      "minimax": [
+        0.15,
+        0.6
+      ],
+      "gemma": [
+        0.25,
+        0.65
+      ],
+      "deepseek": [
+        0.17,
+        1.2
+      ],
+      "qwen": [
+        0.45,
+        2.5
+      ],
+      "muse": [
+        0.3,
+        1.2
+      ]
+    },
+    "notes": "Estimate from returned prompt/completion tokens and the supplied screenshot; actual billing may reflect cache discounts or rounding."
+  },
+  "sources": [
+    "https://github.com/ollaya-dev/ollaya",
+    "https://ollaya.dev/library/laya",
+    "https://www.modular.com/models"
+  ],
+  "measurements": {
+    "pilot-cloud": [
+      {
+        "model": "minimax",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": null,
+        "first_text_s": null,
+        "answer": null,
+        "finish": "length",
+        "inp": 375,
+        "out": 384,
+        "wall": 2.026
+      },
+      {
+        "model": "gemma",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.464,
+        "first_text_s": 1.436,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 366,
+        "out": 295,
+        "wall": 1.473
+      },
+      {
+        "model": "deepseek",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": null,
+        "first_text_s": null,
+        "answer": null,
+        "finish": "length",
+        "inp": 309,
+        "out": 384,
+        "wall": 2.656
+      },
+      {
+        "model": "muse",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": null,
+        "first_text_s": null,
+        "answer": null,
+        "finish": "length",
+        "inp": 248,
+        "out": 384,
+        "wall": 4.543
+      },
+      {
+        "model": "qwen",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": null,
+        "first_text_s": null,
+        "answer": null,
+        "finish": "length",
+        "inp": 204,
+        "out": 384,
+        "wall": 2.225
+      }
+    ],
+    "cloud-comparable": [
+      {
+        "model": "minimax",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 6.22,
+        "first_text_s": 6.073,
+        "answer": {
+          "enemy": "center",
+          "opening": "left",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 375,
+        "out": 721,
+        "wall": 6.221
+      },
+      {
+        "model": "deepseek",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.959,
+        "first_text_s": 1.909,
+        "answer": {
+          "enemy": "center",
+          "opening": "right",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 309,
+        "out": 334,
+        "wall": 1.959
+      },
+      {
+        "model": "muse",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 5.578,
+        "first_text_s": 5.577,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 248,
+        "out": 468,
+        "wall": 5.657
+      },
+      {
+        "model": "gemma",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 2.93,
+        "first_text_s": 2.93,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 366,
+        "out": 320,
+        "wall": 2.931
+      },
+      {
+        "model": "qwen",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 6.435,
+        "first_text_s": 6.032,
+        "answer": {
+          "enemy": "center",
+          "opening": "right",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 204,
+        "out": 751,
+        "wall": 6.436
+      },
+      {
+        "model": "muse",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 7.897,
+        "first_text_s": 7.806,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "scan"
+        },
+        "finish": "stop",
+        "inp": 248,
+        "out": 492,
+        "wall": 7.898
+      },
+      {
+        "model": "gemma",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 3.24,
+        "first_text_s": 3.164,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 366,
+        "out": 306,
+        "wall": 3.241
+      },
+      {
+        "model": "deepseek",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.891,
+        "first_text_s": 1.859,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 309,
+        "out": 245,
+        "wall": 1.891
+      },
+      {
+        "model": "minimax",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 3.31,
+        "first_text_s": 3.309,
+        "answer": {
+          "enemy": "none",
+          "opening": "right",
+          "action": "turn_right"
+        },
+        "finish": "stop",
+        "inp": 375,
+        "out": 312,
+        "wall": 3.31
+      },
+      {
+        "model": "qwen",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.853,
+        "first_text_s": 1.803,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 204,
+        "out": 258,
+        "wall": 1.853
+      },
+      {
+        "model": "qwen",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.418,
+        "first_text_s": 1.382,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 204,
+        "out": 227,
+        "wall": 1.419
+      },
+      {
+        "model": "minimax",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.802,
+        "first_text_s": 1.789,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 375,
+        "out": 254,
+        "wall": 1.802
+      },
+      {
+        "model": "muse",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 10.308,
+        "first_text_s": 10.174,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 248,
+        "out": 905,
+        "wall": 10.32
+      },
+      {
+        "model": "deepseek",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 2.068,
+        "first_text_s": 2.044,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 309,
+        "out": 304,
+        "wall": 2.068
+      },
+      {
+        "model": "gemma",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.041,
+        "first_text_s": 1.005,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 366,
+        "out": 219,
+        "wall": 1.051
+      },
+      {
+        "model": "muse",
+        "trial": 3,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 5.744,
+        "first_text_s": 5.614,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 248,
+        "out": 503,
+        "wall": 5.76
+      },
+      {
+        "model": "minimax",
+        "trial": 3,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 7.746,
+        "first_text_s": 7.721,
+        "answer": {
+          "enemy": "center",
+          "opening": "left",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 375,
+        "out": 1639,
+        "wall": 7.746
+      },
+      {
+        "model": "qwen",
+        "trial": 3,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.723,
+        "first_text_s": 1.656,
+        "answer": {
+          "enemy": "none",
+          "opening": "right",
+          "action": "turn_right"
+        },
+        "finish": "stop",
+        "inp": 204,
+        "out": 307,
+        "wall": 1.724
+      },
+      {
+        "model": "gemma",
+        "trial": 3,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.385,
+        "first_text_s": 1.348,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 366,
+        "out": 320,
+        "wall": 1.395
+      },
+      {
+        "model": "deepseek",
+        "trial": 3,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 3.573,
+        "first_text_s": 3.479,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 309,
+        "out": 588,
+        "wall": 3.574
+      },
+      {
+        "model": "qwen",
+        "trial": 4,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.436,
+        "first_text_s": 1.392,
+        "answer": {
+          "enemy": "none",
+          "opening": "left",
+          "action": "turn_left"
+        },
+        "finish": "stop",
+        "inp": 204,
+        "out": 258,
+        "wall": 1.436
+      },
+      {
+        "model": "minimax",
+        "trial": 4,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 3.155,
+        "first_text_s": 3.124,
+        "answer": {
+          "enemy": "none",
+          "opening": "left",
+          "action": "turn_left"
+        },
+        "finish": "stop",
+        "inp": 375,
+        "out": 574,
+        "wall": 3.156
+      },
+      {
+        "model": "deepseek",
+        "trial": 4,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 2.237,
+        "first_text_s": 2.22,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 309,
+        "out": 377,
+        "wall": 2.237
+      },
+      {
+        "model": "gemma",
+        "trial": 4,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.306,
+        "first_text_s": 1.279,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 366,
+        "out": 294,
+        "wall": 1.317
+      },
+      {
+        "model": "muse",
+        "trial": 4,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 5.776,
+        "first_text_s": 5.648,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "scan"
+        },
+        "finish": "stop",
+        "inp": 248,
+        "out": 452,
+        "wall": 5.788
+      },
+      {
+        "model": "muse",
+        "trial": 5,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 10.262,
+        "first_text_s": 10.131,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 248,
+        "out": 913,
+        "wall": 10.276
+      },
+      {
+        "model": "gemma",
+        "trial": 5,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 1.074,
+        "first_text_s": 1.037,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 366,
+        "out": 219,
+        "wall": 1.082
+      },
+      {
+        "model": "deepseek",
+        "trial": 5,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 2.966,
+        "first_text_s": 2.942,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 309,
+        "out": 460,
+        "wall": 2.968
+      },
+      {
+        "model": "minimax",
+        "trial": 5,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 2.704,
+        "first_text_s": 2.68,
+        "answer": {
+          "enemy": "center",
+          "opening": "right",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 375,
+        "out": 600,
+        "wall": 2.705
+      },
+      {
+        "model": "qwen",
+        "trial": 5,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 2.74,
+        "first_text_s": 2.705,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 204,
+        "out": 500,
+        "wall": 2.741
+      }
+    ],
+    "cloud-main": [
+      {
+        "model": "minimax",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "pooki",
+        "status": 400,
+        "reason": "400",
+        "detail": "failed to translate request: this model requires adaptive thinking; disabling thinking (including reasoning_effort=\"none\") is not allowed",
+        "wall": 0.563
+      },
+      {
+        "model": "deepseek",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 1.569,
+        "first_text_s": 1.424,
+        "answer": {
+          "enemy": "center",
+          "opening": "right",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 283,
+        "out": 16,
+        "wall": 1.57
+      },
+      {
+        "model": "muse",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 8.922,
+        "first_text_s": 8.919,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 248,
+        "out": 632,
+        "wall": 8.923
+      },
+      {
+        "model": "gemma",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 1.126,
+        "first_text_s": 1.034,
+        "answer": {
+          "enemy": "center",
+          "opening": "right",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 363,
+        "out": 19,
+        "wall": 1.126
+      },
+      {
+        "model": "qwen",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 7.801,
+        "first_text_s": 6.643,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 176,
+        "out": 24,
+        "wall": 7.802
+      },
+      {
+        "model": "muse",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 7.796,
+        "first_text_s": 7.793,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "scan"
+        },
+        "finish": "stop",
+        "inp": 248,
+        "out": 561,
+        "wall": 7.797
+      },
+      {
+        "model": "gemma",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 1.164,
+        "first_text_s": 1.09,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 363,
+        "out": 19,
+        "wall": 1.165
+      },
+      {
+        "model": "deepseek",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 1.123,
+        "first_text_s": 0.991,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 283,
+        "out": 17,
+        "wall": 1.123
+      },
+      {
+        "model": "minimax",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "pooki",
+        "status": 400,
+        "reason": "400",
+        "detail": "failed to translate request: this model requires adaptive thinking; disabling thinking (including reasoning_effort=\"none\") is not allowed",
+        "wall": 0.353
+      },
+      {
+        "model": "qwen",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 0.992,
+        "first_text_s": 0.541,
+        "answer": {
+          "enemy": "none",
+          "opening": "none",
+          "action": "scan"
+        },
+        "finish": "stop",
+        "inp": 176,
+        "out": 19,
+        "wall": 0.993
+      },
+      {
+        "model": "qwen",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 1.223,
+        "first_text_s": 0.595,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 176,
+        "out": 14,
+        "wall": 1.224
+      },
+      {
+        "model": "minimax",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "pooki",
+        "status": 400,
+        "reason": "400",
+        "detail": "failed to translate request: this model requires adaptive thinking; disabling thinking (including reasoning_effort=\"none\") is not allowed",
+        "wall": 0.329
+      },
+      {
+        "model": "muse",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 14.639,
+        "first_text_s": 14.56,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 248,
+        "out": 1287,
+        "wall": 14.646
+      },
+      {
+        "model": "deepseek",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 1.517,
+        "first_text_s": 1.479,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        },
+        "finish": "stop",
+        "inp": 283,
+        "out": 17,
+        "wall": 1.519
+      },
+      {
+        "model": "gemma",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 1.08,
+        "first_text_s": 1.0,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "fire"
+        },
+        "finish": "stop",
+        "inp": 363,
+        "out": 19,
+        "wall": 1.081
+      }
+    ],
+    "split": [
+      {
+        "model": "minimax",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 8.671,
+        "first_text_s": 8.657,
+        "answer": {
+          "enemy": "center",
+          "opening": "left"
+        },
+        "finish": "stop",
+        "inp": 354,
+        "out": 2002,
+        "wall": 8.684
+      },
+      {
+        "split_model": "minimax",
+        "frame": "frame.jpg",
+        "vision": {
+          "enemy": "center",
+          "opening": "left"
+        },
+        "local_action": "fire",
+        "local_ms": 254.55,
+        "end_to_end_s": 8.947
+      },
+      {
+        "model": "gemma",
+        "trial": 0,
+        "frame": "frame.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 0.515,
+        "first_text_s": 0.431,
+        "answer": {
+          "enemy": "center",
+          "opening": "right"
+        },
+        "finish": "stop",
+        "inp": 340,
+        "out": 15,
+        "wall": 0.515
+      },
+      {
+        "split_model": "gemma",
+        "frame": "frame.jpg",
+        "vision": {
+          "enemy": "center",
+          "opening": "right"
+        },
+        "local_action": "fire",
+        "local_ms": 322.46,
+        "end_to_end_s": 0.852
+      },
+      {
+        "model": "gemma",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 0.416,
+        "first_text_s": 0.416,
+        "answer": {
+          "enemy": "none",
+          "opening": "none"
+        },
+        "finish": "stop",
+        "inp": 340,
+        "out": 15,
+        "wall": 0.417
+      },
+      {
+        "split_model": "gemma",
+        "frame": "544.jpg",
+        "vision": {
+          "enemy": "none",
+          "opening": "none"
+        },
+        "local_action": "scan",
+        "local_ms": 251.25,
+        "end_to_end_s": 0.687
+      },
+      {
+        "model": "minimax",
+        "trial": 1,
+        "frame": "544.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 7.364,
+        "first_text_s": 7.349,
+        "answer": {
+          "enemy": "none",
+          "opening": "center"
+        },
+        "finish": "stop",
+        "inp": 354,
+        "out": 1355,
+        "wall": 7.377
+      },
+      {
+        "split_model": "minimax",
+        "frame": "544.jpg",
+        "vision": {
+          "enemy": "none",
+          "opening": "center"
+        },
+        "local_action": "advance",
+        "local_ms": 275.24,
+        "end_to_end_s": 7.672
+      },
+      {
+        "model": "minimax",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "low",
+        "status": 200,
+        "action_s": 2.381,
+        "first_text_s": 2.368,
+        "answer": {
+          "enemy": "center",
+          "opening": "center"
+        },
+        "finish": "stop",
+        "inp": 354,
+        "out": 375,
+        "wall": 2.381
+      },
+      {
+        "split_model": "minimax",
+        "frame": "703.jpg",
+        "vision": {
+          "enemy": "center",
+          "opening": "center"
+        },
+        "local_action": "fire",
+        "local_ms": 227.15,
+        "end_to_end_s": 2.627
+      },
+      {
+        "model": "gemma",
+        "trial": 2,
+        "frame": "703.jpg",
+        "effort": "pooki",
+        "status": 200,
+        "action_s": 0.442,
+        "first_text_s": 0.355,
+        "answer": {
+          "enemy": "center",
+          "opening": "center"
+        },
+        "finish": "stop",
+        "inp": 340,
+        "out": 15,
+        "wall": 0.443
+      },
+      {
+        "split_model": "gemma",
+        "frame": "703.jpg",
+        "vision": {
+          "enemy": "center",
+          "opening": "center"
+        },
+        "local_action": "fire",
+        "local_ms": 175.17,
+        "end_to_end_s": 0.633
+      }
+    ],
+    "local-results": [
+      {
+        "cold_ms": 2082.66,
+        "first": {
+          "model": "laya:en",
+          "answers": {
+            "action": {
+              "type": "choice",
+              "choice": "advance",
+              "confidence": 0.2175,
+              "probabilities": {
+                "turn_left": 0.0951,
+                "turn_right": 0.0743,
+                "advance": 0.374,
+                "fire": 0.0875,
+                "scan": 0.3691
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 144,
+            "output_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 0,
+        "case": 0,
+        "expected": "advance",
+        "got": "advance",
+        "ms": 40.72
+      },
+      {
+        "round": 0,
+        "case": 1,
+        "expected": "fire",
+        "got": "fire",
+        "ms": 34.58
+      },
+      {
+        "round": 0,
+        "case": 2,
+        "expected": "turn_left",
+        "got": "scan",
+        "ms": 51.36
+      },
+      {
+        "round": 0,
+        "case": 3,
+        "expected": "turn_right",
+        "got": "scan",
+        "ms": 40.09
+      },
+      {
+        "round": 0,
+        "case": 4,
+        "expected": "turn_left",
+        "got": "scan",
+        "ms": 36.28
+      },
+      {
+        "round": 0,
+        "case": 5,
+        "expected": "turn_right",
+        "got": "scan",
+        "ms": 38.17
+      },
+      {
+        "round": 0,
+        "case": 6,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 34.45
+      },
+      {
+        "round": 0,
+        "case": 7,
+        "expected": "advance",
+        "got": "scan",
+        "ms": 35.58
+      },
+      {
+        "round": 0,
+        "case": 8,
+        "expected": "fire",
+        "got": "scan",
+        "ms": 38.7
+      },
+      {
+        "round": 0,
+        "case": 9,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 35.22
+      },
+      {
+        "round": 1,
+        "case": 0,
+        "expected": "advance",
+        "got": "advance",
+        "ms": 35.11
+      },
+      {
+        "round": 1,
+        "case": 1,
+        "expected": "fire",
+        "got": "fire",
+        "ms": 36.26
+      },
+      {
+        "round": 1,
+        "case": 2,
+        "expected": "turn_left",
+        "got": "scan",
+        "ms": 34.56
+      },
+      {
+        "round": 1,
+        "case": 3,
+        "expected": "turn_right",
+        "got": "scan",
+        "ms": 34.88
+      },
+      {
+        "round": 1,
+        "case": 4,
+        "expected": "turn_left",
+        "got": "scan",
+        "ms": 34.68
+      },
+      {
+        "round": 1,
+        "case": 5,
+        "expected": "turn_right",
+        "got": "scan",
+        "ms": 36.05
+      },
+      {
+        "round": 1,
+        "case": 6,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 34.12
+      },
+      {
+        "round": 1,
+        "case": 7,
+        "expected": "advance",
+        "got": "scan",
+        "ms": 34.19
+      },
+      {
+        "round": 1,
+        "case": 8,
+        "expected": "fire",
+        "got": "scan",
+        "ms": 34.79
+      },
+      {
+        "round": 1,
+        "case": 9,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 34.23
+      },
+      {
+        "round": 2,
+        "case": 0,
+        "expected": "advance",
+        "got": "advance",
+        "ms": 33.55
+      },
+      {
+        "round": 2,
+        "case": 1,
+        "expected": "fire",
+        "got": "fire",
+        "ms": 35.13
+      },
+      {
+        "round": 2,
+        "case": 2,
+        "expected": "turn_left",
+        "got": "scan",
+        "ms": 36.07
+      },
+      {
+        "round": 2,
+        "case": 3,
+        "expected": "turn_right",
+        "got": "scan",
+        "ms": 34.91
+      },
+      {
+        "round": 2,
+        "case": 4,
+        "expected": "turn_left",
+        "got": "scan",
+        "ms": 34.06
+      },
+      {
+        "round": 2,
+        "case": 5,
+        "expected": "turn_right",
+        "got": "scan",
+        "ms": 34.44
+      },
+      {
+        "round": 2,
+        "case": 6,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 37.24
+      },
+      {
+        "round": 2,
+        "case": 7,
+        "expected": "advance",
+        "got": "scan",
+        "ms": 34.99
+      },
+      {
+        "round": 2,
+        "case": 8,
+        "expected": "fire",
+        "got": "scan",
+        "ms": 34.54
+      },
+      {
+        "round": 2,
+        "case": 9,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 35.33
+      }
+    ],
+    "gemma-local": [
+      {
+        "cold_ms": 9757.44,
+        "first": "advance"
+      },
+      {
+        "round": 0,
+        "case": 0,
+        "expected": "advance",
+        "got": "advance",
+        "ms": 167.45
+      },
+      {
+        "round": 0,
+        "case": 1,
+        "expected": "fire",
+        "got": "fire",
+        "ms": 226.88
+      },
+      {
+        "round": 0,
+        "case": 2,
+        "expected": "turn_left",
+        "got": "turn_left",
+        "ms": 279.14
+      },
+      {
+        "round": 0,
+        "case": 3,
+        "expected": "turn_right",
+        "got": "turn_right",
+        "ms": 249.87
+      },
+      {
+        "round": 0,
+        "case": 4,
+        "expected": "turn_left",
+        "got": "turn_left",
+        "ms": 242.82
+      },
+      {
+        "round": 0,
+        "case": 5,
+        "expected": "turn_right",
+        "got": "turn_right",
+        "ms": 232.73
+      },
+      {
+        "round": 0,
+        "case": 6,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 196.84
+      },
+      {
+        "round": 0,
+        "case": 7,
+        "expected": "advance",
+        "got": "advance",
+        "ms": 316.83
+      },
+      {
+        "round": 0,
+        "case": 8,
+        "expected": "fire",
+        "got": "fire",
+        "ms": 201.99
+      },
+      {
+        "round": 0,
+        "case": 9,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 200.31
+      },
+      {
+        "round": 1,
+        "case": 0,
+        "expected": "advance",
+        "got": "advance",
+        "ms": 165.01
+      },
+      {
+        "round": 1,
+        "case": 1,
+        "expected": "fire",
+        "got": "fire",
+        "ms": 162.93
+      },
+      {
+        "round": 1,
+        "case": 2,
+        "expected": "turn_left",
+        "got": "turn_left",
+        "ms": 204.73
+      },
+      {
+        "round": 1,
+        "case": 3,
+        "expected": "turn_right",
+        "got": "turn_right",
+        "ms": 204.92
+      },
+      {
+        "round": 1,
+        "case": 4,
+        "expected": "turn_left",
+        "got": "turn_left",
+        "ms": 204.92
+      },
+      {
+        "round": 1,
+        "case": 5,
+        "expected": "turn_right",
+        "got": "turn_right",
+        "ms": 204.28
+      },
+      {
+        "round": 1,
+        "case": 6,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 169.0
+      },
+      {
+        "round": 1,
+        "case": 7,
+        "expected": "advance",
+        "got": "advance",
+        "ms": 166.46
+      },
+      {
+        "round": 1,
+        "case": 8,
+        "expected": "fire",
+        "got": "fire",
+        "ms": 166.36
+      },
+      {
+        "round": 1,
+        "case": 9,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 161.66
+      },
+      {
+        "round": 2,
+        "case": 0,
+        "expected": "advance",
+        "got": "advance",
+        "ms": 167.33
+      },
+      {
+        "round": 2,
+        "case": 1,
+        "expected": "fire",
+        "got": "fire",
+        "ms": 164.24
+      },
+      {
+        "round": 2,
+        "case": 2,
+        "expected": "turn_left",
+        "got": "turn_left",
+        "ms": 205.13
+      },
+      {
+        "round": 2,
+        "case": 3,
+        "expected": "turn_right",
+        "got": "turn_right",
+        "ms": 201.63
+      },
+      {
+        "round": 2,
+        "case": 4,
+        "expected": "turn_left",
+        "got": "turn_left",
+        "ms": 200.39
+      },
+      {
+        "round": 2,
+        "case": 5,
+        "expected": "turn_right",
+        "got": "turn_right",
+        "ms": 205.27
+      },
+      {
+        "round": 2,
+        "case": 6,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 162.05
+      },
+      {
+        "round": 2,
+        "case": 7,
+        "expected": "advance",
+        "got": "advance",
+        "ms": 164.91
+      },
+      {
+        "round": 2,
+        "case": 8,
+        "expected": "fire",
+        "got": "fire",
+        "ms": 163.37
+      },
+      {
+        "round": 2,
+        "case": 9,
+        "expected": "scan",
+        "got": "scan",
+        "ms": 164.53
+      }
+    ],
+    "mac-vision": [
+      {
+        "frame": "frame.jpg",
+        "trial": 0,
+        "action_s": 1.004,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        }
+      },
+      {
+        "frame": "544.jpg",
+        "trial": 1,
+        "action_s": 0.638,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "scan"
+        }
+      },
+      {
+        "frame": "703.jpg",
+        "trial": 2,
+        "action_s": 0.647,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        }
+      },
+      {
+        "frame": "frame.jpg",
+        "trial": 3,
+        "action_s": 0.423,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        }
+      },
+      {
+        "frame": "544.jpg",
+        "trial": 4,
+        "action_s": 0.425,
+        "answer": {
+          "enemy": "none",
+          "opening": "center",
+          "action": "scan"
+        }
+      },
+      {
+        "frame": "703.jpg",
+        "trial": 5,
+        "action_s": 0.404,
+        "answer": {
+          "enemy": "center",
+          "opening": "center",
+          "action": "advance"
+        }
+      }
+    ]
+  }
+}

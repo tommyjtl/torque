@@ -1,0 +1,251 @@
+{
+  "date": "2026-11-19",
+  "host": "Apple M3 Max, 36 GiB",
+  "software": "Python 3.12.7, OpenCV 4.14.0, numpy 2.5.5, Pillow 12.3.0, httpx 0.28.1",
+  "clock_hz": 72,
+  "control_sample_hz": 18,
+  "window_ticks": 432,
+  "paired_trials": 68,
+  "exploratory_unpaired_trials": 14,
+  "matched_start_conditions": 14,
+  "pair_audit": "Within all 34 pairs the initial state hash and image digest matched. The unpaired feature exploration had two warm enemy JPEGs with different digests across series at the same state hash.",
+  "groups": {
+    "feature-exploration": {
+      "features": {
+        "cold": {
+          "runs": 6,
+          "runs_with_input": 2,
+          "first_non_neutral_input_median_ms": 3111.25,
+          "neutral_tick_fraction": 0.9753,
+          "ledge": {
+            "successes": 0,
+            "survived": 3,
+            "trials": 3
+          },
+          "enemy": {
+            "successes": 0,
+            "survived": 3,
+            "trials": 3
+          }
+        },
+        "warm": {
+          "runs": 8,
+          "runs_with_input": 4,
+          "first_non_neutral_input_median_ms": 7.5,
+          "neutral_tick_fraction": 0.9375,
+          "ledge": {
+            "successes": 3,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": [
+              7.2,
+              7.8,
+              5.3
+            ]
+          },
+          "enemy": {
+            "successes": 0,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": []
+          }
+        }
+      }
+    },
+    "feature-pairs": {
+      "features": {
+        "cold": {
+          "runs": 6,
+          "runs_with_input": 6,
+          "first_non_neutral_input_median_ms": 828.65,
+          "neutral_tick_fraction": 0.657,
+          "ledge": {
+            "successes": 3,
+            "survived": 3,
+            "trials": 3
+          },
+          "enemy": {
+            "successes": 1,
+            "survived": 3,
+            "trials": 3
+          }
+        },
+        "warm": {
+          "runs": 8,
+          "runs_with_input": 8,
+          "first_non_neutral_input_median_ms": 885.9,
+          "neutral_tick_fraction": 0.6493,
+          "ledge": {
+            "successes": 4,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": [
+              5.9,
+              5.2,
+              5.3
+            ]
+          },
+          "enemy": {
+            "successes": 3,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": [
+              2521.1,
+              969.7
+            ]
+          }
+        }
+      },
+      "serial": {
+        "cold": {
+          "runs": 6,
+          "runs_with_input": 6,
+          "first_non_neutral_input_median_ms": 1147.1,
+          "neutral_tick_fraction": 0.6929,
+          "ledge": {
+            "successes": 3,
+            "survived": 3,
+            "trials": 3
+          },
+          "enemy": {
+            "successes": 1,
+            "survived": 3,
+            "trials": 3
+          }
+        },
+        "warm": {
+          "runs": 8,
+          "runs_with_input": 8,
+          "first_non_neutral_input_median_ms": 0.7,
+          "neutral_tick_fraction": 0.6435,
+          "ledge": {
+            "successes": 4,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": []
+          },
+          "enemy": {
+            "successes": 2,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": []
+          }
+        }
+      }
+    },
+    "one-call-pairs": {
+      "direct": {
+        "cold": {
+          "runs": 6,
+          "runs_with_input": 6,
+          "first_non_neutral_input_median_ms": 839.55,
+          "neutral_tick_fraction": 0.6582,
+          "ledge": {
+            "successes": 3,
+            "survived": 3,
+            "trials": 3
+          },
+          "enemy": {
+            "successes": 3,
+            "survived": 3,
+            "trials": 3
+          }
+        }
+      },
+      "serial": {
+        "cold": {
+          "runs": 6,
+          "runs_with_input": 6,
+          "first_non_neutral_input_median_ms": 1171.65,
+          "neutral_tick_fraction": 0.7407,
+          "ledge": {
+            "successes": 3,
+            "survived": 3,
+            "trials": 3
+          },
+          "enemy": {
+            "successes": 2,
+            "survived": 3,
+            "trials": 3
+          }
+        }
+      }
+    },
+    "patch-pairs": {
+      "serial": {
+        "cold": {
+          "runs": 6,
+          "runs_with_input": 6,
+          "first_non_neutral_input_median_ms": 1005.3,
+          "neutral_tick_fraction": 0.6867,
+          "ledge": {
+            "successes": 3,
+            "survived": 3,
+            "trials": 3
+          },
+          "enemy": {
+            "successes": 0,
+            "survived": 3,
+            "trials": 3
+          }
+        },
+        "warm": {
+          "runs": 8,
+          "runs_with_input": 8,
+          "first_non_neutral_input_median_ms": 0.7,
+          "neutral_tick_fraction": 0.6612,
+          "ledge": {
+            "successes": 4,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": "unavailable"
+          },
+          "enemy": {
+            "successes": 2,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": [
+              3311.0
+            ]
+          }
+        }
+      },
+      "tracked": {
+        "cold": {
+          "runs": 6,
+          "runs_with_input": 4,
+          "first_non_neutral_input_median_ms": 5405.2,
+          "neutral_tick_fraction": 0.9448,
+          "ledge": {
+            "successes": 0,
+            "survived": 3,
+            "trials": 3
+          },
+          "enemy": {
+            "successes": 0,
+            "survived": 3,
+            "trials": 3
+          }
+        },
+        "warm": {
+          "runs": 8,
+          "runs_with_input": 4,
+          "first_non_neutral_input_median_ms": 4286.55,
+          "neutral_tick_fraction": 0.9439,
+          "ledge": {
+            "successes": 2,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": []
+          },
+          "enemy": {
+            "successes": 0,
+            "survived": 4,
+            "trials": 4,
+            "compensating_inputs_ms": []
+          }
+        }
+      }
+    }
+  }
+}
