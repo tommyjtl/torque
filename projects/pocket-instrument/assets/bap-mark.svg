@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 26">
+  <title>B.A.P. — mallet striking a sampler pad</title>
+  <g fill="#e8b961">
+    <!-- The descending mallet ends in the square stop from the B.A.P. lettering. -->
+    <path d="m20 9 13-8 1.3 2.2-13 8z"/>
+    <path d="m15 8 5-3 4 6-5 3z"/>
+    <!-- A single key in profile, with an open seam above its base. -->
+    <path d="M7 18.5 11 15h20l-4 3.5zM7 20.5h20l4-3.5v4l-4 3.5H7z"/>
+    <path d="m6 10 1.4-1.7 4.1 3.6-1.1 1.3zM10.4 5.1l2-.6 1.2 5.3-1.4.4z"/>
+  </g>
+</svg>

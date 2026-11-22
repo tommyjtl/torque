@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#171717" />
+    <title>B.A.P. · Torque pocket sampler</title>
+    <link rel="stylesheet" href="panel.css?v=near-black-inspection" />
+    <script defer src="effects.js"></script>
+    <script defer src="audio.js?v=performance-fx"></script>
+    <script defer src="inspection.js"></script>
+    <script defer src="instrument.js?v=parameter-meter"></script>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="screen-measure screen-width">
+        <span>Waveshare 2.8″ DSI LCD · 480 px</span>
+      </div>
+      <div class="screen-measure screen-height"><span>640 px</span></div>
+      <main class="board" aria-label="Pocket sampler">
+        <section class="display-panel" aria-label="Instrument display">
+          <div class="pins" aria-hidden="true"></div>
+          <div class="lcd">
+            <div class="readout">
+              <div>
+                <span id="bank">DRUM / 09</span>
+                <div class="sound" id="soundName">Break kit</div>
+              </div>
+              <div class="announcer">
+                <img src="assets/bap.svg" alt="B.A.P." width="77" height="22" />
+                <span id="status" role="status">READY</span>
+              </div>
+              <div class="values">
+                <span><b id="tempo" data-ghost="888">096</b>BPM</span>
+                <span><b id="patternNo" data-ghost="88">01</b>PTN</span>
+              </div>
+            </div>
+            <div class="scene" aria-hidden="true">
+              <i data-pose="dazed"></i><i data-pose="bounce"></i
+              ><i data-pose="guard"></i><i data-pose="jab"></i>
+              <i data-pose="recoil"></i><i data-pose="duck"></i
+              ><i data-pose="win"></i><i data-pose="tumble"></i>
+            </div>
+            <div class="track">
+              <span aria-hidden="true">IN</span>
+              <div
+                id="strip"
+                role="meter"
+                aria-label="Output level"
+                aria-valuemin="-48"
+                aria-valuemax="0"
+                aria-valuenow="-48"
+                aria-valuetext="Silent"
+              ></div>
+              <span aria-hidden="true">OUT</span>
+            </div>
+          </div>
+          <div class="bezel-legend">
+            <span>TQ–01</span><span>16 STEP MICRO SAMPLER</span
+            ><span class="contacts" aria-hidden="true"></span>
+          </div>
+        </section>
+        <section class="controls" aria-label="Sampler controls">
+          <div class="modes">
+            <div class="selectors">
+              <button class="mode" data-action="sound" aria-label="Sound">
+                <i class="switch" aria-hidden="true"></i
+                ><span class="legend">sound</span>
+              </button>
+              <button class="mode" data-action="pattern" aria-label="Pattern">
+                <i class="switch" aria-hidden="true"></i
+                ><span class="legend">pattern</span>
+              </button>
+              <button class="mode" data-action="bpm" aria-label="BPM">
+                <i class="switch" aria-hidden="true"></i
+                ><span class="legend">bpm</span>
+              </button>
+            </div>
+            <div class="dials">
+              <button class="dial" data-action="a" aria-label="Knob A pitch">
+                <i aria-hidden="true"></i>
+              </button>
+              <button class="dial" data-action="b" aria-label="Knob B volume">
+                <i aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="keys">
+            <div class="bank-labels" aria-label="Sound banks">
+              <div class="bank-range" aria-label="Melodic slots 1 through 8">
+                <span>MELODIC</span>
+              </div>
+              <div class="bank-range" aria-label="Drum slots 9 through 16">
+                <span>DRUM</span>
+              </div>
+            </div>
+            <div id="pads" aria-label="Sixteen pads"></div>
+            <div class="transport">
+              <button data-action="record" aria-label="Record">
+                <i class="switch" aria-hidden="true"></i
+                ><span class="legend"><em>record</em></span>
+              </button>
+              <button data-action="fx" aria-label="Performance FX">
+                <i class="switch" aria-hidden="true"></i
+                ><span class="legend"><em>FX</em></span>
+              </button>
+              <button data-action="play" aria-label="Play">
+                <i class="switch" aria-hidden="true"></i
+                ><span class="legend"><em>play</em></span>
+              </button>
+              <button data-action="write" aria-label="Write">
+                <i class="switch" aria-hidden="true"></i
+                ><span class="legend"><em>write</em></span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <div class="hardware-strip">
+          <header>
+            <img
+              class="bap-mark"
+              src="assets/bap-mark.svg"
+              alt="B.A.P."
+              width="40"
+              height="26"
+            />
+            <h1 class="brand">TORQUE</h1>
+          </header>
+          <p class="instrument-name">Bureau of<br />Accidental Percussion</p>
+          <button id="reset-session" type="button" aria-label="Reset sampler">
+            <svg
+              width="21"
+              height="21"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.3"
+              aria-hidden="true"
+            >
+              <path
+                d="M5 10a7.2 7.2 0 1 1 .8 6.2M5 5.8V10h4.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span>reset</span>
+          </button>
+        </div>
+      </main>
+    </div>
+    <button id="guide" aria-label="Open controls guide" title="Controls guide">
+      ?
+    </button>
+    <button
+      id="inspect-toggle"
+      aria-haspopup="dialog"
+      aria-expanded="false"
+      aria-controls="inspection"
+    >
+      3D view <kbd>P</kbd>
+    </button>
+    <dialog id="inspection" aria-label="B.A.P. three-dimensional inspection">
+      <canvas
+        tabindex="0"
+        aria-label="Orbit the sampler. Drag or use arrow keys. Home restores the front view."
+      ></canvas>
+      <p id="inspect-status" role="status"></p>
+      <button id="inspect-close">Return to sampler</button>
+    </dialog>
+    <dialog id="help">
+      <form method="dialog"><button aria-label="Close guide">×</button></form>
+      <h2>Play the sampler</h2>
+      <p>Press <strong>+</strong> to hear pattern 01. Play any pad over it.</p>
+      <p>
+        Press <kbd>P</kbd> to inspect the device in 3D. Drag to orbit; P or Escape returns to the panel. In Launcher, M5 can send P on your sampler layer. For a dual-role Fn key, use tap P / hold layer 1 where supported.
+      </p>
+      <h3>K0 Max pads</h3>
+      <pre>
+M1  Num  /  *     →     01  02  03  04
+M2   7   8  9           05  06  07  08
+M3   4   5  6           09  10  11  12
+M4   1   2  3           13  14  15  16</pre>
+      <p>
+        On a laptop use <kbd>1234</kbd> / <kbd>QWER</kbd> / <kbd>ASDF</kbd> /
+        <kbd>ZXCV</kbd> for these four rows.
+      </p>
+      <ul>
+        <li>
+          <strong>Sound ○ / T</strong> then a pad selects a slot. Factory slots
+          1–8 play pitches and 9–16 play kit pieces. In any recorded slot, pads
+          1–16 play consecutive equal slices.
+        </li>
+        <li>
+          <strong>Pattern △ / Y</strong> then a pad selects a pattern.
+          <strong>BPM □ / U</strong> selects dial A for tempo. Dial B still
+          controls volume.
+        </li>
+        <li>
+          <strong>Write · Enter</strong> toggles step editing. Play a note
+          first, then enter Write and tap the steps that should play it. Adding
+          a step while stopped previews its note.
+        </li>
+        <li>
+          <strong>Record · top-row × / I</strong> arms sampling. All 16 slot
+          LEDs light red. Orange numbers mark saved recordings; choosing one
+          replaces its take. White numbers are factory sounds available for a
+          new take. Press a pad to choose a slot and start the microphone. Its
+          LED blinks during capture. The LCD counts down up to eight seconds and
+          saves automatically. Press Record again to finish early. Allow
+          microphone access when asked.
+        </li>
+        <li>
+          Hold <strong>FX (−)</strong> during playback and press a numbered pad
+          to apply its effect to the loop. The last pad held takes priority.
+          Release FX or all pads to return to the dry loop.
+          <strong>Play · plus or Space</strong> starts or stops the loop.
+        </li>
+        <li>
+          <strong>Encoder press (O)</strong> switches dial. The light above the
+          selected dial shows which one the encoder controls. Play a pad, then
+          turn A to tune that note or drum hit. Each pad in each slot remembers
+          its own pitch for the session. Turn the encoder or press
+          <kbd>[</kbd> / <kbd>]</kbd> to adjust. Turn slowly for fine steps or
+          spin quickly for larger jumps. Press decimal (<kbd>.</kbd>) to reset
+          the selected value: pitch to 0 semitones, volume to 50%, or dial A to
+          96 BPM in BPM mode. On screen, drag a dial up or down, or hover and
+          scroll.
+        </li>
+      </ul>
+      <p>
+        Press Reset or keypad 0 to clear recordings and pattern edits and
+        restore factory settings. Escape stops playback.
+      </p>
+      <h3>FX pads</h3>
+      <ol id="fx-map"></ol>
+      <p><strong>B.A.P.</strong> — Bureau of Accidental Percussion.</p>
+      <p>
+        Patterns and recordings last until you close or reload the page. The
+        design spec includes the proposed Keychron Launcher profile.
+      </p>
+    </dialog>
+  </body>
+</html>

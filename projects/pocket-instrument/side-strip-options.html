@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>B.A.P. · Side strip studies</title>
+    <style>
+      @font-face {
+        font-family: Space;
+        src: url("assets/SpaceGrotesk-Latin.woff2") format("woff2");
+        font-weight: 300 700;
+        font-display: swap;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #edeeea;
+        color: #1b1c19;
+        font-family: Space, system-ui, sans-serif;
+      }
+      main {
+        min-height: 100svh;
+        max-width: 990px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: minmax(225px, 300px) minmax(0, 480px);
+        align-content: center;
+        justify-content: space-between;
+        align-items: center;
+        gap: 32px;
+        padding: 32px;
+      }
+      h1 {
+        font-size: clamp(30px, 4vw, 44px);
+        margin: 0 0 28px;
+        line-height: 1;
+        letter-spacing: -0.045em;
+        font-weight: 450;
+      }
+      fieldset {
+        border: 0;
+        padding: 0;
+        margin: 0;
+      }
+      legend {
+        position: absolute;
+        clip-path: inset(50%);
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+      label {
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 6px;
+        border-top: 1px solid #b4b6b0;
+      }
+      label:last-child {
+        border-bottom: 1px solid #b4b6b0;
+      }
+      label:has(:checked) {
+        background: #dfe1da;
+      }
+      input {
+        margin: 0;
+        accent-color: #383b32;
+        width: 16px;
+        height: 16px;
+      }
+      label b {
+        font-size: 17px;
+        font-weight: 550;
+      }
+      label small {
+        font-size: 12px;
+        color: #484b45;
+      }
+      p {
+        font-size: 15px;
+        line-height: 1.45;
+        margin: 16px 0 0;
+        min-height: 4.4em;
+      }
+      iframe {
+        display: block;
+        width: 100%;
+        aspect-ratio: 3/4;
+        border: 0;
+        background: #161616;
+      }
+      @media (max-width: 740px) {
+        main {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 18px 12px;
+          gap: 12px;
+        }
+        section,
+        iframe {
+          width: min(100%, 480px);
+        }
+        h1 {
+          font-size: 27px;
+          margin: 0 0 12px;
+        }
+        fieldset {
+          display: flex;
+          gap: 4px;
+        }
+        label {
+          flex: 1;
+          grid-template-columns: auto 1fr;
+          gap: 5px;
+          padding: 9px 4px;
+          border: 1px solid #b4b6b0;
+        }
+        label b {
+          font-size: 13px;
+        }
+        label small {
+          grid-column: 2;
+        }
+        p {
+          min-height: 2.8em;
+          font-size: 13px;
+          margin: 8px 0 0;
+        }
+      }
+    </style>
+    <!-- Applied only to the embedded comparison instrument. -->
+    <style id="strip-demo-css" media="not all">
+      .hardware-strip .instrument-name { display: none; }
+      .board {
+        --rail: 44px;
+        grid-template-columns: minmax(0, 1fr) var(--rail);
+        grid-template-rows: auto minmax(0, 1fr);
+        column-gap: 10px;
+      }
+      .hardware-strip {
+        background: transparent;
+        font-size: 11px;
+        grid-column: 2;
+        grid-row: 1/-1;
+        writing-mode: horizontal-tb;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 10px;
+        align-items: center;
+        padding: 4px 0 2px 3px;
+        border: 0;
+        border-left: 1px solid #464647;
+      }
+      .hardware-strip header {
+        position: static;
+        transform: none;
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 0;
+      }
+      .hardware-strip .bap-mark {
+        width: 38px;
+        height: auto;
+      }
+      .hardware-strip .brand {
+        writing-mode: vertical-rl;
+        font-size: 18px;
+        letter-spacing: 0.07em;
+      }
+      .hardware-strip .route {
+        order: 2;
+        flex: 1;
+        width: 1px;
+      }
+      .hardware-strip header {
+        order: 1;
+      }
+      .hardware-strip span:not(.route) {
+        writing-mode: vertical-rl;
+        order: 3;
+      }
+      .hardware-strip #guide {
+        order: 4;
+      }
+      .hardware-strip span:last-child {
+        order: 5;
+      }
+      body[data-study="center"] .board {
+        --rail: 52px;
+      }
+      body[data-study="center"] .hardware-strip {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto 1fr auto auto;
+        justify-items: center;
+      }
+      body[data-study="center"] .brand {
+        writing-mode: horizontal-tb;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.045em;
+      }
+      body[data-study="center"] .hardware-strip span:first-of-type {
+        grid-row: 1;
+      }
+      body[data-study="center"] .route {
+        grid-row: 2;
+        height: 100%;
+      }
+      body[data-study="center"] .hardware-strip header {
+        grid-row: 3;
+        gap: 4px;
+      }
+      body[data-study="center"] .hardware-strip:after {
+        content: "";
+        grid-column: 1;
+        grid-row: 4;
+        height: 100%;
+        width: 1px;
+        background: #545455;
+      }
+      body[data-study="center"] #guide {
+        grid-row: 5;
+      }
+      body[data-study="center"] .hardware-strip span:last-child {
+        grid-row: 6;
+      }
+      body[data-study="plate"] .board {
+        --rail: 46px;
+      }
+      body[data-study="plate"] .hardware-strip {
+        border: 0;
+        padding: 7px 0;
+        background: #c6c6bd;
+        color: #393a34;
+        border-radius: 2px;
+      }
+      body[data-study="plate"] .hardware-strip header {
+        order: 2;
+        flex: 1;
+        justify-content: center;
+        gap: 15px;
+      }
+      body[data-study="plate"] .bap-mark {
+        filter: brightness(0.18);
+      }
+      body[data-study="plate"] .brand {
+        font-size: 21px;
+        letter-spacing: 0.12em;
+        color: #252622;
+      }
+      body[data-study="plate"] .hardware-strip span:first-of-type {
+        order: 1;
+        writing-mode: horizontal-tb;
+        font-size: 10px;
+      }
+      body[data-study="plate"] .route {
+        display: none;
+      }
+      body[data-study="plate"] #guide {
+        color: #494a42;
+      }
+      body[data-study="plate"] .hardware-strip span:last-child {
+        writing-mode: horizontal-tb;
+        font-size: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section>
+        <h1>Side strip studies</h1>
+        <fieldset>
+          <legend>Choose a side strip</legend>
+          <label
+            ><input type="radio" name="rail" value="top" checked /><b
+              >Top mark</b
+            ><small>44 px</small></label
+          >
+          <label
+            ><input type="radio" name="rail" value="center" /><b>Center stamp</b
+            ><small>52 px</small></label
+          >
+          <label
+            ><input type="radio" name="rail" value="plate" /><b>Silver plate</b
+            ><small>46 px</small></label
+          >
+        </fieldset>
+        <p id="description" aria-live="polite"></p>
+      </section>
+      <iframe
+        title="Playable portrait sampler with the selected side strip"
+      ></iframe>
+    </main>
+    <script>
+      const descriptions = {
+        top: "Gold mallet at the top, with TORQUE reading down the edge. This leaves the most room for the controls.",
+        center:
+          "A small, upright TORQUE wordmark sits under the mallet halfway down the strip. The hardware labels anchor the two ends.",
+        plate:
+          "A silver nameplate picks up the metal dials. TORQUE runs down its center in dark ink, with K0 MAX and UNO Q printed across the ends.",
+      };
+      const panel = document.querySelector("iframe");
+      function selectStudy(value) {
+        const key = Object.hasOwn(descriptions, value) ? value : "top";
+        document.querySelector('input[value="' + key + '"]').checked = true;
+        document.querySelector("#description").textContent = descriptions[key];
+        if (panel.contentDocument?.body)
+          panel.contentDocument.body.dataset.study = key;
+      }
+      function fromHash() {
+        selectStudy(location.hash.slice(1));
+      }
+      panel.addEventListener("load", () => {
+        const doc = panel.contentDocument;
+        const style = doc.createElement("style");
+        style.textContent =
+          document.querySelector("#strip-demo-css").textContent;
+        doc.head.append(style);
+        const header = doc.querySelector(".board header"),
+          rail = doc.querySelector(".hardware-strip");
+        const rule = doc.createElement("span");
+        rule.className = "route";
+        rule.setAttribute("aria-hidden", "true");
+        rule.style.background = "#545455";
+        rail.insertBefore(rule, header);
+        fromHash();
+      });
+      document.querySelector("fieldset").addEventListener("change", (e) => {
+        history.replaceState(null, "", "#" + e.target.value);
+        selectStudy(e.target.value);
+      });
+      window.addEventListener("hashchange", fromHash);
+      fromHash();
+      panel.src = "index.html";
+    </script>
+  </body>
+</html>

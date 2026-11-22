@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Torque · sampler logo options</title>
+    <style>
+      @font-face {
+        font-family: Space;
+        src: url("assets/SpaceGrotesk-Latin.woff2") format("woff2");
+        font-weight: 300 700;
+        font-display: swap;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #e9e9e5;
+        color: #1a1a18;
+        font-family: Space, system-ui, sans-serif;
+      }
+      main {
+        max-width: 1050px;
+        margin: auto;
+        padding: 50px 32px;
+      }
+      h1 {
+        margin: 0 0 26px;
+        font-size: clamp(30px, 4vw, 44px);
+        font-weight: 450;
+        letter-spacing: -0.045em;
+        line-height: 1;
+      }
+      .choices {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+      figure {
+        margin: 0;
+      }
+      .face {
+        background: #161616;
+        color: #e8b961;
+      }
+      .study {
+        height: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .study svg {
+        width: 75px;
+        height: 75px;
+      }
+      .header-sample {
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 12px;
+        border-top: 1px solid #42413c;
+      }
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font:
+          600 11px Space,
+          sans-serif;
+        letter-spacing: 0.075em;
+      }
+      .wordmark svg {
+        width: 17px;
+        height: 17px;
+      }
+      .title {
+        color: #ff9147;
+        font:
+          400 24px/1.1 Space,
+          sans-serif;
+        letter-spacing: -0.04em;
+        white-space: nowrap;
+      }
+      h2 {
+        font-size: 21px;
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+        font-weight: 550;
+        margin: 15px 0 5px;
+      }
+      p {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.42;
+        max-width: 31ch;
+        color: #43433e;
+      }
+      @media (max-width: 760px) {
+        main {
+          padding: 25px 16px;
+        }
+        .choices {
+          grid-template-columns: 1fr;
+          gap: 23px;
+        }
+        .study {
+          height: 100px;
+        }
+        .study svg {
+          height: 62px;
+          width: 62px;
+        }
+        p {
+          max-width: 48ch;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol id="fold" viewBox="0 0 32 32">
+          <path
+            id="fold-piece"
+            fill="currentColor"
+            d="M8.2 4.1C10.7 2.1 15.6 2 22.3 3.9C25.1 4.7 27.3 6.1 28.5 8.1C25.3 7.2 22.5 7.4 19.3 8.4L12.3 10.8C10.1 11.6 8.5 13.2 7 15.3C5.5 11 5.8 6.7 8.2 4.1Z"
+          />
+          <use href="#fold-piece" transform="rotate(120 16 16)" />
+          <use href="#fold-piece" transform="rotate(240 16 16)" />
+        </symbol>
+        <symbol id="index" viewBox="0 0 32 32">
+          <g fill="none" stroke="currentColor">
+            <path d="M24 23.6a11.3 11.3 0 1 1 2.8-10.7" stroke-width="5.6" />
+            <path d="m15 17 7-6.4" stroke-width="4.2" stroke-linecap="square" />
+          </g>
+        </symbol>
+        <symbol id="four-count" viewBox="0 0 32 32">
+          <g fill="currentColor">
+            <path d="M1 7h6v19H1zM9 7h6v7H9zM17 7h6v13h-6zM25 7h6v7h-6z" />
+          </g>
+        </symbol>
+      </defs>
+    </svg>
+    <main>
+      <h1>Torque sampler marks</h1>
+      <div class="choices">
+        <figure>
+          <div class="face">
+            <div class="study">
+              <svg aria-hidden="true"><use href="#fold" /></svg>
+            </div>
+            <div class="header-sample">
+              <span class="wordmark"
+                ><svg aria-hidden="true"><use href="#fold" /></svg>TORQUE</span
+              ><span class="title">pocket sampler</span>
+            </div>
+          </div>
+          <figcaption>
+            <h2>Fold</h2>
+            <p>
+              The triangular opening and three folds of the Torque app icon,
+              reduced to one ink.
+            </p>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="face">
+            <div class="study">
+              <svg aria-hidden="true"><use href="#index" /></svg>
+            </div>
+            <div class="header-sample">
+              <span class="wordmark"
+                ><svg aria-hidden="true"><use href="#index" /></svg>TORQUE</span
+              ><span class="title">pocket sampler</span>
+            </div>
+          </div>
+          <figcaption>
+            <h2>Index</h2>
+            <p>
+              An open rotary dial with a single index mark. It echoes the two
+              knobs on the panel.
+            </p>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="face">
+            <div class="study">
+              <svg aria-hidden="true"><use href="#four-count" /></svg>
+            </div>
+            <div class="header-sample">
+              <span class="wordmark"
+                ><svg aria-hidden="true"><use href="#four-count" /></svg
+                >TORQUE</span
+              ><span class="title">pocket sampler</span>
+            </div>
+          </div>
+          <figcaption>
+            <h2>Four-count</h2>
+            <p>
+              Four beat marks. Their lengths follow the accents of a bar in
+              four.
+            </p>
+          </figcaption>
+        </figure>
+      </div>
+    </main>
+  </body>
+</html>

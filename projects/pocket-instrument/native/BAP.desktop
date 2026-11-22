@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=B.A.P.
+Comment=Bureau of Accidental Percussion — native Mojo pocket sampler
+Exec=/home/arduino/torque/projects/bap-native/current/bap
+Path=/home/arduino/torque/projects/bap-native/current
+Icon=/home/arduino/torque/projects/bap-native/current/bap-icon.svg
+Terminal=false
+StartupNotify=false
+Categories=AudioVideo;Audio;Music;

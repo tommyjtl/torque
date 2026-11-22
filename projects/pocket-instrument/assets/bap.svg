@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 32" role="img" aria-labelledby="title">
+  <title id="title">B.A.P.</title>
+  <g fill="#29292a" transform="translate(6 2) skewX(-10)" fill-rule="evenodd">
+    <!-- The cropped bowl corners and square stops share the same cut. -->
+    <path d="M0 0h17l5 4v6l-4 3 5 3v7l-5 5H0zm7 6v5h6l2-2V7l-2-1zm0 11v5h7l2-2v-2l-2-1z"/>
+    <path d="M25 21h7v7h-7z"/>
+    <path d="M34 28 44 0h10l9 28h-8l-1.6-5.7h-9.6L42 28zm11.8-12h5.9L49 6.5z"/>
+    <path d="M65 21h7v7h-7z"/>
+    <path d="M76 0h17l6 5v9l-6 5H84v9h-8zm8 6v7h6l2-2V8l-2-2z"/>
+    <path d="M100 21h7v7h-7z"/>
+  </g>
+</svg>

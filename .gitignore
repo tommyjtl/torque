@@ -8,6 +8,7 @@ __pycache__/
 !.env.example
 projects/*
 !projects/.gitkeep
+!projects/pocket-instrument/
 !projects/whisper-tiny-benchmark/
 !projects/moonshine-tiny-benchmark/
 !projects/whisper-gpu-benchmark/
